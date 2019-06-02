@@ -6,11 +6,11 @@ function startGame(state) {
     const inputs = [];
     const historyLimit = 20;
     const lineLimit = 20;
+    const game = Object.assign({}, state);
+
     let historyPos = 0;
     
-    const game = Object.assign({}, state);
-    
-    // Initialize
+    // Initialize input/output elements
     document.querySelector('#title').innerText = game.title;
     inputBox.onkeydown = (e) => {
       if (e.key === 'Enter') {
@@ -50,19 +50,31 @@ function startGame(state) {
     }
     game.getItem = function(items, name) {
         if (items) {
-            let item = items.find(item => item.name === name);
-            if(item === undefined) {
-                console.log("No item found for: " + name);
-            } else {
-                return item;
-            }
+            return items.find(item => item.name === name);
         }
+        return null;
     }
     game.getInventoryItem = function(name) {
         return this.getItem(game.inventory, name);
     }
     game.getLocationItem = function(name) {
         return this.getItem(game.location.items, name);
+    }
+    // Get all available items (inventory + location)
+    game.getItems = function(){
+        const items = [];
+        if(game.inventory) {
+            game.inventory.forEach(i => items.push(i));
+        }        
+        if(game.location.items) {
+            game.location.items.forEach(i => items.push(i));
+        }
+        return items;
+    }
+    game.getTakeableItems = function() {
+        if(game.location.items) {
+           return game.location.items.filter(item => item.takeable === undefined || item.takeable);
+        }
     }
     game.enterLocation = function(location) {
         this.location = location;
@@ -122,16 +134,17 @@ function startGame(state) {
     }
     game.takeItem = function(name) {
         const item = this.getLocationItem(name);
-        if (item) {
+        if (item && (item.takeable === undefined || item.takeable)) {
             const location = this.location;
             if (!this.inventory) {
                 this.inventory = [];
             }
-            location.items.splice(this.inventory.findIndex(item => item.name === name), 1);
+            location.items.splice(location.items.findIndex(item => item.name === name), 1);
             this.inventory.push(item);
             this.printLocationInfo();
             return true;
         }
+        return false;
     }
     game.dropItem = function(name) {
         const item = this.getInventoryItem(name);
@@ -145,16 +158,19 @@ function startGame(state) {
             this.printLocationInfo();
             return true;
         }
+        return false;
     }
     game.useItem = function(name) {
-        const item = this.getInventoryItem(name);
-        if (item) {
+        const item = this.getItem(this.getItems(),name);
+        if(item) {
             item.onUse(this);
+            return true;
         }
+        return false;
     }
     game.printItemInfo = function(name) {
-        const item = this.getInventoryItem(name);
-        if (item) {
+        const item = this.getItem(this.getItems(),name);
+        if(item) {
            this.print(item.desc instanceof Function ? item.desc() : item.desc);
         }
     }
@@ -172,7 +188,7 @@ function startGame(state) {
             return;
         }
         const intputValue = inputBox.value;
-        game.print('> ' + intputValue, "command");
+        game.print('$ ' + intputValue, "command");
         if (inputs.length > historyLimit) {
             inputs.shift();
         }
@@ -229,12 +245,14 @@ function startGame(state) {
         } else if (parts.length == 2) {
             const action = game.getAction(parts[0]);
             if (action && action.autocomplete) {
-                const params = action.autocomplete(game,parts[1]);
-                if (params.length === 1) {
-                    inputBox.value = parts[0] + ' ' + params[0].name + ' ';
-                } else {
-                    game.print(params.map(param => param.name).join(', '));
-                } 
+                const results = action.autocomplete(game,parts[1]);
+                if (results) {
+                    if (results.length === 1) {
+                        inputBox.value = parts[0] + ' ' + results[0].name + ' ';
+                    } else if(results.length > 1) {
+                        game.print(results.map(r => r.name).join(', '));
+                    }    
+                }
             }
         }
     }

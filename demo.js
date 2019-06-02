@@ -54,8 +54,15 @@ const demo = {
                 } else {
                     game.print("Přečetl jsi noviny. Nic zajímavého.");
                 }
+            }}, {
+                name : "podlaha",
+                desc : "Na dřevěné podlaze není nic zajímavého.",
+                takeable : false,
+                onUse : function(game) {
+                    game.print("Dupl jsi na podlahu. Nic se nestalo.");
+                }
             }
-        }],
+        ],
         exits : [ {
             name : "nahoru",
             location : "m1"
@@ -84,7 +91,7 @@ const demo = {
                 game.printItemInfo(params[0]);
         },
         autocomplete: function(game,str) {
-            return game.inventory.filter(item => item.name.startsWith(str));
+            return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
         }
     }, {
         name:"pomoc",
@@ -99,17 +106,19 @@ const demo = {
             }
         },
         autocomplete: function(game,str) {
-            return game.inventory.filter(item => item.name.startsWith(str));
+            return (!str || str.length === 0) ? game.inventory : game.inventory.filter(item => item.name.startsWith(str));
         }
     },{
         name:"vezmi",
         perform: function(game,params) {
             if(game.takeItem(params[0])) {
                 game.print("Vzal jsi " + params[0]);
+            } else {
+                game.print("Tohle nelze vzít.");
             }
         },
         autocomplete: function(game,str) {
-            return game.location.items.filter(item => item.name.startsWith(str));
+            return (!str || str.length === 0) ? game.getTakeableItems() : game.getTakeableItems().filter(item => item.name.startsWith(str));
         }
     },{
         name:"cas",
@@ -122,7 +131,7 @@ const demo = {
                 game.useItem(params[0]);
         },
         autocomplete: function(game,str) {
-            return game.inventory.filter(item => item.name.startsWith(str));
+            return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
         }
     },{
         name:"cekej",
