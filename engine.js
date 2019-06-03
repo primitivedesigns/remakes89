@@ -109,7 +109,8 @@ function startGame(state) {
         if (cssClass) {
             line.className = cssClass;
         }
-        outputDiv.appendChild(line).innerText = str;
+        const first = outputDiv.firstChild;
+        outputDiv.insertBefore(line,first).innerText = str;
     }
     game.clearOutput = function() {
         while (outputDiv.firstChild) {
@@ -225,11 +226,13 @@ function startGame(state) {
     }
     
     function historyNext() {
-        historyPos++;
-        if (historyPos >= inputs.length) {
-            historyPos = inputs.length - 1;
+        if (inputs.length > 0) {
+            historyPos++;
+            if (historyPos >= inputs.length) {
+                historyPos = inputs.length - 1;
+            }
+            inputBox.value = inputs[historyPos];
         }
-        inputBox.value = inputs[historyPos];
     }
     
     function autocomplete() {
