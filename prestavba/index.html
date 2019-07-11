@@ -1,0 +1,95 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>P.R.E.S.T.A.V.B.A.</title>
+<link href="https://fonts.googleapis.com/css?family=VT323
+&display=swap"
+    rel="stylesheet">
+<style type="text/css">
+body {
+	background-color: black;
+	font-family: 'VT323', monospace;
+	text-transform: uppercase;
+	color: white;
+	font-size: 1.2em;
+	color: white;
+	color: white;
+}
+
+h1 {
+	font-size: 4em;
+}
+
+#output {
+	margin-top: 1em;
+}
+
+#output {
+	height: 20%;
+	overflow: auto;
+}
+
+#output div:first-child {
+	/*font-size: 120%;
+	background-color: #000c67;*/
+	
+}
+
+#output div {
+	line-height: 1.6em;
+}
+
+#slogan {
+    margin-top: 1em;
+    font-size: 2em;
+    padding: 0.5em;
+    color: silver;
+}
+
+#output div.command {
+	background-color: #111111;
+	color: gray;
+}
+
+#output div.end {
+	background-color: red;
+	color: white;
+}
+
+#output, #location {
+	font-size: 1.5em;
+	/*overflow-y: scroll;*/
+}
+
+#input {
+	border-top: 1px dashed white;
+	font-family: 'VT323', monospace;
+	text-transform: uppercase;
+	width: 100%;
+	/*background-color: #2b2b2b;*/
+	background-color: #242424;
+	border: none;
+	bottom: 0;
+	padding: 0.5em;
+	font-size: 3em;
+	color: white;
+	bottom: 0;
+	margin-top: 1em;
+	padding: 0.2em;
+}
+</style>
+</head>
+<body>
+    <h1 id="title"></h1>
+    <div id="location"></div>
+    <div id="output"></div>
+    <input id="input" autofocus>
+    <div id="slogan"></div>
+
+    <script src="prestavba.js"></script>
+    <script src="../engine.js"></script>
+    <script>
+                    startGame(demo);
+                </script>
+</body>
+</html>
