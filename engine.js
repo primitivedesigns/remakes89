@@ -86,9 +86,7 @@ function startGame(state) {
         this.shiftTime(1);
     }
     game.printLocationInfo = function() {
-        while (locationDiv.firstChild) {
-            locationDiv.removeChild(locationDiv.firstChild);
-        }
+        this.clearLocation();
         const location = game.location;
         if (location.name) {
             this.printLocation('*** ' + location.name + " ***");
@@ -105,7 +103,14 @@ function startGame(state) {
         } else if (this.messages.noLocationItems) {
             this.printLocation(this.messages.noLocationItems);
         }
-
+        if (this.onLocationInfo) {
+            this.onLocationInfo(this);
+        }
+    }
+    game.clearLocation = function() {
+        while (locationDiv.firstChild) {
+            locationDiv.removeChild(locationDiv.firstChild);
+        }
     }
     game.printLocation = function(str, cssClass) {
         const line = document.createElement('div');
@@ -141,6 +146,9 @@ function startGame(state) {
     }
     game.shiftTime = function(amount) {
         this.time = this.time + amount;
+        if (this.onShiftTime) {
+            this.onShiftTime(this);
+        }
     }
     game.takeItem = function(name) {
         const item = this.getLocationItem(name);
@@ -172,14 +180,25 @@ function startGame(state) {
     }
     game.useItem = function(name) {
         const item = this.getItem(this.getItems(), name);
-        if (item) {
+        if (item && item.onUse) {
             item.onUse(this);
             return true;
         }
         return false;
     }
-    game.printItemInfo = function(name) {
+    game.examineItem = function(name) {
         const item = this.getItem(this.getItems(), name);
+        if (item) {
+            this.printItemInfo(item);
+            if (item.onExamine) {
+                item.onExamine(this);
+            }
+            return true;
+        }
+        return false;
+    }
+    game.printItemInfo = function(item) {
+        const foundItem = item instanceof Object ? item : this.getItem(this.getItems(), item);
         if (item) {
             this.print(item.desc instanceof Function ? item.desc() : item.desc);
         }
@@ -278,4 +297,5 @@ function startGame(state) {
         }
     }
 
+    return game;
 }
