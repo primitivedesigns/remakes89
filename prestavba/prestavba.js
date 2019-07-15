@@ -20,7 +20,7 @@ const prestavba = {
     },
     onShiftTime: function(game) {
         // TODO the book should disappear after it's burning for 12 time units
-    }
+    },
     isInputCaseSensitive: false,
     startLocation: "m9",
     inventory: [],
