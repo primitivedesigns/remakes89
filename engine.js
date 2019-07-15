@@ -62,9 +62,8 @@ function startGame(state) {
         return this.getItem(game.inventory, name);
     }
     game.getLocationItem = function(name) {
-            return this.getItem(game.location.items, name);
-        }
-        // Get all available items (inventory + location)
+        return this.getItem(game.location.items, name);
+    }
     game.getItems = function() {
         const items = [];
         if (game.inventory) {
@@ -73,6 +72,7 @@ function startGame(state) {
         if (game.location.items) {
             game.location.items.forEach(i => items.push(i));
         }
+        // return all available items (inventory + location)
         return items;
     }
     game.getTakeableItems = function() {

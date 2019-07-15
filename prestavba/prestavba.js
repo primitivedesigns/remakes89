@@ -12,14 +12,50 @@ const prestavba = {
     onLocationInfo: function(game) {
         if (darkLocations.find(id => id === game.location.id)) {
             const book = game.getInventoryItem("knihu");
-            if (!book || !book.isBurning()) {
+            if (!book || !book.burning) {
                 game.clearLocation();
                 game.printLocation("Je tu tma.");
             }
         }
     },
     onShiftTime: function(game) {
-        // TODO the book should disappear after it's burning for 12 time units
+        let book = game.getInventoryItem("knihu");
+        let bookLocation = null;
+        if (!book) {
+            for (var location in game.locations) {
+                book = game.getItem(location.items, "knihu");
+                bookLocation = location;
+                break;
+            }
+        }
+        if (book && book.burning && (book.burning - game.time) > 12) {
+            // The book should disappear after it's burning for 12 time
+            // units
+            if (bookLocation) {
+                bookLocation.items.splice(bookLocation.items.findIndex(item => item.name === "knihu"), 1);
+            } else {
+                game.inventory.splice(game.inventory.findIndex(item => item.name === "knihu"), 1);
+            }
+        }
+        // Dynamite
+        let dynamite = game.getInventoryItem("dynamit");
+        let dynamiteLocation = null;
+        if (!dynamite) {
+            for (var location in game.locations) {
+                dynamite = game.getItem(location.items, "dynamit");
+                dynamiteLocation = location;
+                break;
+            }
+        }
+        if (dynamite && dynamite.ignited && (dynamite.ignited - game.time) > 2) {
+            // Explosion
+            if (dynamiteLocation) {
+                // TODO ruins of the statue
+                dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === "dynamit"), 1);
+            } else {
+                game.inventory.splice(game.inventory.findIndex(item => item.name === "dynamit"), 1);
+            }
+        }
     },
     isInputCaseSensitive: false,
     startLocation: "m9",
@@ -64,6 +100,24 @@ const prestavba = {
         }, {
             name: "Z",
             location: "m5"
+        }],
+        actions: [{
+            name: "kopej",
+            perform: function(game, params) {
+                const pickaxe = game.getInventoryItem("krumpáč");
+                if (pickaxe) {
+                    game.clearOutput();
+                    game.print("-----------------");
+                    game.print("Podařilo se ti prokopat se do nižšího podlaží!");
+                    game.location.exits.push({
+                        name: "D",
+                        location: "m2"
+                    });
+                    game.printLocationInfo();
+                } else {
+                    game.print(game.messages.unknownAction);
+                }
+            }
         }]
     }, {
         id: "m5",
@@ -99,10 +153,7 @@ const prestavba = {
                                 game.print("Něco jsi našel.");
                                 game.location.items.push({
                                     name: "klíč",
-                                    desc: "Je to čtverhranný klíč k poklopu.",
-                                    onUse: function(game) {
-                                        // TODO
-                                    }
+                                    desc: "Je to čtverhranný klíč k poklopu."
                                 });
                                 game.printLocationInfo();
                             }
@@ -122,7 +173,7 @@ const prestavba = {
         desc: "Stojíš v tmavém výklenku.",
         items: [{
             name: "zapalovač",
-            desc: "Jistě by s ním šlo leccos zapálit. Je to totiž kvlaitní zapalovač \"Made in USSR\".",
+            desc: "Jistě by s ním šlo leccos zapálit. Je to totiž kvalitní zapalovač \"Made in USSR\".",
         }],
         exits: [{
             name: "V",
@@ -133,12 +184,51 @@ const prestavba = {
         desc: "Stojíš před ošklivým smrdutým záchodem. Táhne od něj nepříjemný zápach.",
         items: [{
             name: "dveře",
-            desc: "",
-            takeable: false
+            desc: function() {
+                return "Jsou " + (this.open ? "otevřené" : "zavřené") + " a " + (this.locked ? "zamčené" : "odemčené") + ". Je na nich zámek na číselný čtyřmístný kód.";
+            },
+            takeable: false,
+            open: false,
+            locked: true,
         }],
         exits: [{
             name: "S",
             location: "m9"
+        }],
+        actions: [{
+            name: "zadej",
+            perform: function(game, params) {
+                const door = game.getLocationItem("dveře");
+                game.clearOutput();
+                game.print("-----------------");
+                if (params[0] === "1948" && door.locked) {
+                    door.locked = false;
+                    game.print("Zámek klapnul!");
+                } else {
+                    game.print(game.messages.unknownAction);
+                }
+            }
+        }, {
+            name: "otevři",
+            perform: function(game, params) {
+                const door = game.getLocationItem("dveře");
+                game.clearOutput();
+                game.print("-----------------");
+                if (params[0] === "DVEŘE") {
+                    door.open = true;
+                    game.print("Cesta na záchod je volná!");
+                    game.location.exits.push({
+                        name: "V",
+                        location: "m10"
+                    });
+                    game.printLocationInfo();
+                } else {
+                    game.print(game.messages.unknownAction);
+                }
+            },
+            autocomplete: function(game, str) {
+                return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
+            }
         }]
     }, {
         id: "m9",
@@ -146,20 +236,42 @@ const prestavba = {
         items: [{
             name: "poklop",
             desc: "Je to těžký ocelový poklop se zámkem na čtverhranný klíč.",
-            takeable: false
+            takeable: false,
         }],
         exits: [{
-                name: "S",
-                location: "m6"
-            }, {
-                name: "J",
-                location: "m8"
-            }, {
-                name: "Z",
-                location: "m7"
+            name: "S",
+            location: "m6"
+        }, {
+            name: "J",
+            location: "m8"
+        }, {
+            name: "Z",
+            location: "m7"
+        }],
+        actions: [{
+            name: "otevři",
+            perform: function(game, params) {
+                game.clearOutput();
+                game.print("-----------------");
+                if (params[0] === "POKLOP") {
+                    if (game.getInventoryItem("klíč")) {
+                        game.print("S pomocí klíče se ti podařilo otevřít poklop.");
+                        game.location.exits.push({
+                            name: "D",
+                            location: "m5"
+                        });
+                        game.printLocationInfo();
+                    } else {
+                        game.print("Nemáš klíč!");
+                    }
+                } else {
+                    game.print(game.messages.unknownAction);
+                }
+            },
+            autocomplete: function(game, str) {
+                return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
             }
-            // TODO
-        ]
+        }]
     }, {
         id: "m10",
         desc: "Jsi na špinavém záchodě. Radši to nebudu příliš popisovat, mohlo by se ti udělat nevolno.",
@@ -171,19 +283,13 @@ const prestavba = {
                 game.location.items.push({
                     name: "knihu",
                     desc: function() {
-                        if (this.state.start == null) {
+                        if (this.burning == null) {
                             return "Je to Marxův Kapitál.";
-                        } else if (this.state.isIgnited()) {
+                        } else {
                             return "Vydává jasné světlo pokroku!!!";
                         }
                     },
-                    state: {
-                        start: null,
-                        game: this.game,
-                        isBurning: function() {
-                            return this.start != null && ((this.game.time - this.start) < 12);
-                        }
-                    }
+                    burning: null
                 });
                 game.printLocationInfo();
             }
@@ -195,6 +301,18 @@ const prestavba = {
     }, {
         id: "m11",
         desc: "Stojíš před krásně vyzdobeným oltářem.",
+        items: [{
+            name: "oltář",
+            desc: "Jsou na něm obrazy Svaté trojice - Marxe, Engelse a Lenina...",
+            onExamine: function(game) {
+                game.print("Něco jsi našel.");
+                game.location.items.push({
+                    name: "dynamit",
+                    desc: "Je to klasická koule s doutnákem."
+                });
+                game.printLocationInfo();
+            }
+        }],
         exits: [{
             name: "Z",
             location: "m20"
@@ -283,6 +401,10 @@ const prestavba = {
     }, {
         id: "m18",
         desc: "Jsi v malém parčíku. Je tu plno zeleně.",
+        items: [{
+            name: "sochu",
+            desc: "Lenin...",
+        }],
         exits: [{
             name: "Z",
             location: "m17"
@@ -349,7 +471,7 @@ const prestavba = {
             game.goToLocation("D");
         }
     }, {
-        name: "poloz",
+        name: "polož",
         perform: function(game, params) {
             if (game.dropItem(params[0])) {
                 printRandomSlogan();
@@ -393,33 +515,28 @@ const prestavba = {
             game.clearOutput();
             game.print("-----------------");
             if (game.getInventoryItem("zapalovač")) {
-                const book = game.getInventoryItem("knihu");
-                if (book && params[0] === "KNIHU") {
-                    game.print("Zapálil jsi Kapitál. Kéž osvítí tvoji cestu!");
-                    book.state.start = game.time;
+                if (getRandomInt(3) === 0) {
+                    if (params[0] === "KNIHU") {
+                        const book = game.getInventoryItem("knihu");
+                        if (book) {
+                            game.print("Zapálil jsi Kapitál. Kéž osvítí tvoji cestu!");
+                            book.burning = game.time;
+                            return;
+                        }
+                    } else if (params[0] === "DYNAMIT") {
+                        const dynamite = game.getItem(game.getItems(), "knihu");
+                        if (dynamite) {
+                            game.print("Zapálil jsi doutnák...");
+                            dynamite.ignited = game.time;
+                            return;
+                        }
+                    }
+                } else {
+                    game.print("Zapalovač vynechal...");
+                    return;
                 }
             }
             game.print(game.messages.unknownAction);
-        }
-    }, {
-        name: "otevři",
-        perform: function(game, params) {
-            game.clearOutput();
-            game.print("-----------------");
-            if (game.location.id === "m9" && params[0] === "POKLOP") {
-                if (game.getInventoryItem("klíč")) {
-                    game.print("S pomocí klíče se ti podařilo otevřít poklop.");
-                    game.location.exits.push({
-                        name: "D",
-                        location: "m5"
-                    });
-                    game.printLocationInfo();
-                } else {
-                    game.print("Nemáš klíč!");
-                }
-            } else {
-                game.print(game.messages.unknownAction);
-            }
         },
         autocomplete: function(game, str) {
             return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
