@@ -257,13 +257,14 @@ function startGame(state) {
         return null;
     }
 
-    function nextStep(step, paths, start, target) {
+    function nextStep(step, paths, startId, targetId) {
         const newPathsFound = [];
         for (i = 0; i < paths.length; i++) {
             const path = paths[i];
             if (path.length === step) {
                 const last = path[step - 1];
-                if ((step === 1 || last.id != start) && last.id != target && last.exits) {
+                const backId = path.length > 2 ? path[step - 3].id : "_none";
+                if ((step === 1 || last.id != startId) && last.id != targetId && last.id != backId && last.exits) {
                     for (j = 0; j < last.exits.length; j++) {
                         const newPath = path.slice(0);
                         newPath.push(game.locations.find(loc => loc.id === last.exits[j].location));
