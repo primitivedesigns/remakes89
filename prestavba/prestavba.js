@@ -11,7 +11,7 @@ const prestavba = {
     },
     onLocationInfo: function(game) {
         if (darkLocations.find(id => id === game.location.id)) {
-            const book = game.getInventoryItem("knihu");
+            const book = game.getInventoryItem(bookItemName);
             if (!book || !book.burning) {
                 game.clearLocation();
                 game.printLocation("Je tu tma.");
@@ -19,41 +19,49 @@ const prestavba = {
         }
     },
     onShiftTime: function(game) {
-        let book = game.getInventoryItem("knihu");
+        // The book should disappear after it's burning for 12 time units
+        let book = game.getInventoryItem(bookItemName);
         let bookLocation = null;
         if (!book) {
-            for (var location in game.locations) {
-                book = game.getItem(location.items, "knihu");
-                bookLocation = location;
-                break;
-            }
+            book = game.findLocationItem(bookItemName);
         }
         if (book && book.burning && (book.burning - game.time) > 12) {
-            // The book should disappear after it's burning for 12 time
-            // units
             if (bookLocation) {
-                bookLocation.items.splice(bookLocation.items.findIndex(item => item.name === "knihu"), 1);
+                bookLocation.items.splice(bookLocation.items.findIndex(item => item.name === bookItemName), 1);
             } else {
-                game.inventory.splice(game.inventory.findIndex(item => item.name === "knihu"), 1);
+                game.inventory.splice(game.inventory.findIndex(item => item.name === bookItemName), 1);
             }
         }
-        // Dynamite
-        let dynamite = game.getInventoryItem("dynamit");
+        // Dynamite should explode after 2 time units
+        let dynamite = game.getInventoryItem(dynamiteItemName);
         let dynamiteLocation = null;
         if (!dynamite) {
-            for (var location in game.locations) {
-                dynamite = game.getItem(location.items, "dynamit");
-                dynamiteLocation = location;
-                break;
-            }
+            dynamite = game.findLocationItem(dynamiteItemName);
+        }
+        // GAME OVER
+        if (dynamiteLocation && dynamiteLocation.id === game.location.id) {
+            game.end("Obrovská exploze otřásla městem, což jsi včak jako její přímý účastník neslyšel.");
+            return;
         }
         if (dynamite && dynamite.ignited && (dynamite.ignited - game.time) > 2) {
-            // Explosion
+            // Exploded!
+            game.print("Země se otřásla výbuchem.");
             if (dynamiteLocation) {
-                // TODO ruins of the statue
-                dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === "dynamit"), 1);
+                if (dynamiteLocation.id === "m18") {
+                    dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === "sochu"), 1);
+                    dynamiteLocation.items.push({
+                        nane: "trosky jakési sochy",
+                        desc: "Vidím kus lebky, ucho a ruku ukazující cestu do šťastné komunistické budoucnosti.",
+                        takeable: false
+                    });
+                    dynamiteLocation.items.push({
+                        nane: "cihlu",
+                        desc: "Je celá ze zlata."
+                    });
+                }
+                dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === dynamiteItemName), 1);
             } else {
-                game.inventory.splice(game.inventory.findIndex(item => item.name === "dynamit"), 1);
+                game.inventory.splice(game.inventory.findIndex(item => item.name === dynamiteItemName), 1);
             }
         }
     },
@@ -278,10 +286,11 @@ const prestavba = {
         items: [{
             name: "mísu",
             desc: "Je úplně zaschlá.",
+            takeable: false,
             onExamine: function(game) {
                 game.print("Něco jsi našel.");
                 game.location.items.push({
-                    name: "knihu",
+                    name: bookItemName,
                     desc: function() {
                         if (this.burning == null) {
                             return "Je to Marxův Kapitál.";
@@ -307,7 +316,7 @@ const prestavba = {
             onExamine: function(game) {
                 game.print("Něco jsi našel.");
                 game.location.items.push({
-                    name: "dynamit",
+                    name: dynamiteItemName,
                     desc: "Je to klasická koule s doutnákem."
                 });
                 game.printLocationInfo();
@@ -516,15 +525,15 @@ const prestavba = {
             game.print("-----------------");
             if (game.getInventoryItem("zapalovač")) {
                 if (getRandomInt(3) === 0) {
-                    if (params[0] === "KNIHU") {
-                        const book = game.getInventoryItem("knihu");
+                    if (params[0] === bookItemName.toUpperCase()) {
+                        const book = game.getInventoryItem(bookItemName);
                         if (book) {
                             game.print("Zapálil jsi Kapitál. Kéž osvítí tvoji cestu!");
                             book.burning = game.time;
                             return;
                         }
-                    } else if (params[0] === "DYNAMIT") {
-                        const dynamite = game.getItem(game.getItems(), "knihu");
+                    } else if (params[0] === dynamiteItemName.toUpperCase()) {
+                        const dynamite = game.getItem(game.getItems(), dynamiteItemName);
                         if (dynamite) {
                             game.print("Zapálil jsi doutnák...");
                             dynamite.ignited = game.time;
@@ -560,6 +569,9 @@ const slogans = ["Sláva K.S.Č.!",
 ];
 
 const darkLocations = ["m1", "m2", "m3", "m4", "m5"];
+
+const bookItemName = "knihu";
+const dynamiteItemName = "dynamit";
 
 function printRandomSlogan() {
     document.querySelector('#slogan').innerText = slogans[getRandomInt(slogans.length)];
