@@ -64,6 +64,16 @@ function startGame(state) {
     game.getLocationItem = function(name) {
         return this.getItem(game.location.items, name);
     }
+    game.findLocationItem = function(name) {
+        let item = null;
+        for (index = 0; index < this.locations.length; index++) {
+            item = this.getItem(this.locations[index].items, name);
+            if (item != null) {
+                return item;
+            }
+        }
+        return null;
+    }
     game.getItems = function() {
         const items = [];
         if (game.inventory) {
@@ -208,6 +218,64 @@ function startGame(state) {
         this.ended = true;
         this.print(text, 'end');
     }
+    game.findWay = function(from, to) {
+        const fromLocation = this.locations.find(loc => loc.id === from);
+        const toLocation = this.locations.find(loc => loc.id === to);
+        if (fromLocation && toLocation) {
+            let paths = [];
+            let step = 0;
+            paths.push([fromLocation]);
+
+            let newPaths;
+            do {
+                newPaths = nextStep(++step, paths, fromLocation.id, toLocation.id);
+                if (newPaths.length > 0) {
+                    paths = paths.concat(newPaths);
+                }
+            } while (newPaths.length > 0);
+
+            const ret = [];
+            for (i = 0; i < paths.length; i++) {
+                const path = paths[i];
+                if (path[path.length - 1].id === to) {
+                    ret.push(path);
+                }
+            }
+            for (i = 0; i < ret.length; i++) {
+                let path = ret[i];
+                let steps = "";
+                // Path from m1 to m2 (2): exit1, exit2
+                for (j = 0; j < (path.length - 1); j++) {
+                    const fromStep = path[j];
+                    const toStep = path[j + 1];
+                    steps += "-> " + fromStep.exits.find(exit => exit.location === toStep.id).name;
+                }
+                console.log("Path " + (i + 1) + ": " + steps);
+            }
+            return ret;
+        }
+        return null;
+    }
+
+    function nextStep(step, paths, start, target) {
+        const newPathsFound = [];
+        for (i = 0; i < paths.length; i++) {
+            const path = paths[i];
+            if (path.length === step) {
+                const last = path[step - 1];
+                if ((step === 1 || last.id != start) && last.id != target && last.exits) {
+                    for (j = 0; j < last.exits.length; j++) {
+                        const newPath = path.slice(0);
+                        newPath.push(game.locations.find(loc => loc.id === last.exits[j].location));
+                        newPathsFound.push(newPath);
+                    }
+                }
+            }
+        }
+        console.log("Step " + step + " found " + newPathsFound.length + " paths");
+        return newPathsFound;
+    }
+
 
     // Start the game
     game.enterLocation(game.getLocation(game.startLocation));
@@ -276,7 +344,7 @@ function startGame(state) {
         const intputValue = inputBox.value;
         const parts = intputValue.split(/\s+/);
         if (parts.length == 1) {
-            const actions = game.getActions().filter(action => action.name.startsWith(intputValue));
+            const actions = game.getActions().filter(action => this.isInputCaseSensitive ? action.name.startsWith(intputValue) : action.name.toUpperCase().startsWith(intputValue.toUpperCase()));
             if (actions.length === 1) {
                 inputBox.value = actions[0].name + ' ';
             } else {
