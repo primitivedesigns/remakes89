@@ -69,7 +69,10 @@ function startGame(state) {
         for (index = 0; index < this.locations.length; index++) {
             item = this.getItem(this.locations[index].items, name);
             if (item != null) {
-                return item;
+                return {
+                    "item": item,
+                    "location": this.locations[index]
+                };
             }
         }
         return null;
@@ -244,17 +247,18 @@ function startGame(state) {
             for (i = 0; i < ret.length; i++) {
                 let path = ret[i];
                 let steps = "";
-                // Path from m1 to m2 (2): exit1, exit2
+                // 1: loc1 -> exit1 -> exit2 -> loc2
                 for (j = 0; j < (path.length - 1); j++) {
                     const fromStep = path[j];
                     const toStep = path[j + 1];
                     steps += "-> " + fromStep.exits.find(exit => exit.location === toStep.id).name;
                 }
-                console.log("Path " + (i + 1) + ": " + steps);
+                console.log((i + 1) + ": " + from + " " + steps + " -> " + to);
             }
             return ret;
+        } else {
+            console.log("Invalid locations!");
         }
-        return null;
     }
 
     function nextStep(step, paths, startId, targetId) {
@@ -263,8 +267,11 @@ function startGame(state) {
             const path = paths[i];
             if (path.length === step) {
                 const last = path[step - 1];
-                const backId = path.length > 2 ? path[step - 3].id : "_none";
-                if ((step === 1 || last.id != startId) && last.id != targetId && last.id != backId && last.exits) {
+                if (path.filter(loc => loc.id === last.id).length > 1) {
+                    // Cycle detected
+                    continue;
+                }
+                if ((step === 1 || last.id != startId) && last.id != targetId && last.exits) {
                     for (j = 0; j < last.exits.length; j++) {
                         const newPath = path.slice(0);
                         newPath.push(game.locations.find(loc => loc.id === last.exits[j].location));
@@ -273,7 +280,8 @@ function startGame(state) {
                 }
             }
         }
-        console.log("Step " + step + " found " + newPathsFound.length + " paths");
+        // console.log("Step " + step + " found " + newPathsFound.length + "
+        // paths");
         return newPathsFound;
     }
 
