@@ -23,9 +23,14 @@ const prestavba = {
         let book = game.getInventoryItem(bookItemName);
         let bookLocation = null;
         if (!book) {
-            book = game.findLocationItem(bookItemName);
+            const ret = game.findLocationItem(bookItemName);
+            if (ret) {
+                book = ret.item;
+                bookLocation = ret.location;
+            }
         }
-        if (book && book.burning && (book.burning - game.time) > 12) {
+        // TODO warning after 11 time units
+        if (book && book.burning && (game.time - book.burning) > 12) {
             if (bookLocation) {
                 bookLocation.items.splice(bookLocation.items.findIndex(item => item.name === bookItemName), 1);
             } else {
@@ -36,32 +41,36 @@ const prestavba = {
         let dynamite = game.getInventoryItem(dynamiteItemName);
         let dynamiteLocation = null;
         if (!dynamite) {
-            dynamite = game.findLocationItem(dynamiteItemName);
+            const ret = game.findLocationItem(dynamiteItemName);
+            if (ret) {
+                dynamite = ret.item;
+                dynamiteLocation = ret.location;
+            }
         }
         // GAME OVER
-        if (dynamiteLocation && dynamiteLocation.id === game.location.id) {
-            game.end("Obrovská exploze otřásla městem, což jsi včak jako její přímý účastník neslyšel.");
-            return;
-        }
-        if (dynamite && dynamite.ignited && (dynamite.ignited - game.time) > 2) {
-            // Exploded!
-            game.print("Země se otřásla výbuchem.");
-            if (dynamiteLocation) {
-                if (dynamiteLocation.id === "m18") {
-                    dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === "sochu"), 1);
-                    dynamiteLocation.items.push({
-                        nane: "trosky jakési sochy",
-                        desc: "Vidím kus lebky, ucho a ruku ukazující cestu do šťastné komunistické budoucnosti.",
-                        takeable: false
-                    });
-                    dynamiteLocation.items.push({
-                        nane: "cihlu",
-                        desc: "Je celá ze zlata."
-                    });
+        if (dynamite && dynamite.ignited) {
+            if ((dynamiteLocation && dynamiteLocation.id === game.location.id) || dynamiteLocation == null) {
+                game.end("Obrovská exploze otřásla městem, což jsi včak jako její přímý účastník neslyšel.");
+                return;
+            }
+            if ((game.time - dynamite.ignited) > 2) {
+                // Exploded!
+                game.print("Země se otřásla výbuchem.");
+                if (dynamiteLocation) {
+                    if (dynamiteLocation.id === "m18") {
+                        dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === "sochu"), 1);
+                        dynamiteLocation.items.push({
+                            name: "trosky jakési sochy",
+                            desc: "Vidím kus lebky, ucho a ruku ukazující cestu do šťastné komunistické budoucnosti.",
+                            takeable: false
+                        });
+                        dynamiteLocation.items.push({
+                            name: "cihlu",
+                            desc: "Je celá ze zlata."
+                        });
+                    }
+                    dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === dynamiteItemName), 1);
                 }
-                dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === dynamiteItemName), 1);
-            } else {
-                game.inventory.splice(game.inventory.findIndex(item => item.name === dynamiteItemName), 1);
             }
         }
     },
@@ -530,6 +539,8 @@ const prestavba = {
                         if (book) {
                             game.print("Zapálil jsi Kapitál. Kéž osvítí tvoji cestu!");
                             book.burning = game.time;
+                            // Show info in a dark location
+                            game.printLocationInfo();
                             return;
                         }
                     } else if (params[0] === dynamiteItemName.toUpperCase()) {
