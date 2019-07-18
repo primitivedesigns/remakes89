@@ -43,6 +43,12 @@ function startGame(state) {
         if (location.actions) {
             location.actions.forEach(action => actions.push(action));
         }
+        // Inventory + location items actions
+        this.getItems().forEach(function(item) {
+            if (item.actions) {
+                item.actions.forEach(action => actions.push(action));
+            }
+        });
         return actions;
     }
     game.getAction = function(name) {
@@ -64,8 +70,18 @@ function startGame(state) {
     game.getLocationItem = function(name) {
         return this.getItem(game.location.items, name);
     }
-    game.findLocationItem = function(name) {
+    game.findItem = function(name) {
         let item = null;
+        item = this.getInventoryItem(name);
+        if (item) {
+            return {
+                "item": item,
+                "location": null
+            };
+        }
+        return this.findLocationItem(name);
+    }
+    game.findLocationItem = function(name) {
         for (index = 0; index < this.locations.length; index++) {
             item = this.getItem(this.locations[index].items, name);
             if (item != null) {
@@ -75,7 +91,7 @@ function startGame(state) {
                 };
             }
         }
-        return null;
+        return {};
     }
     game.getItems = function() {
         const items = [];
@@ -173,6 +189,9 @@ function startGame(state) {
             location.items.splice(location.items.findIndex(item => item.name === name), 1);
             this.inventory.push(item);
             this.printLocationInfo();
+            if (item.onTake) {
+                item.onTake(this);
+            }
             return true;
         }
         return false;
