@@ -1,3 +1,26 @@
+const slogans = ["Sláva K.S.Č.!",
+    "Se SSSR na věčné časy",
+    "Ať žije socialismus!",
+    "Proletáři všech zemí, spojte se!",
+    "Sláva leninské politice strany!",
+    "Smrt imperialistickým štváčům!",
+    "Vzhůru do nové pětiletky!",
+    "Ať žije Vítězný únor!",
+    "Socialismus - cesta zítřka!!!",
+    "Kupředu levá, zpátky ni krok!",
+    "Za osvobození vykořisťovaných!",
+    "Za nejdemokratičtější zřízení!",
+    "Dnes pětiletka - zítra komunismus!"
+];
+
+const darkLocations = ["m1", "m2", "m3", "m4", "m5"];
+
+const bookItemName = "knihu";
+const dynamiteItemName = "dynamit";
+
+const dynamiteExplosionTime = 2;
+const bookBurningTime = 12;
+
 const prestavba = {
     title: "P.R.E.S.T.A.V.B.A.",
     messages: {
@@ -20,40 +43,29 @@ const prestavba = {
     },
     onShiftTime: function(game) {
         // The book should disappear after it's burning for 12 time units
-        let book = game.getInventoryItem(bookItemName);
-        let bookLocation = null;
-        if (!book) {
-            const ret = game.findLocationItem(bookItemName);
-            if (ret) {
-                book = ret.item;
-                bookLocation = ret.location;
-            }
-        }
+        const bookRet = game.findItem(bookItemName);
+        const book = bookRet.item;
+        const bookLocation = bookRet.location;
         // TODO warning after 11 time units
-        if (book && book.burning && (game.time - book.burning) > 12) {
+        if (book && book.burning && (game.time - book.burning) > bookBurningTime) {
             if (bookLocation) {
                 bookLocation.items.splice(bookLocation.items.findIndex(item => item.name === bookItemName), 1);
             } else {
                 game.inventory.splice(game.inventory.findIndex(item => item.name === bookItemName), 1);
             }
         }
+
         // Dynamite should explode after 2 time units
-        let dynamite = game.getInventoryItem(dynamiteItemName);
-        let dynamiteLocation = null;
-        if (!dynamite) {
-            const ret = game.findLocationItem(dynamiteItemName);
-            if (ret) {
-                dynamite = ret.item;
-                dynamiteLocation = ret.location;
-            }
-        }
+        const dynamiteRet = game.findItem(dynamiteItemName);
+        const dynamite = dynamiteRet.item;
+        const dynamiteLocation = dynamiteRet.location;
         // GAME OVER
         if (dynamite && dynamite.ignited) {
             if ((dynamiteLocation && dynamiteLocation.id === game.location.id) || dynamiteLocation == null) {
                 game.end("Obrovská exploze otřásla městem, což jsi včak jako její přímý účastník neslyšel.");
                 return;
             }
-            if ((game.time - dynamite.ignited) > 2) {
+            if ((game.time - dynamite.ignited) > dynamiteExplosionTime) {
                 // Exploded!
                 game.print("Země se otřásla výbuchem.");
                 if (dynamiteLocation) {
@@ -66,7 +78,10 @@ const prestavba = {
                         });
                         dynamiteLocation.items.push({
                             name: "cihlu",
-                            desc: "Je celá ze zlata."
+                            desc: "Je celá ze zlata.",
+                            onTake: function(game) {
+                                game.end("Gratuluji vítězi! Je vidět, že socialistický člověk si poradí v každé situaci...");
+                            }
                         });
                     }
                     dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === dynamiteItemName), 1);
@@ -102,7 +117,23 @@ const prestavba = {
         desc: "Jsi v malém jižním výklenku jeskyňky. Je tu spousta papíru.",
         items: [{
             name: "úvodník",
-            desc: "Je to úvodník Rudého práva."
+            desc: "Je to úvodník Rudého práva.",
+            read: false,
+            actions: [{
+                name: "přečti",
+                perform: function(game) {
+                    const newspaper = game.findItem("úvodník").item;
+                    if (newspaper) {
+                        newspaper.read = true;
+                        game.clearOutput();
+                        game.print("-----------------");
+                        game.print("Přečetl jsi si úvodník Rudého práva. Okamžitě jsi dostal chuť k práci, která je základní ctí socialistického občana.");
+                    } else {
+                        // This should never happen
+                        console.log("Newspaper not found");
+                    }
+                }
+            }]
         }],
         exits: [{
             name: "S",
@@ -122,15 +153,22 @@ const prestavba = {
             name: "kopej",
             perform: function(game, params) {
                 const pickaxe = game.getInventoryItem("krumpáč");
+                const newspaper = game.findItem("úvodník").item;
                 if (pickaxe) {
-                    game.clearOutput();
-                    game.print("-----------------");
-                    game.print("Podařilo se ti prokopat se do nižšího podlaží!");
-                    game.location.exits.push({
-                        name: "D",
-                        location: "m2"
-                    });
-                    game.printLocationInfo();
+                    if (newspaper.read) {
+                        game.clearOutput();
+                        game.print("-----------------");
+                        game.print("Podařilo se ti prokopat se do nižšího podlaží!");
+                        game.location.exits.push({
+                            name: "D",
+                            location: "m2"
+                        });
+                        game.printLocationInfo();
+                    } else {
+                        game.clearOutput();
+                        game.print("-----------------");
+                        game.print("Nechce se ti makat.");
+                    }
                 } else {
                     game.print(game.messages.unknownAction);
                 }
@@ -191,6 +229,39 @@ const prestavba = {
         items: [{
             name: "zapalovač",
             desc: "Jistě by s ním šlo leccos zapálit. Je to totiž kvalitní zapalovač \"Made in USSR\".",
+            actions: [{
+                name: "zapal",
+                perform: function(game, params) {
+                    game.clearOutput();
+                    game.print("-----------------");
+                    if (getRandomInt(3) === 0) {
+                        if (params[0] === bookItemName.toUpperCase()) {
+                            const book = game.getInventoryItem(bookItemName);
+                            if (book) {
+                                game.print("Zapálil jsi Kapitál. Kéž osvítí tvoji cestu!");
+                                book.burning = game.time;
+                                // Show info in a dark location
+                                game.printLocationInfo();
+                                return;
+                            }
+                        } else if (params[0] === dynamiteItemName.toUpperCase()) {
+                            const dynamite = game.getItem(game.getItems(), dynamiteItemName);
+                            if (dynamite) {
+                                game.print("Zapálil jsi doutnák...");
+                                dynamite.ignited = game.time;
+                                return;
+                            }
+                        }
+                    } else {
+                        game.print("Zapalovač vynechal...");
+                        return;
+                    }
+                    game.print(game.messages.unknownAction);
+                },
+                autocomplete: function(game, str) {
+                    return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
+                }
+            }]
         }],
         exits: [{
             name: "V",
@@ -527,62 +598,8 @@ const prestavba = {
                 game.print("Nemáš u sebe nic.");
             }
         }
-    }, {
-        name: "zapal",
-        perform: function(game, params) {
-            game.clearOutput();
-            game.print("-----------------");
-            if (game.getInventoryItem("zapalovač")) {
-                if (getRandomInt(3) === 0) {
-                    if (params[0] === bookItemName.toUpperCase()) {
-                        const book = game.getInventoryItem(bookItemName);
-                        if (book) {
-                            game.print("Zapálil jsi Kapitál. Kéž osvítí tvoji cestu!");
-                            book.burning = game.time;
-                            // Show info in a dark location
-                            game.printLocationInfo();
-                            return;
-                        }
-                    } else if (params[0] === dynamiteItemName.toUpperCase()) {
-                        const dynamite = game.getItem(game.getItems(), dynamiteItemName);
-                        if (dynamite) {
-                            game.print("Zapálil jsi doutnák...");
-                            dynamite.ignited = game.time;
-                            return;
-                        }
-                    }
-                } else {
-                    game.print("Zapalovač vynechal...");
-                    return;
-                }
-            }
-            game.print(game.messages.unknownAction);
-        },
-        autocomplete: function(game, str) {
-            return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
-        }
     }]
 }
-
-const slogans = ["Sláva K.S.Č.!",
-    "Se SSSR na věčné časy",
-    "Ať žije socialismus!",
-    "Proletáři všech zemí, spojte se!",
-    "Sláva leninské politice strany!",
-    "Smrt imperialistickým štváčům!",
-    "Vzhůru do nové pětiletky!",
-    "Ať žije Vítězný únor!",
-    "Socialismus - cesta zítřka!!!",
-    "Kupředu levá, zpátky ni krok!",
-    "Za osvobození vykořisťovaných!",
-    "Za nejdemokratičtější zřízení!",
-    "Dnes pětiletka - zítra komunismus!"
-];
-
-const darkLocations = ["m1", "m2", "m3", "m4", "m5"];
-
-const bookItemName = "knihu";
-const dynamiteItemName = "dynamit";
 
 function printRandomSlogan() {
     document.querySelector('#slogan').innerText = slogans[getRandomInt(slogans.length)];
