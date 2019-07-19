@@ -42,7 +42,7 @@ h1 {
 	margin-top: 1em;
 	font-size: 2em;
 	padding: 0.5em;
-	color: silver;
+	color: gray;
 }
 
 #output div.command {
@@ -56,14 +56,21 @@ h1 {
 }
 
 #inputHelp {
-	color: silver;
+	color: gray;
+    font-size: 1.3em;
+}
+
+span.inputTip {
+	background-color: silver;
+	color: black;
+	border-radius: 2px;
+	font-size: 1.2em;
 }
 
 #input {
 	font-family: 'VT323', monospace;
 	text-transform: uppercase;
 	width: 100%;
-	/*background-color: #2b2b2b;*/
 	background-color: #242424;
 	border: none;
 	padding: 0.4em;
@@ -71,6 +78,7 @@ h1 {
 	color: white;
 	bottom: 0;
 	border-radius: 15px;
+	margin-bottom: 0.2em;
 }
 
 #game-container {
@@ -94,6 +102,12 @@ h1 {
             <div id="inputHelp"></div>
             <input id="input" autofocus
                 title="Použij klávesu TAB pro doplnění příkazu">
+            <span class="inputTip"
+                title="Speciální klávesa - doplň příkaz">&nbsp;&#8633;
+                TAB&nbsp;</span> <span class="inputTip"
+                title="Speciální klávesa - starší příkazy z historie">&nbsp;&uparrow;&nbsp;</span>
+            <span class="inputTip"
+                title="Speciální klávesa - novější příkazy z historie">&nbsp;&downarrow;&nbsp;</span>
             <div id="slogan"></div>
         </div>
     </div>
