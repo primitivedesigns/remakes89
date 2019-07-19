@@ -1,4 +1,19 @@
-const darkLocations = ["m1", "m2", "m3", "m4", "m5"];
+const darkLocations = ["m20"];
+
+const slogans = ["Sláva K.S.Č.!",
+    "Se SSSR na věčné časy",
+    "Ať žije socialismus!",
+    "Proletáři všech zemí, spojte se!",
+    "Sláva leninské politice strany!",
+    "Smrt imperialistickým štváčům!",
+    "Vzhůru do nové pětiletky!",
+    "Ať žije Vítězný únor!",
+    "Socialismus - cesta zítřka!!!",
+    "Kupředu levá, zpátky ni krok!",
+    "Za osvobození vykořisťovaných!",
+    "Za nejdemokratičtější zřízení!",
+    "Dnes pětiletka - zítra komunismus!"
+];
 
 const bookItemName = "knihu";
 const dynamiteItemName = "dynamit";
@@ -10,6 +25,7 @@ const prestavba = {
     title: "P.R.E.S.T.A.V.B.A.",
     messages: {
         // Na začátku všech popisů místností je "O.K." Také to je před hláškami o úspěšném použití předmětů. Asi by se to mohlo dát rovnou do enginu.
+        // Výpis místnosti je v původní hře v dost náhodném pořadí.Někdy se píšou věci před východy, jindy jinak, protože to je natvrdo. Navrhuju udělat výpis v pořadí: DESC + VÝCHODY + Věci. Ale na rozdíl od Prestavby to je v souvislém textu.
         locationItems: "Vidíš",
         // pokud nejsou predmety, nic se nepise
         noLocationItems: "",
@@ -114,7 +130,7 @@ const prestavba = {
         }]
     }, {
         id: "m2",
-        desc: "O.K. Jsi pod sochou svatého Václava. Vidíš zatarasený vchod do metra. Nahoře je muzeum, ale přístup k němu je zatarasený. Můžeš jít doleva,doprava a dolů. Vidíš ocas.",
+        desc: "O.K. Jsi pod sochou svatého Václava. Vidíš zatarasený vchod do metra. Nahoře je muzeum, ale přístup k němu je zatarasený. Můžeš jít doleva,doprava a dolů.",
         items: [{
             name: "ocas",
             desc: "Je to ocas koně,na kterém sedí svatý Václav. Ve skulince pod ocasem jsi našel sekeru.",
@@ -204,45 +220,17 @@ const prestavba = {
         }]
     }, {
         id: "m7",
-        // chybí
-        desc: "Stojíš v tmavém výklenku.",
+        desc: "O.K. Stojíš před prodejnou knihy. Není nic slyšet, protože veliký dav tu skanduje heslo 'AŤ ŽIJE KAREL!' Vidíš nápis na zdi. Vlevo je zatarasený vchod do Opletalky.",
         items: [{
-            name: "zapalovač",
-            desc: "Jistě by s ním šlo leccos zapálit. Je to totiž kvalitní zapalovač \"Made in USSR\".",
-            actions: [{
-                name: "zapal",
-                perform: function(game, params) {
-                    game.clearOutput();
-                    game.print("-----------------");
-                    if (getRandomInt(3) === 0) {
-                        if (params[0] === bookItemName.toUpperCase()) {
-                            const book = game.getInventoryItem(bookItemName);
-                            if (book) {
-                                game.print("Zapálil jsi Kapitál. Kéž osvítí tvoji cestu!");
-                                book.burning = game.time;
-                                // Show info in a dark location
-                                game.printLocationInfo();
-                                return;
-                            }
-                        } else if (params[0] === dynamiteItemName.toUpperCase()) {
-                            const dynamite = game.getItem(game.getItems(), dynamiteItemName);
-                            if (dynamite) {
-                                game.print("Zapálil jsi doutnák...");
-                                dynamite.ignited = game.time;
-                                return;
-                            }
-                        }
-                    } else {
-                        game.print("Zapalovač vynechal...");
-                        return;
-                    }
-                    game.print(game.messages.unknownAction);
-                },
-                autocomplete: function(game, str) {
-                    return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
-                }
-            }]
-        }],
+            name: "nápis_na_zdi",
+            desc: "Bez slovníku jej nerozluštíš.",
+            takeable: false
+            // POUŽIJ SLOVNÍK: "O.K. Přeložil sis nápis na zdi. Cituji: Jakeš je vůl, KAREL."
+            }, {
+            name: "pistoli",
+            desc: "Bohužel v ní nejsou náboje.",
+            }
+            ],
         exits: [{
             name: "V",
             location: "m9"
@@ -250,55 +238,25 @@ const prestavba = {
     }, {
         id: "m8",
         //chybí
-        desc: "Stojíš před ošklivým smrdutým záchodem. Táhne od něj nepříjemný zápach.",
+        desc: "O.K. Stojíš mezi patníky u kanálu. Není tu nic zvláštního. Dole jsou zátarasy.",
         items: [{
-            name: "dveře",
-            desc: function() {
-                return "Jsou " + (this.open ? "otevřené" : "zavřené") + " a " + (this.locked ? "zamčené" : "odemčené") + ". Je na nich zámek na číselný čtyřmístný kód.";
-            },
-            takeable: false,
-            open: false,
-            locked: true,
-        }],
+            name: "poldu",
+            desc: "Chystá se zmlátit tě.",
+            //fízla lze zabít použitím tyče. Pokud okamžitě nepoužiješ sekeru, pak message: "Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku." a GAMEOVER
+            // použít tyč - hláška "O.K. Vypáčil jsi poklop kanálu. Poklop spadnul do šachty. Polda se na tebe z řevem vrhnul,ale v okamžiku, kdy tě chtěl udeřit, zahučel přímo před tebou do kanálu."
+            takeable: false
+        },
+            ],
         exits: [{
-            name: "S",
-            location: "m9"
-        }],
-        actions: [{
-            name: "zadej",
-            perform: function(game, params) {
-                const door = game.getLocationItem("dveře");
-                game.clearOutput();
-                game.print("-----------------");
-                if (params[0] === "1948" && door.locked) {
-                    door.locked = false;
-                    game.print("Zámek klapnul!");
-                } else {
-                    game.print(game.messages.unknownAction);
-                }
-            }
+            name: "doleva",
+            location: "m7"
         }, {
-            name: "otevři",
-            perform: function(game, params) {
-                const door = game.getLocationItem("dveře");
-                game.clearOutput();
-                game.print("-----------------");
-                if (params[0] === "DVEŘE") {
-                    door.open = true;
-                    game.print("Cesta na záchod je volná!");
-                    game.location.exits.push({
-                        name: "V",
-                        location: "m10"
-                    });
-                    game.printLocationInfo();
-                } else {
-                    game.print(game.messages.unknownAction);
-                }
-            },
-            autocomplete: function(game, str) {
-                return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
-            }
-        }]
+            name: "doprava",
+            location: "m9"
+        }, {
+            name: "nahoru",
+            location: "m5"
+        }],
     }, {
         id: "m9",
         desc: "O.K. Stojíš pod lešením. Dole jsou zátarasy. Slyšíš tichý, leč podezřelý tikot. Vidíš do ústí zatarasené ulice Ve Smečkách.",
@@ -318,66 +276,74 @@ const prestavba = {
         // Pokud odejdeš po 1 akci (seber tyč): "Místo, ze kterého jsi právě vyšel, vyletělo do povětří. Tys měl ale štěstí."
     }, {
         id: "m10",
-        // odsud všechny místnosti chybí
-        desc: "Jsi na špinavém záchodě. Radši to nebudu příliš popisovat, mohlo by se ti udělat nevolno.",
+        desc: "O.K. Nacházíš se před LUXOL CLUBEM. Vedle je kino Jalta. Najednou se na tebe vrhnul chlupatej,a když u tebe nic nenašel, zklamaně odešel. Dole vidíš zátarasy.",
+        // Pokud máš pistoli, tak: "O.K. Nacházíš se před LUXOL CLUBEM. Vedle je kino Jalta. Dole vidíš zátarasy. Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistolí,odprásknul tě." GAME OVER
+        // První akce musí být použít tyč, pak: "O.K. Praštil jsi chlupatýho tyčí přes hlavu." objeví se item mrtvola chlupatýho, zmizí item chlupatýho
+        // Pokud uděláš cokoli jiného, pak: "Policajta naštvalo, že u tebe nenašel co hledal a vrhnul se na tebe." GAME OVER
         items: [{
-            name: "mísu",
-            desc: "Je úplně zaschlá.",
+            name: "chlupatýho",
+            desc: "Chystá se zmlátit tě.",
             takeable: false,
+        }, {
+            name: "mrtvolu_chlupatýho",
+            desc: "Někdo mu rozrazil tyči lebku (kdo asi?). Má na sobě uniformu.",
             onExamine: function(game) {
-                game.print("Něco jsi našel.");
                 game.location.items.push({
-                    name: bookItemName,
-                    desc: function() {
-                        if (this.burning == null) {
-                            return "Je to Marxův Kapitál.";
-                        } else {
-                            return "Vydává jasné světlo pokroku!!!";
-                        }
-                    },
-                    burning: null
+                    name: "uniformu",
+                    desc: "Je to uniforma člena Veřejné bezpečnosti."
+                    // V původní hře nejde uniformu prozkoumat, což podle mě zjevně chyba, tak jsem text dofabuloval
+                    // Pokud použiješ uniformu, tak si ji oblékneš: "O.K. Oblékl sis uniformu člena Veřejné bezpečnosti." Mohl by být i synonymum Obleč uniformu
+                    // V původní hře ji svlékneš tím, že ji položíš. "Svlékl sis uniformu." To je podle mě matoucí a můžeme to udělat jinak.
+                    // Pokud máš uniformu, mění se události v některých místnostech
+
                 });
                 game.printLocationInfo();
             }
+            takeable: false,
         }],
         exits: [{
-            name: "Z",
-            location: "m8"
+            name: "nahoru",
+            location: "m7"
+        }, {
+            name: "doprava",
+            location: "m11"
         }]
     }, {
         id: "m11",
-        desc: "Stojíš před krásně vyzdobeným oltářem.",
+        desc: "O.K. Jsi v křoví.",
+        // Pokud na sobě nemáš uniformu: "O.K. Jsi v křoví. Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali sis tebou hrát." GAMEOVER
         items: [{
-            name: "oltář",
-            desc: "Jsou na něm obrazy Svaté trojice - Marxe, Engelse a Lenina...",
-            onExamine: function(game) {
-                game.print("Něco jsi našel.");
-                game.location.items.push({
-                    name: dynamiteItemName,
-                    desc: "Je to klasická koule s doutnákem."
-                });
-                game.printLocationInfo();
-            }
+            name: "člena_VB",
+            desc: "Kontroluje kolemjdoucí.",
+            // opět to nebylo v původní hře, deskripci jsem dopsal
+            takeable: false
         }],
         exits: [{
-            name: "Z",
-            location: "m20"
+            name: "doleva",
+            location: "m10"
+        }, {
+            name: "doprava",
+            location: "m12"
         }]
     }, {
         id: "m12",
-        desc: "Jsi ve městě. Je tu velký zmatek.",
+        desc: "O.K. Stojíš před bankou. Nahoře jsou zátarasy.",
+        items: [{
+            name: "oltář",
+            desc: "Jako by ti něco říkalo: Polož sem diamanty.",
+            // pokud položíš diamanty: "Jakmile jsi je položil, někdo je z oltáře ukradl." - item zmizí. Neděje se to jinde, pouze v této místnosti. 
+            takeable: false
+        }, {
+            name: "cedulku",
+            desc: "Je na ní napsáno: 'A ven se dostane jen ten, kdo má čtyři magické diamanty.'",
+            takeable: false
+        }],
         exits: [{
-            name: "S",
-            location: "m20"
+            name: "doleva",
+            location: "m11"
         }, {
-            name: "V",
-            location: "m13"
-        }, {
-            name: "J",
-            location: "m14"
-        }, {
-            name: "Z",
-            location: "m13"
+            name: "dolů",
+            location: "m15"
         }]
     }, {
         id: "m13",
@@ -481,42 +447,36 @@ const prestavba = {
             return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
         }
     }, {
-        name: "S",
+        name: "dolů",
         perform: function(game, params) {
             printRandomSlogan();
-            game.goToLocation("S");
+            game.goToLocation("dolů");
         }
     }, {
-        name: "V",
+        name: "nahoru",
         perform: function(game, params) {
             printRandomSlogan();
-            game.goToLocation("V");
+            game.goToLocation("nahoru");
         }
     }, {
-        name: "J",
+        name: "doleva",
         perform: function(game, params) {
             printRandomSlogan();
-            game.goToLocation("J");
+            game.goToLocation("doleva");
         }
     }, {
-        name: "Z",
+        name: "doprava",
         perform: function(game, params) {
             printRandomSlogan();
-            game.goToLocation("Z");
+            game.goToLocation("doprava");
         }
     }, {
-        name: "N",
+        name: "dovnitř",
         perform: function(game, params) {
             printRandomSlogan();
-            game.goToLocation("N");
+            game.goToLocation("dovnitř");
         }
-    }, {
-        name: "D",
-        perform: function(game, params) {
-            printRandomSlogan();
-            game.goToLocation("D");
-        }
-    }, {
+    },  {
         name: "polož",
         perform: function(game, params) {
             if (game.dropItem(params[0])) {
