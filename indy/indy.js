@@ -318,6 +318,7 @@ const prestavba = {
         // Pokud odejdeš po 1 akci (seber tyč): "Místo, ze kterého jsi právě vyšel, vyletělo do povětří. Tys měl ale štěstí."
     }, {
         id: "m10",
+        // odsud všechny místnosti chybí
         desc: "Jsi na špinavém záchodě. Radši to nebudu příliš popisovat, mohlo by se ti udělat nevolno.",
         items: [{
             name: "mísu",
