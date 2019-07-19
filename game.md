@@ -9,10 +9,12 @@
 | time | int | the current time |
 | onShiftTime | callback | invoked when game.time is modified via `game.shiftTime()` |
 | isInputCaseSensitive | boolean | if set to true the user input is case sensitive  |
+| partialMatchLimit | int | if set to 0 partial matching is disabled, otherwise try to match if the number of input characters exceeds the limit |
 | startLocation | string | id of the start location |
 | inventory | array | items in inventory |
 | locations | array | list of locations |
 | actions | array | list of global actions |
+| onMissingAction | callback | invoked when no action is found for the given input |
 
 ## Item
 
