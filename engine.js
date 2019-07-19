@@ -201,9 +201,9 @@ function startGame(state) {
             if (item.onTake) {
                 item.onTake(this);
             }
-            return true;
+            return item;
         }
-        return false;
+        return null;
     }
     game.dropItem = function(name) {
         const item = this.getInventoryItem(name);
@@ -320,7 +320,10 @@ function startGame(state) {
     let historyPos = 0;
 
     // Initialize input/output elements
-    document.querySelector('#title').innerText = game.title;
+    const title = document.querySelector('#title');
+    if (title) {
+        title.innerText = game.title;    
+    }
     inputBox.onkeydown = (e) => {
         if (e.key === 'Enter') {
             processInput();

@@ -16,8 +16,18 @@ body {
 
 h1 {
 	font-size: 3em;
-	color: #bdbdbd;
 	margin-top: 0em;
+}
+
+h1#customTitle span:nth-child(odd) {
+    background-color: white;
+    color: black;
+    padding: 0 0.2em 0 0.2em;
+}
+
+h1#customTitle span:nth-child(even) {
+    background-color: black;
+    color: white;
 }
 
 #output {
@@ -57,7 +67,7 @@ h1 {
 
 #inputHelp {
 	color: gray;
-    font-size: 1.3em;
+	font-size: 1.3em;
 }
 
 span.inputTip {
@@ -91,11 +101,14 @@ span.inputTip {
 	bottom: 0;
 	position: absolute;
 }
+
 </style>
 </head>
 <body>
     <div id="game-container">
-        <h1 id="title"></h1>
+        <h1 id="customTitle">
+            <span>P</span>.<span>R</span>.<span>E</span>.<span>S</span>.<span>T</span>.<span>A</span>.<span>V</span>.<span>B</span>.<span>A</span>.
+        </h1>
         <div id="location"></div>
         <div id="output"></div>
         <div id="inputContainer">

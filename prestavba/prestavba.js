@@ -594,8 +594,9 @@ const prestavba = {
         perform: function(game, params) {
             printRandomSlogan();
             game.clearOutput();
-            if (game.takeItem(params[0])) {
-                game.print("Vzal jsi " + params[0] + ".");
+            const item = game.takeItem(params[0]);
+            if (item) {
+                game.print("Vzal jsi " + item.name + ".");
             } else {
                 game.print("Tohle nelze vzít.");
             }
