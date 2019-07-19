@@ -28,7 +28,8 @@ const prestavba = {
         noLocationItems: "Nevidíš nic",
         locationExits: "Východy",
         unknownAction: "Bohužel... ale nezoufej, to je dialektika dějin!",
-        inputHelpTip: "Použij klávesu TAB pro doplnění příkazu"
+        inputHelpTip: '\xa0',
+        inputHelpPrefix: "Možnosti: ",
     },
     onStart: function() {
         printRandomSlogan();
