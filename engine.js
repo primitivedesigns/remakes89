@@ -289,6 +289,9 @@ function startGame(state) {
         }
     }
     game.matchName = function(val, name) {
+        if (!val || !name) {
+            return false;
+        }
         if (this.isInputCaseSensitive) {
             if (val === name) {
                 return true;
@@ -444,7 +447,8 @@ function startGame(state) {
                 inputBox.value = actions[0].name + ' ';
             } else {
                 game.clearInputHelp();
-                game.printInputHelp(actions.map(action => action.name).join(', '));
+                const prefix = game.messages.inputHelpPrefix ? game.messages.inputHelpPrefix : "";
+                game.printInputHelp(prefix  + actions.map(action => action.name).join(', '));
             }
         } else if (parts.length == 2) {
             const action = game.getAction(parts[0]);
@@ -455,7 +459,8 @@ function startGame(state) {
                         inputBox.value = parts[0] + ' ' + results[0].name + ' ';
                     } else if (results.length > 1) {
                         game.clearInputHelp();
-                        game.printInputHelp(results.map(r => r.name).join(', '));
+                        const prefix = game.messages.inputHelpPrefix ? game.messages.inputHelpPrefix : "";
+                        game.printInputHelp(prefix + results.map(r => r.name).join(', '));
                     }
                 }
             }
