@@ -92,9 +92,12 @@ const prestavba = {
             }
         }
     },
-    onMissingAction: function(game) {
+    onMissingAction: function(game, name) {
         game.clearOutput();
-        game.print(game.messages.unknownAction);
+        if (!game.examineItem(name)) {
+            // No action found and no item matches the name
+            game.print(game.messages.unknownAction);
+        }
     },
     isInputCaseSensitive: false,
     partialMatchLimit: 2,
@@ -125,6 +128,7 @@ const prestavba = {
         desc: "Jsi v malém jižním výklenku jeskyňky. Je tu spousta papíru.",
         items: [{
             name: "úvodník",
+            aliases: ["uvodnik", "noviny"],
             desc: "Je to úvodník Rudého práva.",
             read: false,
             actions: [{
@@ -186,6 +190,7 @@ const prestavba = {
         desc: "Jsi v úzké podzemní chodbě vedoucí na východ. Je tu vlhko.",
         items: [{
             name: "krumpáč",
+            aliases: ["krumpac"],
             desc: "Je velice zrezivělý, ale jinak použitelný."
         }],
         exits: [{
@@ -200,21 +205,25 @@ const prestavba = {
         desc: "Jsi v bývalém skladišti. Je tu neskutečný nepořádek.",
         items: [{
             name: "bednu",
+            aliases: ["bedna"],
             desc: "Je ze dřeva.",
             onExamine: function(game) {
                 game.print("Něco jsi našel!");
                 game.location.items.push({
                     name: "košík",
+                    aliases: ["kosik"],
                     desc: "Je to hezký proutěný košík, i když poněkud špinavý.",
                     onExamine: function(game) {
                         game.print("Něco jsi našel!");
                         game.location.items.push({
                             name: "krabici",
+                            aliases: ["krabice"],
                             desc: "Je z papíru.",
                             onExamine: function(game) {
                                 game.print("Něco jsi našel!");
                                 game.location.items.push({
                                     name: "klíč",
+                                    aliases: ["klic"],
                                     desc: "Je to čtverhranný klíč k poklopu."
                                 });
                                 game.printLocationInfo();
@@ -235,6 +244,7 @@ const prestavba = {
         desc: "Stojíš v tmavém výklenku.",
         items: [{
             name: "zapalovač",
+            aliases: ["zapalovac"],
             desc: "Jistě by s ním šlo leccos zapálit. Je to totiž kvalitní zapalovač \"Made in USSR\".",
             actions: [{
                 name: "zapal",
@@ -346,6 +356,7 @@ const prestavba = {
         }],
         actions: [{
             name: "otevři",
+            aliases: ["otevri"],
             perform: function(game, params) {
                 game.clearOutput();
 

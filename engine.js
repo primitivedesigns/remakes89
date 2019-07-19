@@ -29,15 +29,7 @@ function startGame(state) {
         return actions;
     }
     game.getAction = function(name) {
-        let action = this.getActions().find(action => {
-            if (this.matchName(name, action.name)) {
-                return true;
-            }
-            if (action.aliases && action.aliases.find(alias => this.matchName(name, alias))) {
-                return true;
-            }
-            return false;
-        });
+        let action = this.getActions().find(action => this.aliasObjectMatchesName(action, name));
         if (!action) {
             console.log("No action found for: " + name);
         }
@@ -45,17 +37,21 @@ function startGame(state) {
     }
     game.getItem = function(items, name) {
         if (items) {
-            return items.find(item => {
-                if (this.matchName(name, item.name)) {
-                    return true;
-                }
-                if (item.aliases && item.aliases.find(alias => this.matchName(name, alias))) {
-                    return true;
-                }
-                return false;
-            });
+            return items.find(item => this.aliasObjectMatchesName(item, name));
         }
         return null;
+    }
+    game.aliasObjectMatchesName = function(obj, name) {
+        if (!obj || !name) {
+            return false;
+        }
+        if (this.matchName(name, obj.name)) {
+            return true;
+        }
+        if (obj.aliases && obj.aliases.find(alias => this.matchName(name, alias))) {
+            return true;
+        }
+        return false;
     }
     game.getInventoryItem = function(name) {
         return this.getItem(game.inventory, name);
@@ -195,7 +191,7 @@ function startGame(state) {
             if (!this.inventory) {
                 this.inventory = [];
             }
-            location.items.splice(location.items.findIndex(item => item.name === name), 1);
+            location.items.splice(location.items.findIndex(item => this.aliasObjectMatchesName(item, name)), 1);
             this.inventory.push(item);
             this.printLocationInfo();
             if (item.onTake) {
@@ -322,7 +318,7 @@ function startGame(state) {
     // Initialize input/output elements
     const title = document.querySelector('#title');
     if (title) {
-        title.innerText = game.title;    
+        title.innerText = game.title;
     }
     inputBox.onkeydown = (e) => {
         if (e.key === 'Enter') {
@@ -400,7 +396,7 @@ function startGame(state) {
             }
         } else {
             if (game.onMissingAction) {
-                game.onMissingAction(game);
+                game.onMissingAction(game, parts[0]);
             } else if (game.messages && game.messages.unknownAction) {
                 game.print(game.messages.unknownAction);
             }
@@ -451,7 +447,7 @@ function startGame(state) {
             } else {
                 game.clearInputHelp();
                 const prefix = game.messages.inputHelpPrefix ? game.messages.inputHelpPrefix : "";
-                game.printInputHelp(prefix  + actions.map(action => action.name).join(', '));
+                game.printInputHelp(prefix + actions.map(action => action.name).join(', '));
             }
         } else if (parts.length == 2) {
             const action = game.getAction(parts[0]);
