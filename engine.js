@@ -3,34 +3,11 @@ function startGame(state) {
     const inputBox = document.querySelector('#input');
     const locationDiv = document.querySelector('#location');
     const outputDiv = document.querySelector('#output');
+    const inputHelpDiv = document.querySelector('#inputHelp');
     const inputs = [];
     const historyLimit = 20;
     const lineLimit = 20;
     const game = Object.assign({}, state);
-
-    if (game.onStart) {
-        game.onStart();
-    }
-
-    let historyPos = 0;
-
-    // Initialize input/output elements
-    document.querySelector('#title').innerText = game.title;
-    inputBox.onkeydown = (e) => {
-        if (e.key === 'Enter') {
-            processInput();
-        } else if (e.key === 'ArrowUp') {
-            historyPrev();
-        } else if (e.key === 'ArrowDown') {
-            historyNext();
-        } else if (e.key === 'Tab') {
-            e.preventDefault();
-            autocomplete();
-        }
-    };
-    if (!game.time) {
-        game.time = 0;
-    }
 
     // Game functions
     game.getLocation = (id) => game.locations.find(location => location.id === id);
@@ -52,15 +29,31 @@ function startGame(state) {
         return actions;
     }
     game.getAction = function(name) {
-        let action = this.getActions().find(action => this.isInputCaseSensitive ? action.name === name : action.name.toUpperCase() === name.toUpperCase());
-        if (action === undefined) {
+        let action = this.getActions().find(action => {
+            if (this.matchName(name, action.name)) {
+                return true;
+            }
+            if (action.aliases && action.aliases.find(alias => this.matchName(name, alias))) {
+                return true;
+            }
+            return false;
+        });
+        if (!action) {
             console.log("No action found for: " + name);
         }
         return action;
     }
     game.getItem = function(items, name) {
         if (items) {
-            return items.find(item => this.isInputCaseSensitive ? item.name === name : item.name.toUpperCase() === name.toUpperCase());
+            return items.find(item => {
+                if (this.matchName(name, item.name)) {
+                    return true;
+                }
+                if (item.aliases && item.aliases.find(alias => this.matchName(name, alias))) {
+                    return true;
+                }
+                return false;
+            });
         }
         return null;
     }
@@ -118,20 +111,24 @@ function startGame(state) {
         this.clearLocation();
         const location = game.location;
         if (location.name) {
-            this.printLocation('*** ' + location.name + " ***");
+            this.printLocation('*** ' + location.name + " ***", "name");
         }
         if (location.desc) {
-            this.printLocation(location.desc);
-            this.printLocation("---");
+            const descStr = location.desc instanceof Function ? location.desc() : location.desc;
+            this.printLocation(descStr, "desc");
+            // this.printLocation("-".repeat(descStr.length));
         }
         if (location.exits && location.exits.length > 0) {
-            this.printLocation(this.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "));
+            this.printLocation(this.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "), "exits");
         }
+        let itemsStr = "";
         if (location.items && location.items.length > 0) {
-            this.printLocation(this.messages.locationItems + ": " + location.items.map(i => i.name).join(", "));
+            itemsStr = this.messages.locationItems + ": " + location.items.map(i => i.name).join(", ");
         } else if (this.messages.noLocationItems) {
-            this.printLocation(this.messages.noLocationItems);
+            itemsStr = this.messages.noLocationItems;
         }
+        this.printLocation(itemsStr, "items");
+        this.printLocation("-".repeat(itemsStr.length));
         if (this.onLocationInfo) {
             this.onLocationInfo(this);
         }
@@ -154,6 +151,18 @@ function startGame(state) {
             line.className = cssClass;
         }
         outputDiv.insertBefore(line, null).innerText = str;
+    }
+    game.printInputHelp = function(str, cssClass) {
+        const line = document.createElement('div');
+        if (cssClass) {
+            line.className = cssClass;
+        }
+        inputHelpDiv.insertBefore(line, null).innerText = str;
+    }
+    game.clearInputHelp = function() {
+        while (inputHelpDiv.firstChild) {
+            inputHelpDiv.removeChild(inputHelpDiv.firstChild);
+        }
     }
     game.clearOutput = function() {
         while (outputDiv.firstChild) {
@@ -279,6 +288,51 @@ function startGame(state) {
             console.log("Invalid locations!");
         }
     }
+    game.matchName = function(val, name) {
+        if (this.isInputCaseSensitive) {
+            if (val === name) {
+                return true;
+            }
+            if (this.partialMatchLimit && val.length > this.partialMatchLimit) {
+                return name.startsWith(val);
+            }
+            return false;
+        } else {
+            const nameUp = name.toUpperCase();
+            const valUp = val.toUpperCase();
+            if (valUp === nameUp) {
+                return true;
+            }
+            if (this.partialMatchLimit && valUp.length > this.partialMatchLimit) {
+                return nameUp.startsWith(valUp);
+            }
+            return false;
+        }
+    }
+
+    if (game.onStart) {
+        game.onStart();
+    }
+
+    let historyPos = 0;
+
+    // Initialize input/output elements
+    document.querySelector('#title').innerText = game.title;
+    inputBox.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+            processInput();
+        } else if (e.key === 'ArrowUp') {
+            historyPrev();
+        } else if (e.key === 'ArrowDown') {
+            historyNext();
+        } else if (e.key === 'Tab') {
+            e.preventDefault();
+            autocomplete();
+        }
+    };
+    if (!game.time) {
+        game.time = 0;
+    }
 
     function nextStep(step, paths, startId, targetId) {
         const newPathsFound = [];
@@ -338,11 +392,24 @@ function startGame(state) {
             if (game.printCommand) {
                 game.print('$ ' + intputValue, "command");
             }
-        } else if (game.messages.unknownAction) {
-            game.print(game.messages.unknownAction);
+        } else {
+            if (game.onMissingAction) {
+                game.onMissingAction(game);
+            } else if (game.messages && game.messages.unknownAction) {
+                game.print(game.messages.unknownAction);
+            }
+        }
+        game.clearInputHelp();
+        if (game.messages && game.messages.inputHelpTip) {
+            game.printInputHelp(game.messages.inputHelpTip);
         }
 
-        const params = parts.slice(1);
+        const params = [];
+        parts.slice(1).forEach(part => {
+            if (part && part.trim().length > 0) {
+                params.push(part.trim());
+            }
+        });
         if (action) {
             action.perform(game, params);
         }
@@ -376,7 +443,8 @@ function startGame(state) {
             if (actions.length === 1) {
                 inputBox.value = actions[0].name + ' ';
             } else {
-                game.print(actions.map(action => action.name).join(', '));
+                game.clearInputHelp();
+                game.printInputHelp(actions.map(action => action.name).join(', '));
             }
         } else if (parts.length == 2) {
             const action = game.getAction(parts[0]);
@@ -386,7 +454,8 @@ function startGame(state) {
                     if (results.length === 1) {
                         inputBox.value = parts[0] + ' ' + results[0].name + ' ';
                     } else if (results.length > 1) {
-                        game.print(results.map(r => r.name).join(', '));
+                        game.clearInputHelp();
+                        game.printInputHelp(results.map(r => r.name).join(', '));
                     }
                 }
             }

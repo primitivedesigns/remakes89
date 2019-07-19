@@ -7,17 +7,17 @@
     rel="stylesheet">
 <style type="text/css">
 body {
-	background-color: black;
+	background-color: #151515;
 	font-family: 'VT323', monospace;
 	text-transform: uppercase;
 	color: white;
 	font-size: 1.2em;
-	color: white;
-	color: white;
 }
 
 h1 {
-	font-size: 4em;
+	font-size: 3em;
+	color: #bdbdbd;
+	margin-top: 0em;
 }
 
 #output {
@@ -29,21 +29,20 @@ h1 {
 	overflow: auto;
 }
 
-#output div:first-child {
-	/*font-size: 120%;
-	background-color: #000c67;*/
-	
+#output div, #location div {
+	font-size: 2em;
+	line-height: normal;
 }
 
-#output div {
-	line-height: 1.6em;
+#location .exits {
+	margin-top: 1em;
 }
 
 #slogan {
-    margin-top: 1em;
-    font-size: 2em;
-    padding: 0.5em;
-    color: silver;
+	margin-top: 1em;
+	font-size: 2em;
+	padding: 0.5em;
+	color: silver;
 }
 
 #output div.command {
@@ -56,40 +55,53 @@ h1 {
 	color: white;
 }
 
-#output, #location {
-	font-size: 1.5em;
-	/*overflow-y: scroll;*/
+#inputHelp {
+	color: silver;
 }
 
 #input {
-	border-top: 1px dashed white;
 	font-family: 'VT323', monospace;
 	text-transform: uppercase;
 	width: 100%;
 	/*background-color: #2b2b2b;*/
 	background-color: #242424;
 	border: none;
-	bottom: 0;
-	padding: 0.5em;
-	font-size: 3em;
+	padding: 0.4em;
+	font-size: 2.5em;
 	color: white;
 	bottom: 0;
-	margin-top: 1em;
-	padding: 0.2em;
+	border-radius: 15px;
+}
+
+#game-container {
+	margin: 2em;
+	padding: 2em;
+	background-color: black;
+}
+
+#input-container {
+	bottom: 0;
+	position: absolute;
 }
 </style>
 </head>
 <body>
-    <h1 id="title"></h1>
-    <div id="location"></div>
-    <div id="output"></div>
-    <input id="input" autofocus>
-    <div id="slogan"></div>
+    <div id="game-container">
+        <h1 id="title"></h1>
+        <div id="location"></div>
+        <div id="output"></div>
+        <div id="inputContainer">
+            <div id="inputHelp"></div>
+            <input id="input" autofocus
+                title="Použij klávesu TAB pro doplnění příkazu">
+            <div id="slogan"></div>
+        </div>
+    </div>
 
     <script src="prestavba.js"></script>
     <script src="../engine.js"></script>
     <script>
-                const game = startGame(prestavba);
+                    const game = startGame(prestavba);
                 </script>
 </body>
 </html>
