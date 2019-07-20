@@ -101,7 +101,6 @@ function startGame(state) {
     game.enterLocation = function(location) {
         this.location = location;
         this.printLocationInfo();
-        this.shiftTime(1);
     }
     game.printLocationInfo = function() {
         this.clearLocation();
@@ -368,7 +367,7 @@ function startGame(state) {
         if (game.ended) {
             return;
         }
-        const intputValue = this.isInputCaseSensitive ? inputBox.value : inputBox.value.toUpperCase();
+        const intputValue = inputBox.value;
 
         if (inputs.length > historyLimit) {
             inputs.shift();
@@ -414,6 +413,9 @@ function startGame(state) {
         });
         if (action) {
             action.perform(game, params);
+            if (game.onActionPerformed) {
+                game.onActionPerformed(game, action);
+            }
         }
     }
 

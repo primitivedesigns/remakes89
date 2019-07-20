@@ -98,6 +98,10 @@ const prestavba = {
             // No action found and no item matches the name
             game.print(game.messages.unknownAction);
         }
+        game.shiftTime(1);
+    },
+    onActionPerformed: function(game, action) {
+        game.shiftTime(1);
     },
     isInputCaseSensitive: false,
     partialMatchLimit: 2,
