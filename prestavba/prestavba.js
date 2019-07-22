@@ -35,6 +35,15 @@ const prestavba = {
         printRandomSlogan();
         this.printInputHelp(this.messages.inputHelpTip);
     },
+    onEnd: function(endState) {
+        if (endState) {
+            game.print("Gratuluji vítězi!","successMessage");
+            game.print("Je vidět, že socialistický člověk si poradí v každé situaci...");
+            game.print("Ještě jednou gratuluji. Sejdeme se všichni 21. srpna na Staroměstkém náměstí... (nebo jinde)");
+        } else {
+            game.print("Obrovská exploze otřásla městem, což jsi včak jako její přímý účastník neslyšel.");
+        }
+    },
     onLocationInfo: function(game) {
         if (darkLocations.find(id => id === game.location.id)) {
             const book = game.getInventoryItem(bookItemName);
@@ -49,12 +58,16 @@ const prestavba = {
         const bookRet = game.findItem(bookItemName);
         const book = bookRet.item;
         const bookLocation = bookRet.location;
-        // TODO warning after 11 time units
-        if (book && book.burning && (game.time - book.burning) > bookBurningTime) {
-            if (bookLocation) {
-                bookLocation.items.splice(bookLocation.items.findIndex(item => item.name === bookItemName), 1);
-            } else {
-                game.inventory.splice(game.inventory.findIndex(item => item.name === bookItemName), 1);
+        if (book && book.burning) {
+            const burningTime = game.time - book.burning;
+            if (burningTime === (bookBurningTime - 1)) {
+                game.print("Marxova kniha dohořívá!!!");
+            } else if (burningTime >= bookBurningTime) {
+                if (bookLocation) {
+                    bookLocation.items.splice(bookLocation.items.findIndex(item => item.name === bookItemName), 1);
+                } else {
+                    game.inventory.splice(game.inventory.findIndex(item => item.name === bookItemName), 1);
+                }
             }
         }
 
@@ -65,7 +78,7 @@ const prestavba = {
         if (dynamite && dynamite.ignited) {
             if ((dynamiteLocation && dynamiteLocation.id === game.location.id) || dynamiteLocation == null) {
                 // GAME OVER
-                game.end("Obrovská exploze otřásla městem, což jsi včak jako její přímý účastník neslyšel.");
+                game.end(false);
                 return;
             }
             if ((game.time - dynamite.ignited) > dynamiteExplosionTime) {
@@ -83,7 +96,7 @@ const prestavba = {
                             name: "cihlu",
                             desc: "Je celá ze zlata.",
                             onTake: function(game) {
-                                game.end("Gratuluji vítězi! Je vidět, že socialistický člověk si poradí v každé situaci...");
+                                game.end(true);
                             }
                         });
                     }
@@ -395,6 +408,7 @@ const prestavba = {
                 game.print("Něco jsi našel!");
                 game.location.items.push({
                     name: bookItemName,
+                    aliases: ["kapital", "kapitál"],
                     desc: function() {
                         if (this.burning == null) {
                             return "Je to Marxův Kapitál.";

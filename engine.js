@@ -239,10 +239,13 @@ function startGame(state) {
             this.print(item.desc instanceof Function ? item.desc() : item.desc);
         }
     }
-    game.end = function(text) {
+    game.end = function(endState) {
         this.clearOutput();
-        this.ended = true;
-        this.print(text, 'end');
+        this.clearLocation();
+        if (game.onEnd) {
+            game.onEnd(endState);
+        }
+        this.endState = endState;
     }
     game.findWay = function(from, to) {
         const fromLocation = this.locations.find(loc => loc.id === from);
@@ -364,7 +367,7 @@ function startGame(state) {
     game.enterLocation(game.getLocation(game.startLocation));
 
     function processInput() {
-        if (game.ended) {
+        if (game.endState) {
             return;
         }
         const intputValue = inputBox.value;
