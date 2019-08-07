@@ -128,7 +128,8 @@ span.inputTip {
     <script src="prestavba.js"></script>
     <script src="../engine.js"></script>
     <script>
-                    const game = startGame(prestavba);
+                    const engine = createEngine(initState());
+                    engine.start();
                 </script>
 </body>
 </html>

@@ -1,13 +1,214 @@
-function startGame(state) {
-    // Constants
-    const inputBox = document.querySelector('#input');
+function createEngine(initState) {
+
+    const engine = {};
+    engine.game = createGame(initState, null);
+
+    engine.start = function() {
+        this.inputs = [];
+        this.historyPos = 0;
+        if (this.game.onStart) {
+            this.game.onStart();
+        }
+        if (!this.game.time) {
+            this.game.time = 0;
+        }
+
+        // Init UI controls
+        const title = document.querySelector('#title');
+        const inputBox = document.querySelector('#input');
+        const locationDiv = document.querySelector('#location');
+        const outputDiv = document.querySelector('#output');
+        const inputHelpDiv = document.querySelector('#inputHelp');
+        const historyLimit = 20;
+        const lineLimit = 20;
+        const inputs = this.inputs;
+        
+        if (title) {
+            title.innerText = this.game.title;
+        }
+        
+        inputBox.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+                processInput();
+            } else if (e.key === 'ArrowUp') {
+                historyPrev();
+            } else if (e.key === 'ArrowDown') {
+                historyNext();
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                autocomplete();
+            }
+        };
+
+        function processInput() {
+            if (engine.game.endState) {
+                return;
+            }
+            const inputValue = inputBox.value;
+            
+            // Built-in actions
+            if (inputValue.toUpperCase() === 'RESTART') {
+                inputBox.value = '';
+                engine.game.clearOutput();
+                engine.game.clearLocation();
+                engine.game.clearInputHelp();
+                engine.restart();
+                return;
+            }
+            // TODO save, load
+
+            if (inputs.length > historyLimit) {
+                inputs.shift();
+            }
+            if (inputs.length > 0) {
+                if (inputs[inputs.length - 1] !== inputValue) {
+                    inputs.push(inputValue);
+                }
+            } else {
+                inputs.push(inputValue);
+            }
+            inputBox.value = '';
+            this.historyPos = inputs.length;
+
+            // Parse the command
+            const parts = inputValue.split(/\s+/);
+            if (parts.length === 0) {
+                return;
+            }
+            const action = engine.game.getAction(parts[0]);
+
+            if (action) {
+                if (engine.game.printCommand) {
+                    engine.game.print('$ ' + inputValue, "command");
+                }
+            } else {
+                if (engine.game.onMissingAction) {
+                    engine.game.onMissingAction(engine.game, parts[0]);
+                } else if (engine.game.messages && engine.game.messages.unknownAction) {
+                    engine.game.print(engine.game.messages.unknownAction);
+                }
+            }
+            engine.game.clearInputHelp();
+            if (engine.game.messages && engine.game.messages.inputHelpTip) {
+                engine.game.printInputHelp(engine.game.messages.inputHelpTip);
+            }
+
+            const params = [];
+            parts.slice(1).forEach(part => {
+                if (part && part.trim().length > 0) {
+                    params.push(part.trim());
+                }
+            });
+            if (action) {
+                action.perform(engine.game, params);
+                if (engine.game.onActionPerformed) {
+                    engine.game.onActionPerformed(engine.game, action);
+                }
+            }
+        }
+
+        function historyPrev() {
+            if (inputs.length > 0) {
+                this.historyPos--;
+                if (this.historyPos < 0) {
+                    this.historyPos = 0;
+                }
+                inputBox.value = inputs[this.historyPos];
+            }
+        }
+
+        function historyNext() {
+            if (inputs.length > 0) {
+                this.historyPos++;
+                if (this.historyPos >= inputs.length) {
+                    this.historyPos = inputs.length - 1;
+                }
+                inputBox.value = inputs[this.historyPos];
+            }
+        }
+
+        function autocomplete() {
+            const intputValue = inputBox.value;
+            const parts = intputValue.split(/\s+/);
+            if (parts.length == 1) {
+                const actions = engine.game.getActions().filter(action => engine.game.isInputCaseSensitive ? action.name.startsWith(intputValue) : action.name.toUpperCase().startsWith(intputValue.toUpperCase()));
+                if (actions.length === 1) {
+                    inputBox.value = actions[0].name + ' ';
+                } else {
+                    engine.game.clearInputHelp();
+                    const prefix = engine.game.messages.inputHelpPrefix ? engine.game.messages.inputHelpPrefix : "";
+                    engine.game.printInputHelp(prefix + actions.map(action => action.name).join(', '));
+                }
+            } else if (parts.length == 2) {
+                const action = engine.game.getAction(parts[0]);
+                if (action && action.autocomplete) {
+                    const results = action.autocomplete(engine.game, parts[1]);
+                    if (results) {
+                        if (results.length === 1) {
+                            inputBox.value = parts[0] + ' ' + results[0].name + ' ';
+                        } else if (results.length > 1) {
+                            engine.game.clearInputHelp();
+                            const prefix = engine.game.messages.inputHelpPrefix ? engine.game.messages.inputHelpPrefix : "";
+                            engine.game.printInputHelp(prefix + results.map(r => r.name).join(', '));
+                        }
+                    }
+                }
+            }
+        }
+
+        // Start the game
+        this.game.enterLocation(this.game.getLocation(this.game.startLocation));
+    }
+
+    engine.restart = function() {
+        console.log('Restarting game...');
+        engine.game = createGame(initState, null);
+        engine.start();
+    }
+    
+    engine.save = function() {
+        // TODO
+    }
+    
+    engine.load = function() {
+        // TODO
+    }
+    
+    return engine;
+}
+
+function createGame(initialState, savedPosition) {
     const locationDiv = document.querySelector('#location');
     const outputDiv = document.querySelector('#output');
     const inputHelpDiv = document.querySelector('#inputHelp');
-    const inputs = [];
-    const historyLimit = 20;
-    const lineLimit = 20;
-    const game = Object.assign({}, state);
+
+    const game = JSON.parse(JSON.stringify(initialState));
+    game.actions = initialState.actions;
+    game.onStart = initialState.onStart;
+    game.onEnd = initialState.onEnd;
+    game.onLocationInfo = initialState.onLocationInfo;
+    game.onShiftTime = initialState.onShiftTime;
+    game.onMissingAction = initialState.onMissingAction;
+    game.onActionPerformed = initialState.onActionPerformed;
+
+    if (savedPosition) {
+        game.locations = savedPosition.locations;
+        game.items = savedPosition.items;
+        game.time = savedPosition.time;
+    }
+
+    game.locations.forEach(function(location) {
+        const initialLoc = initialState.locations.find(loc => loc.id === location.id);
+        if (initialLoc && initialLoc.readInit) {
+            initialLoc.readInit(location);
+        }
+    });
+    game.items.forEach(function(item) {
+        const initialItem = initialState.items.find(it => it.name === item.name);
+        if (initialItem && initialItem.readInit) {
+            initialItem.readInit(item);
+        }
+    });
 
     // Game functions
     game.getLocation = (id) => game.locations.find(location => location.id === id);
@@ -35,6 +236,10 @@ function startGame(state) {
         }
         return action;
     }
+    game.mapItem = function(name) {
+            return game.items.find(item => item.name === name);
+        }
+        // Returns an item whose name or alias matches the specified name
     game.getItem = function(items, name) {
         if (items) {
             return items.find(item => this.aliasObjectMatchesName(item, name));
@@ -54,10 +259,10 @@ function startGame(state) {
         return false;
     }
     game.getInventoryItem = function(name) {
-        return this.getItem(game.inventory, name);
+        return game.inventory ? this.getItem(game.inventory.map(item => game.mapItem(item)), name) : null;
     }
     game.getLocationItem = function(name) {
-        return this.getItem(game.location.items, name);
+        return this.getItem(game.location.items.map(item => game.mapItem(item)), name);
     }
     game.findItem = function(name) {
         let item = null;
@@ -71,31 +276,33 @@ function startGame(state) {
         return this.findLocationItem(name);
     }
     game.findLocationItem = function(name) {
-        for (index = 0; index < this.locations.length; index++) {
-            item = this.getItem(this.locations[index].items, name);
-            if (item != null) {
-                return {
-                    "item": item,
-                    "location": this.locations[index]
-                };
+            for (index = 0; index < this.locations.length; index++) {
+                const locItems = this.locations[index].items;
+                const item = locItems ? this.getItem(locItems.map(item => game.mapItem(item)), name) : null;
+                if (item) {
+                    return {
+                        "item": item,
+                        "location": this.locations[index]
+                    };
+                }
             }
+            return {};
         }
-        return {};
-    }
+        // Return all available items (inventory + location)
     game.getItems = function() {
-        const items = [];
-        if (game.inventory) {
-            game.inventory.forEach(i => items.push(i));
+            const items = [];
+            if (game.inventory) {
+                game.inventory.forEach(i => items.push(i));
+            }
+            if (game.location.items) {
+                game.location.items.forEach(i => items.push(i));
+            }
+            return items.map(item => game.mapItem(item));
         }
-        if (game.location.items) {
-            game.location.items.forEach(i => items.push(i));
-        }
-        // return all available items (inventory + location)
-        return items;
-    }
+        // Return all takeable items in the current location
     game.getTakeableItems = function() {
         if (game.location.items) {
-            return game.location.items.filter(item => item.takeable === undefined || item.takeable);
+            return game.location.items.map(item => game.mapItem(item)).filter(item => item.takeable === undefined || item.takeable);
         }
     }
     game.enterLocation = function(location) {
@@ -111,14 +318,13 @@ function startGame(state) {
         if (location.desc) {
             const descStr = location.desc instanceof Function ? location.desc() : location.desc;
             this.printLocation(descStr, "desc");
-            // this.printLocation("-".repeat(descStr.length));
         }
         if (location.exits && location.exits.length > 0) {
             this.printLocation(this.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "), "exits");
         }
         let itemsStr = "";
         if (location.items && location.items.length > 0) {
-            itemsStr = this.messages.locationItems + ": " + location.items.map(i => i.name).join(", ");
+            itemsStr = this.messages.locationItems + ": " + location.items.map(i => game.mapItem(i).name).join(", ");
         } else if (this.messages.noLocationItems) {
             itemsStr = this.messages.noLocationItems;
         }
@@ -190,8 +396,8 @@ function startGame(state) {
             if (!this.inventory) {
                 this.inventory = [];
             }
-            location.items.splice(location.items.findIndex(item => this.aliasObjectMatchesName(item, name)), 1);
-            this.inventory.push(item);
+            location.items.splice(location.items.map(it => game.mapItem(it)).findIndex(it => this.aliasObjectMatchesName(it, name)), 1);
+            this.inventory.push(item.name);
             this.printLocationInfo();
             if (item.onTake) {
                 item.onTake(this);
@@ -286,6 +492,27 @@ function startGame(state) {
             console.log("Invalid locations!");
         }
     }
+    game.nextStep = function(step, paths, startId, targetId) {
+        const newPathsFound = [];
+        for (i = 0; i < paths.length; i++) {
+            const path = paths[i];
+            if (path.length === step) {
+                const last = path[step - 1];
+                if (path.filter(loc => loc.id === last.id).length > 1) {
+                    // Cycle detected
+                    continue;
+                }
+                if ((step === 1 || last.id != startId) && last.id != targetId && last.exits) {
+                    for (j = 0; j < last.exits.length; j++) {
+                        const newPath = path.slice(0);
+                        newPath.push(this.locations.find(loc => loc.id === last.exits[j].location));
+                        newPathsFound.push(newPath);
+                    }
+                }
+            }
+        }
+        return newPathsFound;
+    },
     game.matchName = function(val, name) {
         if (!val || !name) {
             return false;
@@ -310,166 +537,5 @@ function startGame(state) {
             return false;
         }
     }
-
-    if (game.onStart) {
-        game.onStart();
-    }
-
-    let historyPos = 0;
-
-    // Initialize input/output elements
-    const title = document.querySelector('#title');
-    if (title) {
-        title.innerText = game.title;
-    }
-    inputBox.onkeydown = (e) => {
-        if (e.key === 'Enter') {
-            processInput();
-        } else if (e.key === 'ArrowUp') {
-            historyPrev();
-        } else if (e.key === 'ArrowDown') {
-            historyNext();
-        } else if (e.key === 'Tab') {
-            e.preventDefault();
-            autocomplete();
-        }
-    };
-    if (!game.time) {
-        game.time = 0;
-    }
-
-    function nextStep(step, paths, startId, targetId) {
-        const newPathsFound = [];
-        for (i = 0; i < paths.length; i++) {
-            const path = paths[i];
-            if (path.length === step) {
-                const last = path[step - 1];
-                if (path.filter(loc => loc.id === last.id).length > 1) {
-                    // Cycle detected
-                    continue;
-                }
-                if ((step === 1 || last.id != startId) && last.id != targetId && last.exits) {
-                    for (j = 0; j < last.exits.length; j++) {
-                        const newPath = path.slice(0);
-                        newPath.push(game.locations.find(loc => loc.id === last.exits[j].location));
-                        newPathsFound.push(newPath);
-                    }
-                }
-            }
-        }
-        // console.log("Step " + step + " found " + newPathsFound.length + "
-        // paths");
-        return newPathsFound;
-    }
-
-
-    // Start the game
-    game.enterLocation(game.getLocation(game.startLocation));
-
-    function processInput() {
-        if (game.endState) {
-            return;
-        }
-        const intputValue = inputBox.value;
-
-        if (inputs.length > historyLimit) {
-            inputs.shift();
-        }
-        if (inputs.length > 0) {
-            if (inputs[inputs.length - 1] !== intputValue) {
-                inputs.push(intputValue);
-            }
-        } else {
-            inputs.push(intputValue);
-        }
-        inputBox.value = '';
-        historyPos = inputs.length;
-
-        // Parse the command
-        const parts = intputValue.split(/\s+/);
-        if (parts.length === 0) {
-            return;
-        }
-        const action = game.getAction(parts[0]);
-
-        if (action) {
-            if (game.printCommand) {
-                game.print('$ ' + intputValue, "command");
-            }
-        } else {
-            if (game.onMissingAction) {
-                game.onMissingAction(game, parts[0]);
-            } else if (game.messages && game.messages.unknownAction) {
-                game.print(game.messages.unknownAction);
-            }
-        }
-        game.clearInputHelp();
-        if (game.messages && game.messages.inputHelpTip) {
-            game.printInputHelp(game.messages.inputHelpTip);
-        }
-
-        const params = [];
-        parts.slice(1).forEach(part => {
-            if (part && part.trim().length > 0) {
-                params.push(part.trim());
-            }
-        });
-        if (action) {
-            action.perform(game, params);
-            if (game.onActionPerformed) {
-                game.onActionPerformed(game, action);
-            }
-        }
-    }
-
-    function historyPrev() {
-        if (inputs.length > 0) {
-            historyPos--;
-            if (historyPos < 0) {
-                historyPos = 0;
-            }
-            inputBox.value = inputs[historyPos];
-        }
-    }
-
-    function historyNext() {
-        if (inputs.length > 0) {
-            historyPos++;
-            if (historyPos >= inputs.length) {
-                historyPos = inputs.length - 1;
-            }
-            inputBox.value = inputs[historyPos];
-        }
-    }
-
-    function autocomplete() {
-        const intputValue = inputBox.value;
-        const parts = intputValue.split(/\s+/);
-        if (parts.length == 1) {
-            const actions = game.getActions().filter(action => this.isInputCaseSensitive ? action.name.startsWith(intputValue) : action.name.toUpperCase().startsWith(intputValue.toUpperCase()));
-            if (actions.length === 1) {
-                inputBox.value = actions[0].name + ' ';
-            } else {
-                game.clearInputHelp();
-                const prefix = game.messages.inputHelpPrefix ? game.messages.inputHelpPrefix : "";
-                game.printInputHelp(prefix + actions.map(action => action.name).join(', '));
-            }
-        } else if (parts.length == 2) {
-            const action = game.getAction(parts[0]);
-            if (action && action.autocomplete) {
-                const results = action.autocomplete(game, parts[1]);
-                if (results) {
-                    if (results.length === 1) {
-                        inputBox.value = parts[0] + ' ' + results[0].name + ' ';
-                    } else if (results.length > 1) {
-                        game.clearInputHelp();
-                        const prefix = game.messages.inputHelpPrefix ? game.messages.inputHelpPrefix : "";
-                        game.printInputHelp(prefix + results.map(r => r.name).join(', '));
-                    }
-                }
-            }
-        }
-    }
-
     return game;
 }
