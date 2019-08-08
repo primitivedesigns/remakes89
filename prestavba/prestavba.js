@@ -646,10 +646,12 @@ function initState() {
             }
         }, {
             name: "polož",
+            aliases: ["poloz"],
             perform: function(game, params) {
-                if (game.dropItem(params[0])) {
+                const item = game.dropItem(params[0]);
+                if (item) {
                     game.clearOutput();
-                    game.print("Položil jsi " + params[0]);
+                    game.print("Položil jsi " + item.name + ".");
                 }
             },
             autocomplete: function(game, str) {

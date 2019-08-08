@@ -431,12 +431,12 @@ function createGame(initialState, savedPosition) {
             if (!location.items) {
                 location.items = [];
             }
-            location.items.push(item);
-            this.inventory.splice(this.inventory.findIndex(item => item.name === name), 1);
+            location.items.push(item.name);
+            this.inventory.splice(this.inventory.findIndex(item => item === name), 1);
             this.printLocationInfo();
-            return true;
+            return item;
         }
-        return false;
+        return null;
     }
     game.useItem = function(name) {
         const item = this.getItem(this.getItems(), name);
