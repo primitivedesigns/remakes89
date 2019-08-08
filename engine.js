@@ -49,13 +49,17 @@ function createEngine(initState) {
             // Built-in actions
             if (inputValue.toUpperCase() === 'RESTART') {
                 inputBox.value = '';
-                engine.game.clearOutput();
-                engine.game.clearLocation();
-                engine.game.clearInputHelp();
                 engine.restart();
                 return;
+            } else if (inputValue.toUpperCase() === 'SAVE') {
+                inputBox.value = '';
+                engine.save();
+                return;
+            } else if (inputValue.toUpperCase() === 'LOAD') {
+                inputBox.value = '';
+                engine.load();
+                return;
             }
-            // TODO save, load
 
             if (inputs.length > historyLimit) {
                 inputs.shift();
@@ -161,17 +165,28 @@ function createEngine(initState) {
     }
 
     engine.restart = function() {
-        console.log('Restarting game...');
         engine.game = createGame(initState, null);
+        engine.game.clearAll();
         engine.start();
+        console.log('Game restarted');
     }
     
     engine.save = function() {
-        // TODO
+        const position = {};
+        position.locations = this.game.locations;
+        position.items = this.game.items;
+        position.time = this.game.time;
+        position.location = this.game.location.id;
+        position.inventory = this.game.inventory;
+        localStorage.setItem("save", JSON.stringify(position));
+        console.log('Game saved');
     }
     
     engine.load = function() {
-        // TODO
+        engine.game = createGame(initState, JSON.parse(localStorage.getItem("save")));
+        engine.game.clearAll();
+        engine.start();
+        console.log('Game loaded');
     }
     
     return engine;
@@ -195,8 +210,11 @@ function createGame(initialState, savedPosition) {
         game.locations = savedPosition.locations;
         game.items = savedPosition.items;
         game.time = savedPosition.time;
+        game.startLocation = savedPosition.location;
+        game.inventory = savedPosition.inventory;
     }
 
+    // Re-init locations and items
     game.locations.forEach(function(location) {
         const initialLoc = initialState.locations.find(loc => loc.id === location.id);
         if (initialLoc && initialLoc.readInit) {
@@ -537,5 +555,12 @@ function createGame(initialState, savedPosition) {
             return false;
         }
     }
+    
+    game.clearAll = function() {
+        this.clearLocation();
+        this.clearOutput();
+        this.clearInputHelp();
+    }
+    
     return game;
 }
