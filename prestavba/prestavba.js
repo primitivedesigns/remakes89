@@ -45,6 +45,8 @@ function initState() {
             unknownAction: "Bohužel... ale nezoufej, to je dialektika dějin!",
             inputHelpTip: '\xa0',
             inputHelpPrefix: "Možnosti: ",
+            gameSaved: "Hra uložena.",
+            gameLoaded: "Uložená pozice nahrána.",
         },
         intro: [function(gameContainer) {
             const text1 = document.createElement('div');

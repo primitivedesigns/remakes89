@@ -99,10 +99,16 @@ function createEngine() {
             } else if (parts[0].toLowerCase() === 'save') {
                 inputBox.value = '';
                 engine.save(params);
+                if (engine.game.messages.gameSaved) {
+                    engine.game.print(engine.game.messages.gameSaved);
+                }
                 return;
             } else if (parts[0].toLowerCase() === 'load') {
                 inputBox.value = '';
                 engine.load(params);
+                if (engine.game.messages.gameLoaded) {
+                    engine.game.print(engine.game.messages.gameLoaded);
+                }
                 return;
             }
 
