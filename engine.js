@@ -1,7 +1,36 @@
-function createEngine(initState) {
+function runGame(initState) {
+    const engine = createEngine(initState);
+    engine.initState = initState;
+    engine.run();
+    return engine;
+}
+
+function createEngine() {
 
     const engine = {};
-    engine.game = createGame(initState, null);
+
+    engine.run = function() {
+        // First reset UI controls
+        const gameContainerDiv = document.querySelector('#game-container');
+        while (gameContainerDiv.firstChild) {
+            gameContainerDiv.removeChild(gameContainerDiv.firstChild);
+        }
+        if (engine.initState.intro) {
+            showIntro(0, engine.initState.intro, function() {
+                engine.initGame();
+                engine.start();
+            });
+        } else {
+            engine.initGame();
+            engine.start();
+        }
+    }
+
+    engine.initGame = function(position) {
+        engine.game = createGame(this.initState, position);
+        engine.game.clearAll();
+        console.log('Game initialized');
+    }
 
     engine.start = function() {
         this.inputs = [];
@@ -13,20 +42,12 @@ function createEngine(initState) {
             this.game.time = 0;
         }
 
-        // Init UI controls
-        const title = document.querySelector('#title');
-        const inputBox = document.querySelector('#input');
-        const locationDiv = document.querySelector('#location');
-        const outputDiv = document.querySelector('#output');
-        const inputHelpDiv = document.querySelector('#inputHelp');
+        const inputBox = document.querySelector('#game-input');
+        inputBox.focus();
         const historyLimit = 20;
         const lineLimit = 20;
         const inputs = this.inputs;
-        
-        if (title) {
-            title.innerText = this.game.title;
-        }
-        
+
         inputBox.onkeydown = (e) => {
             if (e.key === 'Enter') {
                 processInput();
@@ -45,21 +66,6 @@ function createEngine(initState) {
                 return;
             }
             const inputValue = inputBox.value;
-            
-            // Built-in actions
-            if (inputValue.toUpperCase() === 'RESTART') {
-                inputBox.value = '';
-                engine.restart();
-                return;
-            } else if (inputValue.toUpperCase() === 'SAVE') {
-                inputBox.value = '';
-                engine.save();
-                return;
-            } else if (inputValue.toUpperCase() === 'LOAD') {
-                inputBox.value = '';
-                engine.load();
-                return;
-            }
 
             if (inputs.length > historyLimit) {
                 inputs.shift();
@@ -79,6 +85,27 @@ function createEngine(initState) {
             if (parts.length === 0) {
                 return;
             }
+            const params = [];
+            parts.slice(1).forEach(part => {
+                if (part && part.trim().length > 0) {
+                    params.push(part.trim());
+                }
+            });
+
+            // Built-in actions
+            if (parts[0].toLowerCase() === 'restart') {
+                engine.run();
+                return;
+            } else if (parts[0].toLowerCase() === 'save') {
+                inputBox.value = '';
+                engine.save(params);
+                return;
+            } else if (parts[0].toLowerCase() === 'load') {
+                inputBox.value = '';
+                engine.load(params);
+                return;
+            }
+
             const action = engine.game.getAction(parts[0]);
 
             if (action) {
@@ -97,12 +124,6 @@ function createEngine(initState) {
                 engine.game.printInputHelp(engine.game.messages.inputHelpTip);
             }
 
-            const params = [];
-            parts.slice(1).forEach(part => {
-                if (part && part.trim().length > 0) {
-                    params.push(part.trim());
-                }
-            });
             if (action) {
                 action.perform(engine.game, params);
                 if (engine.game.onActionPerformed) {
@@ -164,13 +185,6 @@ function createEngine(initState) {
         this.game.enterLocation(this.game.getLocation(this.game.startLocation));
     }
 
-    engine.restart = function() {
-        engine.game = createGame(initState, null);
-        engine.game.clearAll();
-        engine.start();
-        console.log('Game restarted');
-    }
-    
     engine.save = function() {
         const position = {};
         position.locations = this.game.locations;
@@ -181,21 +195,24 @@ function createEngine(initState) {
         localStorage.setItem("save", JSON.stringify(position));
         console.log('Game saved');
     }
-    
+
     engine.load = function() {
-        engine.game = createGame(initState, JSON.parse(localStorage.getItem("save")));
-        engine.game.clearAll();
-        engine.start();
+        this.initGame(JSON.parse(localStorage.getItem("save")));
+        this.start();
         console.log('Game loaded');
     }
-    
+
     return engine;
 }
 
 function createGame(initialState, savedPosition) {
-    const locationDiv = document.querySelector('#location');
-    const outputDiv = document.querySelector('#output');
-    const inputHelpDiv = document.querySelector('#inputHelp');
+
+    const gameContainerDiv = document.querySelector('#game-container');
+    while (gameContainerDiv.firstChild) {
+        gameContainerDiv.removeChild(gameContainerDiv.firstChild);
+    }
+
+    let locationDiv, outputDiv, inputHelpDiv;
 
     const game = JSON.parse(JSON.stringify(initialState));
     game.actions = initialState.actions;
@@ -212,6 +229,43 @@ function createGame(initialState, savedPosition) {
         game.time = savedPosition.time;
         game.startLocation = savedPosition.location;
         game.inventory = savedPosition.inventory;
+    }
+
+    // Init UI controls
+    // game-title
+    const title = document.createElement('h1');
+    title.id = 'game-title';
+    if (initialState.title) {
+        title.innerText = initialState.title;
+    }
+    gameContainerDiv.insertBefore(title, null);
+    // game-location
+    locationDiv = document.createElement('div');
+    locationDiv.id = 'game-location';
+    gameContainerDiv.appendChild(locationDiv);
+    // game-output
+    outputDiv = document.createElement('div');
+    outputDiv.id = 'game-output';
+    gameContainerDiv.appendChild(outputDiv);
+    // game-input-container
+    const inputContainerDiv = document.createElement('div');
+    inputContainerDiv.id = 'game-input-container';
+    gameContainerDiv.appendChild(inputContainerDiv);
+    // game-input-help
+    inputHelpDiv = document.createElement('div');
+    inputHelpDiv.id = 'game-input-help';
+    inputContainerDiv.appendChild(inputHelpDiv);
+    // game-input
+    const inputBox = document.createElement('input');
+    inputBox.id = 'game-input';
+    inputContainerDiv.appendChild(inputBox);
+    // game-input-tip
+    const inputTip = document.createElement('div');
+    inputTip.id = 'game-input-tip';
+    inputContainerDiv.appendChild(inputTip);
+
+    if (initialState.onInitControls) {
+        initialState.onInitControls(gameContainerDiv);
     }
 
     // Re-init locations and items
@@ -511,56 +565,71 @@ function createGame(initialState, savedPosition) {
         }
     }
     game.nextStep = function(step, paths, startId, targetId) {
-        const newPathsFound = [];
-        for (i = 0; i < paths.length; i++) {
-            const path = paths[i];
-            if (path.length === step) {
-                const last = path[step - 1];
-                if (path.filter(loc => loc.id === last.id).length > 1) {
-                    // Cycle detected
-                    continue;
-                }
-                if ((step === 1 || last.id != startId) && last.id != targetId && last.exits) {
-                    for (j = 0; j < last.exits.length; j++) {
-                        const newPath = path.slice(0);
-                        newPath.push(this.locations.find(loc => loc.id === last.exits[j].location));
-                        newPathsFound.push(newPath);
+            const newPathsFound = [];
+            for (i = 0; i < paths.length; i++) {
+                const path = paths[i];
+                if (path.length === step) {
+                    const last = path[step - 1];
+                    if (path.filter(loc => loc.id === last.id).length > 1) {
+                        // Cycle detected
+                        continue;
+                    }
+                    if ((step === 1 || last.id != startId) && last.id != targetId && last.exits) {
+                        for (j = 0; j < last.exits.length; j++) {
+                            const newPath = path.slice(0);
+                            newPath.push(this.locations.find(loc => loc.id === last.exits[j].location));
+                            newPathsFound.push(newPath);
+                        }
                     }
                 }
             }
+            return newPathsFound;
+        },
+        game.matchName = function(val, name) {
+            if (!val || !name) {
+                return false;
+            }
+            if (this.isInputCaseSensitive) {
+                if (val === name) {
+                    return true;
+                }
+                if (this.partialMatchLimit && val.length > this.partialMatchLimit) {
+                    return name.startsWith(val);
+                }
+                return false;
+            } else {
+                const nameUp = name.toUpperCase();
+                const valUp = val.toUpperCase();
+                if (valUp === nameUp) {
+                    return true;
+                }
+                if (this.partialMatchLimit && valUp.length > this.partialMatchLimit) {
+                    return nameUp.startsWith(valUp);
+                }
+                return false;
+            }
         }
-        return newPathsFound;
-    },
-    game.matchName = function(val, name) {
-        if (!val || !name) {
-            return false;
-        }
-        if (this.isInputCaseSensitive) {
-            if (val === name) {
-                return true;
-            }
-            if (this.partialMatchLimit && val.length > this.partialMatchLimit) {
-                return name.startsWith(val);
-            }
-            return false;
-        } else {
-            const nameUp = name.toUpperCase();
-            const valUp = val.toUpperCase();
-            if (valUp === nameUp) {
-                return true;
-            }
-            if (this.partialMatchLimit && valUp.length > this.partialMatchLimit) {
-                return nameUp.startsWith(valUp);
-            }
-            return false;
-        }
-    }
-    
+
     game.clearAll = function() {
         this.clearLocation();
         this.clearOutput();
         this.clearInputHelp();
     }
-    
+
     return game;
+}
+
+function showIntro(index, introFuns, startFun) {
+    const gameContainerDiv = document.querySelector('#game-container');
+    introFuns[index](gameContainerDiv);
+    document.onkeydown = function(e) {
+        if (e.key === 'Enter') {
+            document.onkeydown = null;
+            if (introFuns.length > (index + 1)) {
+                showIntro(index + 1, introFuns, startFun);
+            } else {
+                startFun();
+            }
+        }
+    }
 }

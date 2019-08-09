@@ -1,0 +1,114 @@
+body {
+	background-color: #151515;
+	font-family: 'VT323', monospace;
+	text-transform: uppercase;
+	color: white;
+	font-size: 1.2em;
+}
+
+h1 {
+	font-size: 4em;
+	font-weight: normal;
+	margin-top: 0em;
+}
+
+h1#game-title span:nth-child(odd) {
+	background-color: white;
+	color: black;
+	padding: 0 0.2em 0 0.2em;
+}
+
+h1#game-title span:nth-child(even) {
+	background-color: black;
+	color: white;
+}
+
+#game-output {
+	margin-top: 1em;
+	height: 20%;
+	overflow: auto;
+}
+
+#game-output div, #game-location div {
+	font-size: 2em;
+	line-height: normal;
+}
+
+#game-location .exits {
+	margin-top: 1em;
+}
+
+#slogan {
+	margin-top: 1em;
+	font-size: 2em;
+	padding: 0.5em;
+	color: gray;
+}
+
+#game-output div.end {
+	background-color: red;
+	color: white;
+}
+
+#game-input-help {
+	color: gray;
+	font-size: 1.3em;
+}
+
+#game-input-tip span {
+	background-color: silver;
+	color: black;
+	border-radius: 2px;
+	font-size: 1.2em;
+	margin-right: 0.4em;
+}
+
+#game-input {
+	font-family: 'VT323', monospace;
+	text-transform: uppercase;
+	width: 100%;
+	background-color: #242424;
+	border: none;
+	padding: 0.4em;
+	font-size: 2.5em;
+	color: white;
+	bottom: 0;
+	border-radius: 15px;
+	margin-bottom: 0.2em;
+}
+
+#game-container {
+	margin: 2em;
+	padding: 2em;
+	background-color: black;
+	border-radius: 15px;
+}
+
+div.intro-text2 span:nth-child(odd) {
+	background-color: white;
+	color: black;
+	padding: 0 0.2em 0 0.2em;
+}
+
+div.intro-text2 span:nth-child(even) {
+	background-color: black;
+	color: white;
+}
+
+div.intro-text1, div.intro-text2, div.intro-text3, div.intro-text4 {
+	margin-bottom: 1em;
+	font-size: 4em;
+}
+
+div.intro-text2, div.intro-text3 {
+	text-align: center;
+}
+
+div.intro-text3 {
+	text-transform: none;
+	}
+
+div.intro-text1, div.intro-text4 {
+	color: silver;
+	text-align: left;
+}

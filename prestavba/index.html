@@ -4,132 +4,15 @@
 <title>P.R.E.S.T.A.V.B.A.</title>
 <link href="https://fonts.googleapis.com/css?family=VT323
 &display=swap"
-    rel="stylesheet">
-<style type="text/css">
-body {
-	background-color: #151515;
-	font-family: 'VT323', monospace;
-	text-transform: uppercase;
-	color: white;
-	font-size: 1.2em;
-}
-
-h1 {
-	font-size: 3em;
-	font-weight: normal;
-	margin-top: 0em;
-}
-
-h1#customTitle span:nth-child(odd) {
-	background-color: white;
-	color: black;
-	padding: 0 0.2em 0 0.2em;
-}
-
-h1#customTitle span:nth-child(even) {
-	background-color: black;
-	color: white;
-}
-
-#output {
-	margin-top: 1em;
-}
-
-#output {
-	height: 20%;
-	overflow: auto;
-}
-
-#output div, #location div {
-	font-size: 2em;
-	line-height: normal;
-}
-
-#location .exits {
-	margin-top: 1em;
-}
-
-#slogan {
-	margin-top: 1em;
-	font-size: 2em;
-	padding: 0.5em;
-	color: gray;
-}
-
-#output div.command {
-	background-color: #111111;
-	color: gray;
-}
-
-#output div.end {
-	background-color: red;
-	color: white;
-}
-
-#inputHelp {
-	color: gray;
-	font-size: 1.3em;
-}
-
-span.inputTip {
-	background-color: silver;
-	color: black;
-	border-radius: 2px;
-	font-size: 1.2em;
-}
-
-#input {
-	font-family: 'VT323', monospace;
-	text-transform: uppercase;
-	width: 100%;
-	background-color: #242424;
-	border: none;
-	padding: 0.4em;
-	font-size: 2.5em;
-	color: white;
-	bottom: 0;
-	border-radius: 15px;
-	margin-bottom: 0.2em;
-}
-
-#game-container {
-	margin: 2em;
-	padding: 2em;
-	background-color: black;
-}
-
-#input-container {
-	bottom: 0;
-	position: absolute;
-}
-</style>
+    rel="stylesheet" />
+<link href="prestavba.css" type="text/css" rel="stylesheet" />
 </head>
 <body>
-    <div id="game-container">
-        <h1 id="customTitle">
-            <span>P</span>.<span>R</span>.<span>E</span>.<span>S</span>.<span>T</span>.<span>A</span>.<span>V</span>.<span>B</span>.<span>A</span>.
-        </h1>
-        <div id="location"></div>
-        <div id="output"></div>
-        <div id="inputContainer">
-            <div id="inputHelp"></div>
-            <input id="input" autofocus
-                title="Použij klávesu TAB pro doplnění příkazu">
-            <span class="inputTip"
-                title="Speciální klávesa - doplň příkaz">&nbsp;&#8633;
-                TAB&nbsp;</span> <span class="inputTip"
-                title="Speciální klávesa - starší příkazy z historie">&nbsp;&uparrow;&nbsp;</span>
-            <span class="inputTip"
-                title="Speciální klávesa - novější příkazy z historie">&nbsp;&downarrow;&nbsp;</span>
-            <div id="slogan"></div>
-        </div>
-    </div>
-
+    <div id="game-container"></div>
     <script src="prestavba.js"></script>
     <script src="../engine.js"></script>
     <script>
-                    const engine = createEngine(initState());
-                    engine.start();
-                </script>
+       const engine = runGame(initState());
+     </script>
 </body>
 </html>

@@ -1,3 +1,4 @@
+const gameTitle = "P.R.E.S.T.A.V.B.A.";
 const slogans = ["Sláva K.S.Č.!",
     "Se SSSR na věčné časy",
     "Ať žije socialismus!",
@@ -23,8 +24,20 @@ const bookBurningTime = 12;
 
 function initState() {
 
+    function titleToHtml(title, container) {
+        for (let value of title) {
+            if (value === '.') {
+                container.appendChild(document.createTextNode('.'));
+            } else {
+                const letter = document.createElement('span');
+                letter.textContent = value;
+                container.appendChild(letter);
+            }
+        }
+    }
+
     const game = {
-        title: "P.R.E.S.T.A.V.B.A.",
+        title: gameTitle,
         messages: {
             locationItems: "Vidíš",
             noLocationItems: "Nevidíš nic",
@@ -32,6 +45,56 @@ function initState() {
             unknownAction: "Bohužel... ale nezoufej, to je dialektika dějin!",
             inputHelpTip: '\xa0',
             inputHelpPrefix: "Možnosti: ",
+        },
+        intro: [function(gameContainer) {
+            const text1 = document.createElement('div');
+            text1.className = 'intro-text1';
+            text1.textContent = 'ÚV Software si u příležitosti 20. výročí osvobození Československa spojeneckými armádami dovoluje nabídnout vám logickou konverzační hru:';
+            gameContainer.appendChild(text1);
+
+            const text2 = document.createElement('div');
+            text2.className = 'intro-text2';
+            titleToHtml(gameTitle, text2);
+            gameContainer.appendChild(text2);
+
+            const text3 = document.createElement('div');
+            text3.className = 'intro-text3';
+            text3.textContent = 'Program Revoluční Experimentální Socialisticky Tvořivé Avantgardní Voloviny Básníků a Analfabetů';
+            gameContainer.appendChild(text3);
+
+            const text4 = document.createElement('div');
+            text4.className = 'intro-text4';
+            text4.innerHTML = '&copy; 1988 ÚV Software<br>Námět &copy; 1968 Život';
+            gameContainer.appendChild(text4);
+
+        }],
+        onInitControls: function(gameContainer) {
+            // Custom title
+            const titleH1 = document.querySelector('#game-title');
+            while (titleH1.firstChild) {
+                titleH1.removeChild(titleH1.firstChild);
+            }
+            titleToHtml(gameTitle, titleH1);
+
+            // Input tips
+            const inputTips = document.querySelector('#game-input-tip');
+            const tip1 = document.createElement('span');
+            tip1.title = 'Speciální klávesa - doplň příkaz';
+            tip1.innerHTML = '&nbsp;&#8633;TAB&nbsp;';
+            inputTips.appendChild(tip1);
+            const tip2 = document.createElement('span');
+            tip2.title = 'Speciální klávesa - starší příkazy z historie';
+            tip2.innerHTML = '&nbsp;&uparrow;&nbsp;';
+            inputTips.appendChild(tip2);
+            const tip3 = document.createElement('span');
+            tip3.title = 'Speciální klávesa - novější příkazy z historie';
+            tip3.innerHTML = '&nbsp;&downarrow;&nbsp;';
+            inputTips.appendChild(tip3);
+
+            // Slogan
+            const slogan = document.createElement('div');
+            slogan.id = 'slogan';
+            gameContainer.appendChild(slogan);
         },
         onStart: function() {
             printRandomSlogan();
