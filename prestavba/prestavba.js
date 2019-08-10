@@ -323,7 +323,7 @@ function initState() {
                     if (!this.examined) {
                         this.examined = true;
                         game.print('Něco jsi našel!');
-                        game.location.items.push('kapitál');
+                        game.location.items.push('knihu');
                         game.printLocationInfo();
                     }
                 }
@@ -331,14 +331,16 @@ function initState() {
         }, {
             name: bookItemName,
             aliases: ["kapital", "kapitál"],
-            desc: function() {
-                if (this.burning == null) {
-                    return "Je to Marxův Kapitál.";
-                } else {
-                    return "Vydává jasné světlo pokroku!!!";
+            burning: null,
+            readInit: function(obj) {
+                obj.desc = function() {
+                    if (this.burning == null) {
+                        return "Je to Marxův Kapitál.";
+                    } else {
+                        return "Vydává jasné světlo pokroku!!!";
+                    }
                 }
-            },
-            burning: null
+            }
         }, {
             name: "oltář",
             aliases: ["oltar"],
