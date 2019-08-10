@@ -353,6 +353,19 @@ function createGame(initialState, savedPosition) {
         return false;
     };
 
+    game.aliasObjectNameStartsWith = function(obj, str) {
+        if (!obj || !str) {
+            return false;
+        }
+        if (obj.name.startsWith(str)) {
+            return true;
+        }
+        if (obj.aliases && obj.aliases.find(alias => alias.startsWith(str))) {
+            return true;
+        }
+        return false;
+    };
+
     // Returns an inventory item for the specified name or undefined
     game.getInventoryItem = function(name) {
         return game.inventory ? this.getItem(game.inventory.map(item => game.mapItem(item)), name) : null;
@@ -362,7 +375,7 @@ function createGame(initialState, savedPosition) {
     game.getLocationItem = function(name) {
         return this.getItem(game.location.items.map(item => game.mapItem(item)), name);
     };
-    
+
     // Attempts to find an inventory/location item
     game.findItem = function(name) {
         let item = null;
@@ -375,7 +388,7 @@ function createGame(initialState, savedPosition) {
         }
         return this.findLocationItem(name);
     };
-    
+
     game.findLocationItem = function(name) {
         for (index = 0; index < this.locations.length; index++) {
             const locItems = this.locations[index].items;
@@ -389,7 +402,7 @@ function createGame(initialState, savedPosition) {
         }
         return {};
     };
-    
+
     // Return all available items (inventory + location)
     game.getItems = function() {
         const items = [];
@@ -401,19 +414,19 @@ function createGame(initialState, savedPosition) {
         }
         return items.map(item => game.mapItem(item));
     };
-    
+
     // Return all takeable items in the current location
     game.getTakeableItems = function() {
         if (game.location.items) {
             return game.location.items.map(item => game.mapItem(item)).filter(item => item.takeable === undefined || item.takeable);
         }
     };
-    
+
     game.enterLocation = function(location) {
         this.location = location;
         this.printLocationInfo();
     };
-    
+
     // Prints current location info
     game.printLocationInfo = function() {
         this.clearLocation();
@@ -440,15 +453,15 @@ function createGame(initialState, savedPosition) {
             this.onLocationInfo(this);
         }
     };
-    
+
     // Clear location info
     game.clearLocation = function() {
         while (locationDiv.firstChild) {
             locationDiv.removeChild(locationDiv.firstChild);
         }
     };
-    
-    
+
+
     game.printLocation = function(str, cssClass) {
         const line = document.createElement('div');
         if (cssClass) {
@@ -456,7 +469,7 @@ function createGame(initialState, savedPosition) {
         }
         locationDiv.appendChild(line).innerText = str;
     };
-    
+
     game.print = function(str, cssClass) {
         const line = document.createElement('div');
         if (cssClass) {
@@ -464,7 +477,7 @@ function createGame(initialState, savedPosition) {
         }
         outputDiv.insertBefore(line, null).innerText = str;
     };
-    
+
     game.printInputHelp = function(str, cssClass) {
         const line = document.createElement('div');
         if (cssClass) {
@@ -472,22 +485,22 @@ function createGame(initialState, savedPosition) {
         }
         inputHelpDiv.insertBefore(line, null).innerText = str;
     };
-    
+
     // Clear input help div
     game.clearInputHelp = function() {
         while (inputHelpDiv.firstChild) {
             inputHelpDiv.removeChild(inputHelpDiv.firstChild);
         }
     };
-    
+
     // Clear output div
     game.clearOutput = function() {
         while (outputDiv.firstChild) {
             outputDiv.removeChild(outputDiv.firstChild);
         }
     };
-    
-    
+
+
     game.goToLocation = function(exitName) {
         this.clearOutput();
         const location = game.location;
@@ -498,12 +511,12 @@ function createGame(initialState, savedPosition) {
             this.enterLocation(this.getLocation(exit.location));
         }
     };
-    
+
     // Prints all available actions
     game.printActions = function(prefix) {
         print(prefix + getActions().map(action => action.name).join(", "));
     };
-    
+
     // Shift the time
     game.shiftTime = function(amount) {
         this.time = this.time + amount;
@@ -511,7 +524,7 @@ function createGame(initialState, savedPosition) {
             this.onShiftTime(this);
         }
     };
-    
+
     game.takeItem = function(name) {
         const item = this.getLocationItem(name);
         if (item && (item.takeable === undefined || item.takeable)) {
@@ -519,7 +532,7 @@ function createGame(initialState, savedPosition) {
             if (!this.inventory) {
                 this.inventory = [];
             }
-            location.items.splice(location.items.map(it => game.mapItem(it)).findIndex(it => this.aliasObjectMatchesName(it, name)), 1);
+            location.items.splice(location.items.findIndex(it => it === item.name), 1);
             this.inventory.push(item.name);
             this.printLocationInfo();
             if (item.onTake) {
@@ -529,7 +542,7 @@ function createGame(initialState, savedPosition) {
         }
         return null;
     };
-    
+
     game.dropItem = function(name) {
         const item = this.getInventoryItem(name);
         if (item) {
@@ -538,13 +551,13 @@ function createGame(initialState, savedPosition) {
                 location.items = [];
             }
             location.items.push(item.name);
-            this.inventory.splice(this.inventory.findIndex(item => item === name), 1);
+            this.inventory.splice(this.inventory.findIndex(it => it === item.name), 1);
             this.printLocationInfo();
             return item;
         }
         return null;
     };
-    
+
     game.useItem = function(name) {
         const item = this.getItem(this.getItems(), name);
         if (item && item.onUse) {
@@ -553,7 +566,7 @@ function createGame(initialState, savedPosition) {
         }
         return false;
     };
-    
+
     game.examineItem = function(name) {
         const item = this.getItem(this.getItems(), name);
         if (item) {
@@ -565,7 +578,7 @@ function createGame(initialState, savedPosition) {
         }
         return false;
     };
-    
+
     game.printItemInfo = function(item) {
         const foundItem = item instanceof Object ? item : this.getItem(this.getItems(), item);
         if (item) {
@@ -580,7 +593,7 @@ function createGame(initialState, savedPosition) {
         }
         this.endState = endState;
     };
-    
+
     // Debug function - try to find a way from one location to the other
     // location
     game.findWay = function(from, to) {
@@ -593,7 +606,7 @@ function createGame(initialState, savedPosition) {
 
             let newPaths;
             do {
-                newPaths = nextStep(++step, paths, fromLocation.id, toLocation.id);
+                newPaths = this.nextStep(++step, paths, fromLocation.id, toLocation.id);
                 if (newPaths.length > 0) {
                     paths = paths.concat(newPaths);
                 }
@@ -622,7 +635,7 @@ function createGame(initialState, savedPosition) {
             console.log("Invalid locations!");
         }
     };
-    
+
     game.nextStep = function(step, paths, startId, targetId) {
         const newPathsFound = [];
         for (i = 0; i < paths.length; i++) {
@@ -644,7 +657,7 @@ function createGame(initialState, savedPosition) {
         }
         return newPathsFound;
     };
-    
+
     game.matchName = function(val, name) {
         if (!val || !name) {
             return false;

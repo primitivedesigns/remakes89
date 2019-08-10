@@ -104,11 +104,11 @@ function initState() {
         },
         onEnd: function(endState) {
             if (endState) {
-                game.print("Gratuluji vítězi!", "successMessage");
-                game.print("Je vidět, že socialistický člověk si poradí v každé situaci...");
-                game.print("Ještě jednou gratuluji. Sejdeme se všichni 21. srpna na Staroměstkém náměstí... (nebo jinde)");
+                this.print("Gratuluji vítězi!", "successMessage");
+                this.print("Je vidět, že socialistický člověk si poradí v každé situaci...");
+                this.print("Ještě jednou gratuluji. Sejdeme se všichni 21. srpna na Staroměstkém náměstí... (nebo jinde)");
             } else {
-                game.print("Obrovská exploze otřásla městem, což jsi včak jako její přímý účastník neslyšel.");
+                this.print("Obrovská exploze otřásla městem, což jsi včak jako její přímý účastník neslyšel.");
             }
         },
         onLocationInfo: function(game) {
@@ -143,29 +143,19 @@ function initState() {
             const dynamite = dynamiteRet.item;
             const dynamiteLocation = dynamiteRet.location;
             if (dynamite && dynamite.ignited) {
-                if ((dynamiteLocation && dynamiteLocation.id === game.location.id) || dynamiteLocation == null) {
-                    // GAME OVER
-                    game.end(false);
-                    return;
-                }
                 if ((game.time - dynamite.ignited) > dynamiteExplosionTime) {
                     // Exploded!
+                    if ((dynamiteLocation && dynamiteLocation.id === game.location.id) || dynamiteLocation == null) {
+                        // GAME OVER
+                        game.end(false);
+                        return;
+                    }
                     game.print("Země se otřásla výbuchem.");
                     if (dynamiteLocation) {
                         if (dynamiteLocation.id === "m18") {
                             dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === "sochu"), 1);
-                            dynamiteLocation.items.push({
-                                name: "trosky jakési sochy",
-                                desc: "Vidím kus lebky, ucho a ruku ukazující cestu do šťastné komunistické budoucnosti.",
-                                takeable: false
-                            });
-                            dynamiteLocation.items.push({
-                                name: "cihlu",
-                                desc: "Je celá ze zlata.",
-                                onTake: function(game) {
-                                    game.end(true);
-                                }
-                            });
+                            dynamiteLocation.items.push('trosky');
+                            dynamiteLocation.items.push('cihlu');
                         }
                         dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === dynamiteItemName), 1);
                     }
@@ -269,28 +259,22 @@ function initState() {
                     perform: function(game, params) {
                         game.clearOutput();
                         if (getRandomInt(3) === 0) {
-                            if (game.matchName(params[0], bookItemName)) {
-                                const book = game.getInventoryItem(bookItemName);
-                                if (book) {
-                                    game.print("Zapálil jsi Kapitál. Kéž osvítí tvoji cestu!");
-                                    book.burning = game.time;
-                                    // Show info in a dark location
-                                    game.printLocationInfo();
-                                    return;
-                                }
-                            } else if (game.matchName(params[0], dynamiteItemName)) {
-                                const dynamite = game.getItem(game.getItems(), dynamiteItemName);
-                                if (dynamite) {
-                                    game.print("Zapálil jsi doutnák...");
-                                    dynamite.ignited = game.time;
-                                    return;
-                                }
+                            const book = game.getInventoryItem(bookItemName);
+                            const dynamite = game.getItem(game.getItems(), dynamiteItemName);
+                            if (book && game.aliasObjectMatchesName(book, params[0])) {
+                                game.print("Zapálil jsi Kapitál. Kéž osvítí tvoji cestu!");
+                                book.burning = game.time;
+                                // Show info in a dark location
+                                game.printLocationInfo();
+                            } else if (dynamite && game.aliasObjectMatchesName(dynamite, params[0])) {
+                                game.print("Zapálil jsi doutnák...");
+                                dynamite.ignited = game.time;
+                            } else {
+                                game.print(game.messages.unknownAction);
                             }
                         } else {
                             game.print("Zapalovač vynechal...");
-                            return;
                         }
-                        game.print(game.messages.unknownAction);
                     },
                     autocomplete: function(game, str) {
                         return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
@@ -361,6 +345,19 @@ function initState() {
         }, {
             name: "sochu",
             desc: "Lenin...",
+        }, {
+            name: "trosky",
+            // TODO name: "trosky jakési sochy",
+            desc: "Vidím kus lebky, ucho a ruku ukazující cestu do šťastné komunistické budoucnosti.",
+            takeable: false
+        }, {
+            name: "cihlu",
+            desc: "Je celá ze zlata.",
+            readInit: function(obj) {
+                obj.onTake = function(game) {
+                    game.end(true);
+                }
+            }
         }, {
             name: "krumpáč",
             aliases: ["krumpac"],
@@ -722,7 +719,8 @@ function initState() {
                 }
             },
             autocomplete: function(game, str) {
-                return (!str || str.length === 0) ? game.inventory : game.inventory.filter(item => item.name.startsWith(str));
+                const items = game.inventory.map(item => game.mapItem(item));
+                return (!str || str.length === 0) ? items : items.filter(item => game.aliasObjectNameStartsWith(item, str));
             }
         }, {
             name: "vezmi",
