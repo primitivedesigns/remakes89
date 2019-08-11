@@ -26,6 +26,47 @@ function createEngine() {
         }
     }
 
+    engine.actions = [{
+        name: "restart",
+        perform: function() {
+            location.reload();
+        }
+    }, {
+        name: "save",
+        perform: function(game, params) {
+            const positionName = engine.save(params);
+            if (game.messages.gameSaved) {
+                game.print(game.messages.gameSaved + ' [' + positionName + ']');
+            }
+        }
+    }, {
+        name: "load",
+        perform: function(game, params) {
+            const positionName = engine.load(params);
+            // NOTE: we cannot use the 'game' param because a new game was
+            // loaded already
+            if (engine.game.messages.gameLoaded) {
+                engine.game.print(engine.game.messages.gameLoaded + ' [' + positionName +
+                    ']');
+            }
+        },
+        autocomplete: function(game, str) {
+            const positions = [];
+            for (var i = 0; i < localStorage.length; i++) {
+                positions.push(localStorage.key(i));
+            }
+            return (!str || str.length === 0) ? positions.map(function(p) {
+                const ret = {};
+                ret.name = p;
+                return ret;
+            }) : positions.filter(p => p.startsWith(str)).map(function(p) {
+                const ret = {};
+                ret.name = p;
+                return ret;
+            });
+        }
+    }];
+
     engine.initGame = function(position) {
         engine.game = createGame(this.initState, position);
         engine.game.clearAll();
@@ -62,7 +103,8 @@ function createEngine() {
         };
 
         function processInput() {
-            if (engine.game.endState) {
+            const game = engine.game;
+            if (game.endState) {
                 return;
             }
             const inputValue = inputBox.value;
@@ -86,54 +128,41 @@ function createEngine() {
                 return;
             }
             const params = [];
-            parts.slice(1).forEach(part => {
-                if (part && part.trim().length > 0) {
-                    params.push(part.trim());
-                }
-            });
-
-            // Built-in actions
-            if (parts[0].toLowerCase() === 'restart') {
-                engine.run();
-                return;
-            } else if (parts[0].toLowerCase() === 'save') {
-                inputBox.value = '';
-                engine.save(params);
-                if (engine.game.messages.gameSaved) {
-                    engine.game.print(engine.game.messages.gameSaved);
-                }
-                return;
-            } else if (parts[0].toLowerCase() === 'load') {
-                inputBox.value = '';
-                engine.load(params);
-                if (engine.game.messages.gameLoaded) {
-                    engine.game.print(engine.game.messages.gameLoaded);
-                }
-                return;
+            if (parts.length > 1) {
+                parts.slice(1).forEach(part => {
+                    if (part && part.trim().length > 0) {
+                        params.push(part.trim());
+                    }
+                });
             }
 
-            const action = engine.game.getAction(parts[0]);
+            let builtin = true;
+            let action = engine.actions.find(a => a.name === parts[0]);
+            if (!action) {
+                builtin = false;
+                action = game.getAction(parts[0]);
+            }
 
             if (action) {
-                if (engine.game.printCommand) {
-                    engine.game.print('$ ' + inputValue, "command");
+                if (game.printCommand) {
+                    game.print('$ ' + inputValue, "command");
                 }
             } else {
-                if (engine.game.onMissingAction) {
-                    engine.game.onMissingAction(engine.game, parts[0]);
-                } else if (engine.game.messages && engine.game.messages.unknownAction) {
-                    engine.game.print(engine.game.messages.unknownAction);
+                if (game.onMissingAction) {
+                    game.onMissingAction(game, parts[0]);
+                } else if (game.messages && game.messages.unknownAction) {
+                    game.print(game.messages.unknownAction);
                 }
             }
-            engine.game.clearInputHelp();
-            if (engine.game.messages && engine.game.messages.inputHelpTip) {
-                engine.game.printInputHelp(engine.game.messages.inputHelpTip);
+            game.clearInputHelp();
+            if (game.messages && game.messages.inputHelpTip) {
+                game.printInputHelp(game.messages.inputHelpTip);
             }
 
             if (action) {
-                action.perform(engine.game, params);
-                if (engine.game.onActionPerformed) {
-                    engine.game.onActionPerformed(engine.game, action);
+                action.perform(game, params);
+                if (game.onActionPerformed) {
+                    game.onActionPerformed(game, action, builtin);
                 }
             }
         }
@@ -163,6 +192,9 @@ function createEngine() {
             const parts = intputValue.split(/\s+/);
             if (parts.length == 1) {
                 const actions = engine.game.getActions().filter(action => engine.game.isInputCaseSensitive ? action.name.startsWith(intputValue) : action.name.toUpperCase().startsWith(intputValue.toUpperCase()));
+                // Add built-in actions
+                engine.actions.filter(action => engine.game.isInputCaseSensitive ? action.name.startsWith(intputValue) : action.name.toUpperCase().startsWith(intputValue.toUpperCase())).forEach(action => actions.push(action));
+
                 if (actions.length === 1) {
                     inputBox.value = actions[0].name + ' ';
                 } else {
@@ -171,7 +203,10 @@ function createEngine() {
                     engine.game.printInputHelp(prefix + actions.map(action => action.name).join(', '));
                 }
             } else if (parts.length == 2) {
-                const action = engine.game.getAction(parts[0]);
+                let action = engine.actions.find(a => a.name === parts[0]);
+                if (!action) {
+                    action = engine.game.getAction(parts[0]);
+                }
                 if (action && action.autocomplete) {
                     const results = action.autocomplete(engine.game, parts[1]);
                     if (results) {
@@ -191,21 +226,25 @@ function createEngine() {
         this.game.enterLocation(this.game.getLocation(this.game.startLocation));
     }
 
-    engine.save = function() {
+    engine.save = function(params) {
         const position = {};
+        const positionName = params.length === 0 ? 'save' : params[0];
         position.locations = this.game.locations;
         position.items = this.game.items;
         position.time = this.game.time;
         position.location = this.game.location.id;
         position.inventory = this.game.inventory;
-        localStorage.setItem("save", JSON.stringify(position));
-        console.log('Game saved');
+        localStorage.setItem(positionName, JSON.stringify(position));
+        console.log('Game saved: ' + positionName);
+        return positionName;
     }
 
-    engine.load = function() {
-        this.initGame(JSON.parse(localStorage.getItem("save")));
+    engine.load = function(params) {
+        const positionName = params.length === 0 ? 'save' : params[0];
+        this.initGame(JSON.parse(localStorage.getItem(positionName)));
         this.start();
-        console.log('Game loaded');
+        console.log('Game loaded: ' + positionName);
+        return positionName;
     }
 
     return engine;

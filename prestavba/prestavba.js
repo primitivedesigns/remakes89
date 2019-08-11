@@ -171,9 +171,11 @@ function initState() {
             game.shiftTime(1);
             printRandomSlogan();
         },
-        onActionPerformed: function(game, action) {
-            game.shiftTime(1);
-            printRandomSlogan();
+        onActionPerformed: function(game, action, builtin) {
+            if (!builtin) {
+                game.shiftTime(1);
+                printRandomSlogan();
+            }
         },
         isInputCaseSensitive: false,
         partialMatchLimit: 2,
