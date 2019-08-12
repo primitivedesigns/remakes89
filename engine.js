@@ -32,7 +32,8 @@ function createEngine() {
             location.reload();
         }
     }, {
-        name: "save",
+        name: 'save',
+        aliases: ['uloz','ulož'],
         perform: function(game, params) {
             const positionName = engine.save(params);
             if (game.messages.gameSaved) {
@@ -40,7 +41,8 @@ function createEngine() {
             }
         }
     }, {
-        name: "load",
+        name: 'load',
+        aliases: ['nahrat','nahraj'],
         perform: function(game, params) {
             const positionName = engine.load(params);
             // NOTE: we cannot use the 'game' param because a new game was
@@ -137,7 +139,7 @@ function createEngine() {
             }
 
             let builtin = true;
-            let action = engine.actions.find(a => a.name === parts[0]);
+            let action = engine.actions.find(a => game.aliasObjectMatchesName(a, parts[0]));
             if (!action) {
                 builtin = false;
                 action = game.getAction(parts[0]);
@@ -203,7 +205,7 @@ function createEngine() {
                     engine.game.printInputHelp(prefix + actions.map(action => action.name).join(', '));
                 }
             } else if (parts.length == 2) {
-                let action = engine.actions.find(a => a.name === parts[0]);
+                let action = engine.actions.find(a => engine.game.aliasObjectMatchesName(a, parts[0]));
                 if (!action) {
                     action = engine.game.getAction(parts[0]);
                 }

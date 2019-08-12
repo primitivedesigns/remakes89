@@ -82,7 +82,7 @@ function initState() {
             const inputTips = document.querySelector('#game-input-tip');
             const tip1 = document.createElement('span');
             tip1.title = 'Speciální klávesa - doplň příkaz';
-            tip1.innerHTML = '&nbsp;&#8633;TAB&nbsp;';
+            tip1.innerHTML = '&nbsp;&#8633; TAB&nbsp;';
             inputTips.appendChild(tip1);
             const tip2 = document.createElement('span');
             tip2.title = 'Speciální klávesa - starší příkazy z historie';
@@ -92,7 +92,15 @@ function initState() {
             tip3.title = 'Speciální klávesa - novější příkazy z historie';
             tip3.innerHTML = '&nbsp;&downarrow;&nbsp;';
             inputTips.appendChild(tip3);
-
+            const tip4 = document.createElement('span');
+            tip4.title = 'Příkaz - ulož hru';
+            tip4.innerHTML = '&nbsp;SAVE&nbsp;';
+            inputTips.appendChild(tip4);
+            const tip5 = document.createElement('span');
+            tip5.title = 'Příkaz - nahraj hru';
+            tip5.innerHTML = '&nbsp;LOAD&nbsp;';
+            inputTips.appendChild(tip5);
+            
             // Slogan
             const slogan = document.createElement('div');
             slogan.id = 'slogan';
@@ -100,7 +108,7 @@ function initState() {
         },
         onStart: function() {
             printRandomSlogan();
-            this.printInputHelp(this.messages.inputHelpTip);
+            this.printInputHelp('Zde zadej příkaz...');
         },
         onEnd: function(endState) {
             if (endState) {
@@ -749,6 +757,13 @@ function initState() {
                 } else {
                     game.print("Nemáš u sebe nic.");
                 }
+            }
+        }, {
+            name: "slovník",
+            aliases: ["slovnik", "akce"],
+            perform: function(game) {
+                game.clearOutput();
+                game.print('Akce: ' + game.getActions().map(action => action.name).join(', '));
             }
         }]
     }

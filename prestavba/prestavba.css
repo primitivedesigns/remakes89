@@ -59,7 +59,7 @@ h1#game-title span:nth-child(even) {
 	background-color: silver;
 	color: black;
 	border-radius: 2px;
-	font-size: 1.2em;
+	font-size: 1em;
 	margin-right: 0.4em;
 }
 
