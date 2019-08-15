@@ -44,7 +44,7 @@ function initState() {
             locationExits: "Východy",
             unknownAction: "Bohužel... ale nezoufej, to je dialektika dějin!",
             inputHelpTip: '\xa0',
-            inputHelpPrefix: "Možnosti: ",
+            inputHelpPrefix: "Pokračuj: ",
             gameSaved: "Hra uložena.",
             gameLoaded: "Uložená pozice nahrána.",
         },
@@ -108,7 +108,7 @@ function initState() {
         },
         onStart: function() {
             printRandomSlogan();
-            this.printInputHelp('Zde zadej příkaz...');
+            this.printInputHelp('Zadej příkaz...');
         },
         onEnd: function(endState) {
             if (endState) {
@@ -745,7 +745,7 @@ function initState() {
                 }
             },
             autocomplete: function(game, str) {
-                return (!str || str.length === 0) ? game.getTakeableItems() : game.getTakeableItems().filter(item => item.name.startsWith(str));
+                return (!str || str.length === 0) ? game.getTakeableItems() : game.getTakeableItems().filter(item => game.aliasObjectNameStartsWith(item, str));
             }
         }, {
             name: "inventář",
@@ -763,7 +763,7 @@ function initState() {
             aliases: ["slovnik", "akce"],
             perform: function(game) {
                 game.clearOutput();
-                game.print('Akce: ' + game.getActions().map(action => action.name).join(', '));
+                game.print('Můžeš zadat příkazy: ' + game.getActions().map(action => action.name).join(', '));
             }
         }]
     }

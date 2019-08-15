@@ -51,25 +51,37 @@ h1#game-title span:nth-child(even) {
 }
 
 #game-input-help {
-	color: gray;
+	color: silver;
 	font-size: 1.3em;
 }
 
 #game-input-tip span {
-	background-color: silver;
-	color: black;
-	border-radius: 2px;
+	background-color: gray;
+	color: white;
+	border-radius: 4px;
 	font-size: 1em;
 	margin-right: 0.4em;
 }
 
+#game-input-container {
+	width: auto;
+	background-color: #242424;
+	border: none;
+	padding: 0.7em;
+	padding-left: 1em;
+	color: white;
+	bottom: 0;
+	border-radius: 0px 15px 0px 15px;
+	margin-bottom: 0.2em;
+}
+
 #game-input {
 	font-family: 'Roboto Mono', 'VT323', monospace;
-	text-transform: none;
 	width: 100%;
 	background-color: #242424;
 	border: none;
-	padding: 0.4em;
+	padding-top: 0.4em;
+	padding-bottom: 0.4em;
 	font-size: 2.5em;
 	color: white;
 	bottom: 0;
@@ -106,7 +118,7 @@ div.intro-text2, div.intro-text3 {
 
 div.intro-text3 {
 	text-transform: none;
-	}
+}
 
 div.intro-text1, div.intro-text4 {
 	color: silver;

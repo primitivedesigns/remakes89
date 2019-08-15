@@ -33,7 +33,7 @@ function createEngine() {
         }
     }, {
         name: 'save',
-        aliases: ['uloz','ulož'],
+        aliases: ['uloz', 'ulož'],
         perform: function(game, params) {
             const positionName = engine.save(params);
             if (game.messages.gameSaved) {
@@ -42,7 +42,7 @@ function createEngine() {
         }
     }, {
         name: 'load',
-        aliases: ['nahrat','nahraj'],
+        aliases: ['nahrat', 'nahraj'],
         perform: function(game, params) {
             const positionName = engine.load(params);
             // NOTE: we cannot use the 'game' param because a new game was
@@ -190,19 +190,37 @@ function createEngine() {
         }
 
         function autocomplete() {
-            const intputValue = inputBox.value;
-            const parts = intputValue.split(/\s+/);
+            const inputValue = inputBox.value;
+            if (inputValue.trim().length === 0) {
+                const actions = engine.game.getActions();
+                engine.actions.forEach(action => actions.push(action));
+                engine.game.clearInputHelp();
+                const prefix = engine.game.messages.inputHelpPrefix ? engine.game.messages.inputHelpPrefix : "";
+                engine.game.printInputHelp(prefix + actions.map(action => action.name).join(', '));
+                return;
+            }
+            const parts = inputValue.split(/\s+/);
             if (parts.length == 1) {
-                const actions = engine.game.getActions().filter(action => engine.game.isInputCaseSensitive ? action.name.startsWith(intputValue) : action.name.toUpperCase().startsWith(intputValue.toUpperCase()));
+                const actions = engine.game.getActions().filter(action => engine.game.aliasObjectNameStartsWith(action, inputValue));
                 // Add built-in actions
-                engine.actions.filter(action => engine.game.isInputCaseSensitive ? action.name.startsWith(intputValue) : action.name.toUpperCase().startsWith(intputValue.toUpperCase())).forEach(action => actions.push(action));
+                engine.actions.filter(action => engine.game.aliasObjectNameStartsWith(action, inputValue)).forEach(action => actions.push(action));
 
                 if (actions.length === 1) {
-                    inputBox.value = actions[0].name + ' ';
+                    let val = actions[0].name;
+                    if (!val.startsWith(inputValue)) {
+                        val = actions[0].aliases.find(alias => alias.startsWith(inputValue));
+                    }
+                    inputBox.value = val + ' ';
                 } else {
                     engine.game.clearInputHelp();
                     const prefix = engine.game.messages.inputHelpPrefix ? engine.game.messages.inputHelpPrefix : "";
-                    engine.game.printInputHelp(prefix + actions.map(action => action.name).join(', '));
+                    engine.game.printInputHelp(prefix + actions.map(action => {
+                        let val = action.name;
+                        if (!val.startsWith(inputValue)) {
+                            val = action.aliases.find(alias => alias.startsWith(inputValue));
+                        }
+                        return val;
+                    }).join(', '));
                 }
             } else if (parts.length == 2) {
                 let action = engine.actions.find(a => engine.game.aliasObjectMatchesName(a, parts[0]));
