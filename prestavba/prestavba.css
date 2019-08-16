@@ -124,3 +124,64 @@ div.intro-text1, div.intro-text4 {
 	color: silver;
 	text-align: left;
 }
+
+div#game-sidebar {
+	font-family: 'Times New Roman', serif;
+	height: 100%;
+	width: 0;
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	right: 0;
+	background-color: white;
+	color: black;
+	overflow-x: auto;
+	padding: 0;
+	transition: 0.3s;
+	height: 100%;
+}
+
+div#game-sidebar h2 {
+	padding-left: 30px;
+	font-size: 1.4em;
+}
+
+div#game-sidebar p {
+	padding-left: 30px;
+	padding-right: 30px;
+	text-align: justify;
+}
+
+div#game-sidebar-toggle {
+	position: absolute;
+	top: 2em;
+	right: 4em;
+	display: none;
+}
+
+div#game-sidebar-toggle a.toggle-btn {
+	font-size: 4em;
+	text-decoration: none;
+	color: white;
+}
+
+div#game-sidebar a.toggle-btn {
+	position: fixed;
+	top: 0;
+	right: 1em;
+	font-size: 3em;
+	text-decoration: none;
+	margin-left: 30px;
+	margin-bottom: 2em;
+	color: black;
+	font-weight: bold;
+}
+
+div#game-sidebar div.command {
+	font-family: 'Roboto Mono', 'VT323', monospace;
+	padding-left: 2em;
+}
+
+div#game-sidebar ul {
+	margin-left: 2em;
+}

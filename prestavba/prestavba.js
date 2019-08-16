@@ -108,7 +108,11 @@ function initState() {
         },
         onStart: function() {
             printRandomSlogan();
-            this.printInputHelp('Zadej příkaz...');
+            const sidebarToggle = document.querySelector('#game-sidebar-toggle');
+            if (sidebarToggle) {
+                sidebarToggle.style.display = 'block';
+            }
+            this.printInputHelp('Zadej příkaz. Pro automatické doplnění příkazu použij klávesu TAB.');
         },
         onEnd: function(endState) {
             if (endState) {
@@ -777,4 +781,20 @@ function printRandomSlogan() {
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
+}
+
+function openSide() {
+    const sidebar = document.querySelector('#game-sidebar');
+    const container = document.querySelector('#game-container');
+    sidebar.style.width = "50%";
+    container.style.marginRight = "50%";
+}
+
+function closeSide() {
+    const sidebar = document.querySelector('#game-sidebar');
+    const container = document.querySelector('#game-container');
+    const inputBox = document.querySelector('#game-input');
+    sidebar.style.width = "0";
+    container.style.marginRight = "0";
+    inputBox.focus();
 }

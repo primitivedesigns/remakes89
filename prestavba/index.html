@@ -8,11 +8,91 @@
 <link
     href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap"
     rel="stylesheet">
-     <link href="https://fonts.googleapis.com/css?family=Space+Mono&display=swap" rel="stylesheet"> 
+<link
+    href="https://fonts.googleapis.com/css?family=Space+Mono&display=swap"
+    rel="stylesheet">
 <link href="prestavba.css" type="text/css" rel="stylesheet" />
 </head>
 <body>
     <div id="game-container"></div>
+    <div id="game-sidebar">
+        <a href="javascript:void(0)" class="toggle-btn"
+            onclick="closeSide()">&times;</a>
+        <h2>Jak hrát textovku</h2>
+        <p>Textovky (někdy také nazývané "interaktivní fikce")
+            popisují herní svět pomocí psaného textu. V každé lokaci v
+            rámci herního světa si můžete přečíst její popis, seznam
+            věcí, které vaše postava vidí, a seznam možných východů.
+            Tyto hry se zpravidla ovládají pomocí psaných příkazů, které
+            jsou adresované hlavní postavě hry. Příkazy se píšou na
+            klávesnici a odesílají se klávesou Enter - připomínají tedy
+            příkazovou řádku ve starších i současných operačních
+            systémech. Československé textovky z 80. let dovolovaly psát
+            jednoduché příkazy skládající se ze slovesa a předmětu, jako
+            například:</p>
+        <div class="command">PROZKOUMEJ POKLOP</div>
+        <div class="command">VEZMI KLÍČ</div>
+        <p>Naše verze textovek dovolují psát příkazy s diakritikou i
+            bez, a dokonce i zkracovat příkazy na tři první písmena.
+            Výše uvedené příkazy tedy můžete napsat i jako:</p>
+        <div class="command">PRO POK</div>
+        <div class="command">VEZ KLI</div>
+        <p>Mezi místnostmi se pohybujete pomocí slov nebo písmen
+            označujících směr, kterým se chcete vydat, jako například:</p>
+        <div class="command">SEVER (nebo S)</div>
+        <div class="command">DOLŮ (nebo D)</div>
+        <p>Seznam všech dovolených sloves můžete vypsat příkazem
+            "SLOVNÍK". Pokud si nevíte rady, příkaz "POMOC" zobrazí
+            nápovědu k dané místnosti. V originálních verzích her však
+            tato nápověda nebyla, přidali jsme ji až do současných
+            remaků.</p>
+        <h2>O hře P.R.E.S.T.A.V.B.A.</h2>
+        <p>Hru naprogramoval v roce 1988 Miroslav Fídler z Prahy 6,
+            známý pod značkou Cybexlab Software. V roce 1988 byl jedním
+            z nejznámějších a nejrespektovanějších československých
+            herních tvůrců. Hru P.R.E.S.T.A.V.B.A. však vydal pod
+            pseudonymem ÚV Software coby „naivní formu protestu“ a jeho
+            autorství vyšlo najevo až po roce 1989. Hra je ironicky
+            dedikována „20. výročí osvobození Československa
+            spojeneckými armádami“, ale ze samotné hry je jasné, že toto
+            věnování je zamýšleno satiricky. Cílem hry je vyhodit do
+            povětří sochu Lenina v bezejmenném československém městě.
+            Původní verze vyšla pro počítače kompatibilní se standardem
+            ZX Spectrum, později ji neznámý programátor (nikoli však
+            Fídler) převedl na osmibitový počítač Atari. Podobně jako
+            většina her v tehdejším Československu se i
+            P.R.E.S.T.A.V.B.A. šířila kopírováním z kazety na kazetu
+            mezi přáteli a známými.</p>
+        <h2>Jak jsme hru rekonstruovali</h2>
+        <p>Hru jsme přepsali ze zdrojové kódu v programovacím jazyce
+            ZX Spectrum BASIC do JavaScriptu. Veškeré texty jsou
+            původní, pouze s přidanou diakritikou a případnou opravou
+            překlepů. Hádanky a jednotlivé herní mechaniky jsme se
+            snažili co nejvěrněji reprodukovat. Oproti původní verzi
+            jsou však v našem remaku i následující změny:</p>
+        <ul>
+            <li>Úvodní obrázek byl nakreslen pro potřeby remaku ve
+                formátu odpovídajícím grafice původní platformy (ZX
+                Spectrum). Původní verze žádný obrázek neměla.</li>
+            <li>Remake umožňuje použití některých synonym (SEBER
+                místo VEZMI apod.)</li>
+            <li>Remake obsahuje nápovědy (POMOC), které nebyly v
+                původní hře přítomny.</li>
+            <li>Remake umožňuje uložit a nahrát pozici ve hře (SAVE
+                a LOAD).</li>
+            <li>Remake používá čitelnější font a velmi lehce mění
+                interface hry.</li>
+            <li>Interface remaku umožňuje opakovat příkazy pomocí
+                šipek nahoru a dolů, případně klávesy TAB.</li>
+
+        </ul>
+        <h2>Často kladené otázky (FAQ)</h2>
+        <p>TODO</p>
+    </div>
+    <div id="game-sidebar-toggle">
+        <a href="javascript:void(0)" class="toggle-btn"
+            onclick="openSide()">&#9776;</a>
+    </div>
     <script src="prestavba.js"></script>
     <script src="../engine.js"></script>
     <script>
