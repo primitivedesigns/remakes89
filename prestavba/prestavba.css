@@ -152,14 +152,14 @@ div#game-sidebar p {
 	text-align: justify;
 }
 
-div#game-sidebar-toggle {
+div#game-sidebar-open {
 	position: absolute;
 	top: 2em;
 	right: 4em;
 	display: none;
 }
 
-div#game-sidebar-toggle a.toggle-btn {
+div#game-sidebar-open a.toggle-btn {
 	font-size: 4em;
 	text-decoration: none;
 	color: white;
@@ -175,6 +175,10 @@ div#game-sidebar a.toggle-btn {
 	margin-bottom: 2em;
 	color: black;
 	font-weight: bold;
+}
+
+a#game-sidebar-close {
+	display: none;
 }
 
 div#game-sidebar div.command {
