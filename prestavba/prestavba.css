@@ -30,7 +30,7 @@ h1#game-title span:nth-child(even) {
 }
 
 #game-output div, #game-location div {
-	font-size: 1.8em;
+	font-size: 2em;
 	line-height: normal;
 }
 
