@@ -1,4 +1,4 @@
-# P.R.E.S.T.A.V.B.A.
+# P.R.E.S.T.A.V.B.A. PKUS
 
 ## Jak hrát textovku
 
