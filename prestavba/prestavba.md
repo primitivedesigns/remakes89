@@ -1,6 +1,6 @@
 # P.R.E.S.T.A.V.B.A.
 
-## Jak hrát textovku DJKJDKSJDKJSK
+## Jak hrát textovku
 
 Textovky (někdy také nazývané "interaktivní fikce") popisují herní svět pomocí psaného textu. V každé lokaci v rámci herního světa si můžete přečíst její popis, seznam věcí, které vaše postava vidí, a seznam možných východů. Tyto hry se zpravidla ovládají pomocí psaných příkazů, které jsou adresované hlavní postavě hry. Příkazy se píšou na klávesnici a odesílají se klávesou Enter - připomínají tedy příkazovou řádku ve starších i současných operačních systémech. Československé textovky z 80. let dovolovaly psát jednoduché příkazy skládající se ze slovesa a předmětu, jako například:
 
