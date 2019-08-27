@@ -64,11 +64,15 @@ function initState() {
             text3.textContent = 'Program Revoluční Experimentální Socialisticky Tvořivé Avantgardní Voloviny Básníků a Analfabetů';
             gameContainer.appendChild(text3);
 
+            const text5 = document.createElement('div');
+            text5.className = 'intro-text5';
+            text5.innerHTML = '<span class="enter-cmd">&#9166;</span> Stiskni klávesu ENTER...';
+            gameContainer.appendChild(text5);
+
             const text4 = document.createElement('div');
             text4.className = 'intro-text4';
             text4.innerHTML = '&copy; 1988 ÚV Software<br>Námět &copy; 1968 Život';
             gameContainer.appendChild(text4);
-
         }],
         onInitControls: function(gameContainer) {
             // Custom title
@@ -739,7 +743,7 @@ function initState() {
                 if (item) {
                     game.print("Položil jsi " + item.name + ".");
                 } else {
-                    game.print("Tohle nejde položit."); 
+                    game.print("Tohle nejde položit.");
                 }
             },
             autocomplete: function(game, str) {

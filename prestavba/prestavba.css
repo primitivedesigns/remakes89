@@ -14,11 +14,13 @@ h1#game-title span:nth-child(odd) {
 	background-color: white;
 	color: black;
 	padding: 0 0.2em 0 0.2em;
+	font-weight: normal;
 }
 
 h1#game-title span:nth-child(even) {
 	background-color: black;
 	color: white;
+	font-weight: normal;
 }
 
 #game-container {
@@ -103,7 +105,12 @@ div.intro-text2 span:nth-child(even) {
 	color: white;
 }
 
-div.intro-text1, div.intro-text2, div.intro-text3, div.intro-text4 {
+div.intro-text2 {
+	font-size: 2em;
+	margin-bottom: 1em;
+}
+
+div.intro-text1, div.intro-text3, div.intro-text4 {
 	margin-bottom: 1em;
 	font-size: 1.5em;
 }
@@ -119,6 +126,20 @@ div.intro-text3 {
 div.intro-text1, div.intro-text4 {
 	color: silver;
 	text-align: left;
+}
+
+div.intro-text4 {
+	font-size: 1em;
+}
+
+div.intro-text5 {
+	float: right;
+	font-size: 1.5em;
+	background-color: white;
+	color: black;
+	text-align: right;
+	padding: 0.2em;
+	border-radius: 5px;
 }
 
 div#game-sidebar {
@@ -187,16 +208,12 @@ div#game-sidebar ul {
 }
 
 .typewriter {
-  overflow: hidden;
-  /*margin: 0 auto;*/
-  white-space: nowrap;
-  display: inline-block;
-  animation: 
-    typing 2s steps(40, end),
-    blink-caret .75s step-end infinite;
+	overflow: hidden;
+	white-space: nowrap;
+	display: inline-block;
+	animation: typing 2s steps(40, end), blink-caret .75s step-end infinite;
 }
 
-/* The typing effect */
 @keyframes typing {
   from { width: 0 }
   to { width: 100% }
