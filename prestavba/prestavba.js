@@ -100,7 +100,7 @@ function initState() {
             tip5.title = 'Příkaz - nahraj hru';
             tip5.innerHTML = '&nbsp;LOAD&nbsp;';
             inputTips.appendChild(tip5);
-            
+
             // Slogan
             const slogan = document.createElement('div');
             slogan.id = 'slogan';
@@ -249,7 +249,7 @@ function initState() {
             readInit: function(obj) {
                 obj.actions = [{
                     name: "přečti",
-                    aliases: ["čti", "cti", "precti"],
+                    aliases: ["čti", "cti", "precti", "cist", "číst"],
                     perform: function(game) {
                         const newspaper = game.findItem("úvodník").item;
                         if (newspaper) {
@@ -270,6 +270,7 @@ function initState() {
             readInit: function(obj) {
                 obj.actions = [{
                     name: "zapal",
+                    aliases: ["zapalit", "zapálit"],
                     perform: function(game, params) {
                         game.clearOutput();
                         if (getRandomInt(3) === 0) {
@@ -419,6 +420,7 @@ function initState() {
             readInit: function(obj) {
                 obj.actions = [{
                     name: "kopej",
+                    aliases: ["kopat"],
                     perform: function(game, params) {
                         const pickaxe = game.getInventoryItem("krumpáč");
                         const newspaper = game.findItem("úvodník").item;
@@ -479,7 +481,7 @@ function initState() {
             readInit: function(obj) {
                 obj.actions = [{
                     name: "zadej",
-                    aliases: ["kod", "kód"],
+                    aliases: ["kod", "kód", "zadat"],
                     perform: function(game, params) {
                         const door = game.getLocationItem("dveře");
                         game.clearOutput();
@@ -493,6 +495,7 @@ function initState() {
                     }
                 }, {
                     name: "otevři",
+                    aliases: ["otevri", "otevrit", "otevřít"],
                     perform: function(game, params) {
                         const door = game.getLocationItem("dveře");
                         game.clearOutput();
@@ -507,7 +510,7 @@ function initState() {
                                     name: "V",
                                     location: "m10"
                                 });
-                                game.printLocationInfo();    
+                                game.printLocationInfo();
                             }
                         } else {
                             game.print(game.messages.unknownAction);
@@ -535,7 +538,7 @@ function initState() {
             readInit: function(obj) {
                 obj.actions = [{
                     name: "otevři",
-                    aliases: ["otevri"],
+                    aliases: ["otevri", "otevrit", "otevřít"],
                     perform: function(game, params) {
                         game.clearOutput();
                         const trapdoor = game.getLocationItem('poklop');
@@ -681,6 +684,7 @@ function initState() {
         // GLOBAL ACTIONS
         actions: [{
             name: "prozkoumej",
+            aliases: ["prozkoumat"],
             perform: function(game, params) {
                 game.clearOutput();
                 if (!game.examineItem(params.join(" "))) {
@@ -728,12 +732,14 @@ function initState() {
             }
         }, {
             name: "polož",
-            aliases: ["poloz"],
+            aliases: ["poloz", "polozit", "položit"],
             perform: function(game, params) {
                 const item = game.dropItem(params[0]);
                 if (item) {
                     game.clearOutput();
                     game.print("Položil jsi " + item.name + ".");
+                } else {
+                    game.print("Tohle nejde položit."); 
                 }
             },
             autocomplete: function(game, str) {
@@ -742,7 +748,7 @@ function initState() {
             }
         }, {
             name: "vezmi",
-            aliases: ["seber"],
+            aliases: ["seber", "vzít", "vzit"],
             perform: function(game, params) {
                 game.clearOutput();
                 const item = game.takeItem(params[0]);

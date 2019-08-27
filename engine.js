@@ -294,6 +294,8 @@ function createGame(initialState, savedPosition) {
         game.time = savedPosition.time;
         game.startLocation = savedPosition.location;
         game.inventory = savedPosition.inventory;
+    } else {
+        game.inventory = [];
     }
 
     // Init UI controls
