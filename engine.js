@@ -36,6 +36,7 @@ function createEngine() {
         aliases: ['uloz', 'ulož'],
         perform: function(game, params) {
             const positionName = engine.save(params);
+            game.clearOutput();
             if (game.messages.gameSaved) {
                 game.print(game.messages.gameSaved + ' [' + positionName + ']');
             }
@@ -45,6 +46,7 @@ function createEngine() {
         aliases: ['nahrat', 'nahraj'],
         perform: function(game, params) {
             const positionName = engine.load(params);
+            game.clearOutput();
             // NOTE: we cannot use the 'game' param because a new game was
             // loaded already
             if (engine.game.messages.gameLoaded) {
@@ -205,7 +207,10 @@ function createEngine() {
                 // Add built-in actions
                 engine.actions.filter(action => engine.game.aliasObjectNameStartsWith(action, inputValue)).forEach(action => actions.push(action));
 
-                if (actions.length === 1) {
+                if (actions.length === 0) {
+                    engine.game.clearInputHelp();
+                    engine.game.printInputHelp('\xa0');
+                } else if (actions.length === 1) {
                     let val = actions[0].name;
                     if (!val.startsWith(inputValue)) {
                         val = actions[0].aliases.find(alias => alias.startsWith(inputValue));

@@ -735,8 +735,8 @@ function initState() {
             aliases: ["poloz", "polozit", "položit"],
             perform: function(game, params) {
                 const item = game.dropItem(params[0]);
+                game.clearOutput();
                 if (item) {
-                    game.clearOutput();
                     game.print("Položil jsi " + item.name + ".");
                 } else {
                     game.print("Tohle nejde položit."); 
@@ -808,7 +808,7 @@ function closeSide() {
     const container = document.querySelector('#game-container');
     const inputBox = document.querySelector('#game-input');
     sidebar.style.width = "0";
-    container.style.marginRight = "2em";
+    container.style.marginRight = "0";
     inputBox.focus();
     sidebarClose.style.display = "none";
 }

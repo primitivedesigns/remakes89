@@ -22,11 +22,12 @@ h1#game-title span:nth-child(even) {
 }
 
 #game-container {
-	margin: 16px;
+	margin: 0px;
 	padding: 1em;
 	background-color: black;
 	border-radius: 15px;
 	font-size: 2.5em;
+	height: auto;
 }
 
 #game-output {
@@ -44,7 +45,7 @@ h1#game-title span:nth-child(even) {
 }
 
 div#slogan {
-	margin-top: 1em;
+	margin-top: 0.5em;
 	padding: 0.5em;
 	color: gray;
 }
@@ -55,7 +56,7 @@ div#slogan {
 }
 
 #game-input-help {
-	color: silver;
+	color: white;
 	font-size: 0.8em;
 }
 
@@ -63,7 +64,7 @@ div#slogan {
 	background-color: gray;
 	color: white;
 	border-radius: 4px;
-	font-size: 1em;
+	font-size: 0.6em;
 	margin-right: 0.4em;
 }
 
@@ -71,7 +72,7 @@ div#slogan {
 	width: auto;
 	background-color: #242424;
 	border: none;
-	padding: 0.5em;
+	padding: 0.3em;
 	padding-left: 1em;
 	color: white;
 	bottom: 0;
@@ -89,7 +90,6 @@ div#slogan {
 	color: white;
 	bottom: 0;
 	border-radius: 15px;
-	margin-bottom: 0.2em;
 }
 
 div.intro-text2 span:nth-child(odd) {
