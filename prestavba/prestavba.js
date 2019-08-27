@@ -112,7 +112,7 @@ function initState() {
             if (sidebarOpen) {
                 sidebarOpen.style.display = 'block';
             }
-            this.printInputHelp('Zadej příkaz. Pro automatické doplnění příkazu použij klávesu TAB.');
+            this.printInputHelp('Zadej příkaz. Například "prozkoumej poklop". Pro automatické doplnění příkazu zkus klávesu TAB.');
         },
         onEnd: function(endState) {
             if (endState) {
@@ -498,13 +498,17 @@ function initState() {
                         game.clearOutput();
 
                         if (game.matchName(params[0], "dveře")) {
-                            door.open = true;
-                            game.print("Cesta na záchod je volná!");
-                            game.location.exits.push({
-                                name: "V",
-                                location: "m10"
-                            });
-                            game.printLocationInfo();
+                            if (door.locked) {
+                                game.print("Dveře jsou zamčené.");
+                            } else {
+                                door.open = true;
+                                game.print("Cesta na záchod je volná!");
+                                game.location.exits.push({
+                                    name: "V",
+                                    location: "m10"
+                                });
+                                game.printLocationInfo();    
+                            }
                         } else {
                             game.print(game.messages.unknownAction);
                         }

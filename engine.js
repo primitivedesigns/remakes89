@@ -507,7 +507,7 @@ function createGame(initialState, savedPosition) {
             itemsStr = this.messages.noLocationItems;
         }
         this.printLocation(itemsStr, "items");
-        this.printLocation("-".repeat(itemsStr.length));
+        this.printLocation("-".repeat(itemsStr.length), 'typewriter');
         if (this.onLocationInfo) {
             this.onLocationInfo(this);
         }
@@ -533,6 +533,8 @@ function createGame(initialState, savedPosition) {
         const line = document.createElement('div');
         if (cssClass) {
             line.className = cssClass;
+        } else {
+            line.className = 'typewriter';
         }
         outputDiv.insertBefore(line, null).innerText = str;
     };

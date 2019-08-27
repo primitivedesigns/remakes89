@@ -1,14 +1,12 @@
 body {
 	background-color: #151515;
-	font-family: 'Roboto Mono', 'VT323', monospace;
+	font-family: 'VT323', 'Roboto Mono', monospace;
 	text-transform: none;
 	color: white;
-	font-size: 1.2em;
 }
 
 h1 {
-	font-size: 3em;
-	font-weight: bold;
+	font-size: 2em;
 	margin-top: 0em;
 }
 
@@ -23,24 +21,30 @@ h1#game-title span:nth-child(even) {
 	color: white;
 }
 
+#game-container {
+	margin: 16px;
+	padding: 1em;
+	background-color: black;
+	border-radius: 15px;
+	font-size: 2.5em;
+}
+
 #game-output {
-	margin-top: 1em;
-	height: 20%;
+	margin-top: 0.2em;
+	height: 4em;
 	overflow: auto;
 }
 
 #game-output div, #game-location div {
-	font-size: 2em;
 	line-height: normal;
 }
 
 #game-location .exits {
-	margin-top: 1em;
+	margin-top: 0.5em;
 }
 
-#slogan {
+div#slogan {
 	margin-top: 1em;
-	font-size: 2em;
 	padding: 0.5em;
 	color: gray;
 }
@@ -52,7 +56,7 @@ h1#game-title span:nth-child(even) {
 
 #game-input-help {
 	color: silver;
-	font-size: 1.3em;
+	font-size: 0.8em;
 }
 
 #game-input-tip span {
@@ -67,33 +71,25 @@ h1#game-title span:nth-child(even) {
 	width: auto;
 	background-color: #242424;
 	border: none;
-	padding: 0.7em;
+	padding: 0.5em;
 	padding-left: 1em;
 	color: white;
 	bottom: 0;
 	border-radius: 0px 15px 0px 15px;
-	margin-bottom: 0.2em;
 }
 
 #game-input {
-	font-family: 'Roboto Mono', 'VT323', monospace;
+	font-family: 'VT323', 'Roboto Mono', monospace;
+	font-size: 1em;
 	width: 100%;
 	background-color: #242424;
 	border: none;
 	padding-top: 0.4em;
 	padding-bottom: 0.4em;
-	font-size: 2.5em;
 	color: white;
 	bottom: 0;
 	border-radius: 15px;
 	margin-bottom: 0.2em;
-}
-
-#game-container {
-	margin: 2em;
-	padding: 2em;
-	background-color: black;
-	border-radius: 15px;
 }
 
 div.intro-text2 span:nth-child(odd) {
@@ -109,7 +105,7 @@ div.intro-text2 span:nth-child(even) {
 
 div.intro-text1, div.intro-text2, div.intro-text3, div.intro-text4 {
 	margin-bottom: 1em;
-	font-size: 3em;
+	font-size: 1.5em;
 }
 
 div.intro-text2, div.intro-text3 {
@@ -182,10 +178,26 @@ a#game-sidebar-close {
 }
 
 div#game-sidebar div.command {
-	font-family: 'Roboto Mono', 'VT323', monospace;
+	font-family: 'VT323', 'Roboto Mono', monospace;
 	padding-left: 2em;
 }
 
 div#game-sidebar ul {
 	margin-left: 2em;
+}
+
+.typewriter {
+  overflow: hidden;
+  /*margin: 0 auto;*/
+  white-space: nowrap;
+  display: inline-block;
+  animation: 
+    typing 2s steps(40, end),
+    blink-caret .75s step-end infinite;
+}
+
+/* The typing effect */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
 }
