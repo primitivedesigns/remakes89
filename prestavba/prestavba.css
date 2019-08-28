@@ -210,7 +210,6 @@ div#game-sidebar ul {
 .typewriter {
 	overflow: hidden;
 	white-space: nowrap;
-	display: inline-block;
 	animation: typing 2s steps(40, end), blink-caret .75s step-end infinite;
 }
 

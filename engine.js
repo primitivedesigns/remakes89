@@ -536,14 +536,21 @@ function createGame(initialState, savedPosition) {
         locationDiv.appendChild(line).innerText = str;
     };
 
-    game.print = function(str, cssClass) {
+    game.print = function(str, cssClass, delay) {
         const line = document.createElement('div');
         if (cssClass) {
             line.className = cssClass;
         } else {
             line.className = 'typewriter';
         }
-        outputDiv.insertBefore(line, null).innerText = str;
+        line.innerText = str;
+        if (delay) {
+            setTimeout(function() {
+                outputDiv.insertBefore(line, null)
+            }, delay);
+        } else {
+            outputDiv.insertBefore(line, null)
+        }
     };
 
     game.printInputHelp = function(str, cssClass) {

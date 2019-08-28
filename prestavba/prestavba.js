@@ -21,6 +21,7 @@ const dynamiteItemName = "dynamit";
 
 const dynamiteExplosionTime = 2;
 const bookBurningTime = 12;
+let sideOpen = false;
 
 function initState() {
 
@@ -109,6 +110,17 @@ function initState() {
             const slogan = document.createElement('div');
             slogan.id = 'slogan';
             gameContainer.appendChild(slogan);
+
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'F1') {
+                    event.preventDefault();
+                    if (sideOpen) {
+                        closeSide();
+                    } else {
+                        openSide();
+                    }
+                }
+            });
         },
         onStart: function() {
             printRandomSlogan();
@@ -205,7 +217,7 @@ function initState() {
                 obj.onExamine = function(game) {
                     if (!this.examined) {
                         this.examined = true;
-                        game.print('Něco jsi našel!');
+                        game.print('Něco jsi našel!', undefined, 300);
                         game.location.items.push('košík');
                         game.printLocationInfo();
                     }
@@ -220,7 +232,7 @@ function initState() {
                 obj.onExamine = function(game) {
                     if (!this.examined) {
                         this.examined = true;
-                        game.print('Něco jsi našel!');
+                        game.print('Něco jsi našel!', undefined, 300);
                         game.location.items.push('krabici');
                         game.printLocationInfo();
                     }
@@ -235,7 +247,7 @@ function initState() {
                 obj.onExamine = function(game) {
                     if (!this.examined) {
                         this.examined = true;
-                        game.print('Něco jsi našel!');
+                        game.print('Něco jsi našel!', undefined, 300);
                         game.location.items.push('klíč');
                         game.printLocationInfo();
                     }
@@ -798,6 +810,7 @@ function getRandomInt(max) {
 }
 
 function openSide() {
+    sideOpen = true;
     const sidebar = document.querySelector('#game-sidebar');
     const sidebarClose = document.querySelector('#game-sidebar-close');
     const container = document.querySelector('#game-container');
@@ -807,6 +820,7 @@ function openSide() {
 }
 
 function closeSide() {
+    sideOpen = false;
     const sidebar = document.querySelector('#game-sidebar');
     const sidebarClose = document.querySelector('#game-sidebar-close');
     const container = document.querySelector('#game-container');
