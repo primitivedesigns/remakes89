@@ -533,7 +533,7 @@ function initState() {
                         }
                     },
                     autocomplete: function(game, str) {
-                        return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
+                        return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => game.aliasObjectNameStartsWith(item, str));
                     }
                 }]
             }
@@ -553,13 +553,26 @@ function initState() {
             }],
             readInit: function(obj) {
                 obj.actions = [{
+                    name: "použij",
+                    aliases: ["pouzij"],
+                    perform: function(game, params) {
+                        const openAction = obj.actions.find(action => action.name === "otevři");
+                        if (openAction) {
+                            openAction.perform(game, ["poklop"]);
+                        }
+                    },
+                    autocomplete: function(game, str) {
+                        return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => game.aliasObjectNameStartsWith(item, str));
+                    }
+                }, {
                     name: "otevři",
-                    aliases: ["otevri", "otevrit", "otevřít"],
+                    aliases: ["otevri", "otevrit", "otevřít", "odemkni"],
                     perform: function(game, params) {
                         game.clearOutput();
-                        const trapdoor = game.getLocationItem('poklop');
+                        const trapdoor = game.getLocationItem("poklop");
                         if (trapdoor && trapdoor.closed && game.matchName(params[0], "poklop")) {
                             if (game.getInventoryItem("klíč")) {
+                                trapdoor.closed = false;
                                 game.print("S pomocí klíče se ti podařilo otevřít poklop.");
                                 game.location.exits.push({
                                     name: "D",
@@ -574,7 +587,7 @@ function initState() {
                         }
                     },
                     autocomplete: function(game, str) {
-                        return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
+                        return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => game.aliasObjectNameStartsWith(item, str));
                     }
                 }]
             }
@@ -708,7 +721,7 @@ function initState() {
                 }
             },
             autocomplete: function(game, str) {
-                return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
+                return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => game.aliasObjectNameStartsWith(item, str));
             }
         }, {
             name: "S",
