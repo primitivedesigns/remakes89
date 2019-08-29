@@ -21,6 +21,7 @@ const dynamiteItemName = "dynamit";
 
 const dynamiteExplosionTime = 2;
 const bookBurningTime = 12;
+const beep = new Audio("snd/beep.wav");
 let sideOpen = false;
 
 function initState() {
@@ -120,6 +121,8 @@ function initState() {
                         openSide();
                     }
                 }
+                // Play beep sound
+                beep.play()
             });
         },
         onStart: function() {
