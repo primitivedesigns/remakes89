@@ -1,6 +1,6 @@
 const gameTitle = "P.R.E.S.T.A.V.B.A.";
 const slogans = ["Sláva K.S.Č.!",
-    "Se SSSR na věčné časy",
+    "Se SSSR na věčné časy!",
     "Ať žije socialismus!",
     "Proletáři všech zemí, spojte se!",
     "Sláva leninské politice strany!",
@@ -569,7 +569,7 @@ function initState() {
                     }
                 }, {
                     name: "otevři",
-                    aliases: ["otevri", "otevrit", "otevřít", "odemkni"],
+                    aliases: ["otevri", "otevrit", "otevřít", "odemkni", "odemknout"],
                     perform: function(game, params) {
                         game.clearOutput();
                         const trapdoor = game.getLocationItem("poklop");
