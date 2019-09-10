@@ -100,7 +100,7 @@ function initState() {
                     typewriter(text3, "Program Revoluční Experimentální Socialisticky Tvořivé Avantgardní Voloviny Básníků a Analfabetů", 0, followup);
                 });
                 funcs.push(followup => {
-                    text5.innerHTML = "<span class="enter-cmd">&#9166;</span> Stiskni klávesu ENTER...";
+                    text5.innerHTML = '<span class="enter-cmd">&#9166;</span> Stiskni klávesu ENTER...';
                     text4.innerHTML = "&copy; 1988 ÚV Software<br>Námět &copy; 1968 Život";
                 });
                 queue(0, funcs);
@@ -179,7 +179,7 @@ function initState() {
             if (sidebarOpen) {
                 sidebarOpen.style.display = "block";
             }
-            this.printInputHelp("Zadej příkaz. Například "prozkoumej poklop". Pro automatické doplnění příkazu zkus klávesu TAB.");
+            this.printInputHelp('Zadej příkaz. Například "prozkoumej poklop". Pro automatické doplnění příkazu zkus klávesu TAB.');
         },
         onEnd: function(endState) {
             if (!endState) {
