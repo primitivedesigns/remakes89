@@ -30,10 +30,10 @@ function initState() {
 
     function titleToHtml(title, container) {
         for (let value of title) {
-            if (value === '.') {
-                container.appendChild(document.createTextNode('.'));
+            if (value === ".") {
+                container.appendChild(document.createTextNode("."));
             } else {
-                const letter = document.createElement('span');
+                const letter = document.createElement("span");
                 letter.textContent = value;
                 container.appendChild(letter);
             }
@@ -48,17 +48,17 @@ function initState() {
             locationExits: "Východy",
             unknownAction: "Bohužel... ale nezoufej, to je dialektika dějin!",
             multipleActionsMatch: "Vstupu odpovídá více příkazů: ",
-            inputHelpTip: '\xa0',
+            inputHelpTip: "\xa0",
             inputHelpPrefix: "Pokračuj: ",
             gameSaved: "Hra uložena.",
             gameLoaded: "Uložená pozice nahrána.",
         },
         intro: [function(gameContainer) {
-                const title = document.createElement('div');
+                const title = document.createElement("div");
                 gameContainer.appendChild(title);
                 title.className = "intro-title";
 
-                const img = document.createElement('img');
+                const img = document.createElement("img");
                 img.src = "img/title.png";
                 img.className = "intro-img";
                 title.appendChild(img);
@@ -78,20 +78,20 @@ function initState() {
                 text1.className = "intro-text1";
                 gameContainer.appendChild(text1);
 
-                const text2 = document.createElement('div');
-                text2.className = 'intro-text2';
+                const text2 = document.createElement("div");
+                text2.className = "intro-text2";
                 gameContainer.appendChild(text2);
 
-                const text3 = document.createElement('div');
-                text3.className = 'intro-text3';
+                const text3 = document.createElement("div");
+                text3.className = "intro-text3";
                 gameContainer.appendChild(text3);
 
-                const text5 = document.createElement('div');
-                text5.className = 'intro-text5';
+                const text5 = document.createElement("div");
+                text5.className = "intro-text5";
                 gameContainer.appendChild(text5);
 
-                const text4 = document.createElement('div');
-                text4.className = 'intro-text4';
+                const text4 = document.createElement("div");
+                text4.className = "intro-text4";
                 gameContainer.appendChild(text4);
 
                 funcs.push(followup => typewriter(text1, "ÚV Software si u příležitosti 20. výročí osvobození Československa spojeneckými armádami dovoluje nabídnout vám logickou konverzační hru:", 0, followup));
@@ -100,8 +100,8 @@ function initState() {
                     typewriter(text3, "Program Revoluční Experimentální Socialisticky Tvořivé Avantgardní Voloviny Básníků a Analfabetů", 0, followup);
                 });
                 funcs.push(followup => {
-                    text5.innerHTML = '<span class="enter-cmd">&#9166;</span> Stiskni klávesu ENTER...';
-                    text4.innerHTML = '&copy; 1988 ÚV Software<br>Námět &copy; 1968 Život';
+                    text5.innerHTML = "<span class="enter-cmd">&#9166;</span> Stiskni klávesu ENTER...";
+                    text4.innerHTML = "&copy; 1988 ÚV Software<br>Námět &copy; 1968 Život";
                 });
                 queue(0, funcs);
             }
@@ -124,42 +124,42 @@ function initState() {
         }],
         onInitControls: function(gameContainer) {
             // Custom title
-            const titleH1 = document.querySelector('#game-title');
+            const titleH1 = document.querySelector("#game-title");
             while (titleH1.firstChild) {
                 titleH1.removeChild(titleH1.firstChild);
             }
             titleToHtml(gameTitle, titleH1);
 
             // Input tips
-            const inputTips = document.querySelector('#game-input-tip');
-            const tip1 = document.createElement('span');
-            tip1.title = 'Speciální klávesa - doplň příkaz';
-            tip1.innerHTML = '&nbsp;&#8633; TAB&nbsp;';
+            const inputTips = document.querySelector("#game-input-tip");
+            const tip1 = document.createElement("span");
+            tip1.title = "Speciální klávesa - doplň příkaz";
+            tip1.innerHTML = "&nbsp;&#8633; TAB&nbsp;";
             inputTips.appendChild(tip1);
-            const tip2 = document.createElement('span');
-            tip2.title = 'Speciální klávesa - starší příkazy z historie';
-            tip2.innerHTML = '&nbsp;&uparrow;&nbsp;';
+            const tip2 = document.createElement("span");
+            tip2.title = "Speciální klávesa - starší příkazy z historie";
+            tip2.innerHTML = "&nbsp;&uparrow;&nbsp;";
             inputTips.appendChild(tip2);
-            const tip3 = document.createElement('span');
-            tip3.title = 'Speciální klávesa - novější příkazy z historie';
-            tip3.innerHTML = '&nbsp;&downarrow;&nbsp;';
+            const tip3 = document.createElement("span");
+            tip3.title = "Speciální klávesa - novější příkazy z historie";
+            tip3.innerHTML = "&nbsp;&downarrow;&nbsp;";
             inputTips.appendChild(tip3);
-            const tip4 = document.createElement('span');
-            tip4.title = 'Příkaz - ulož hru';
-            tip4.innerHTML = '&nbsp;SAVE&nbsp;';
+            const tip4 = document.createElement("span");
+            tip4.title = "Příkaz - ulož hru";
+            tip4.innerHTML = "&nbsp;SAVE&nbsp;";
             inputTips.appendChild(tip4);
-            const tip5 = document.createElement('span');
-            tip5.title = 'Příkaz - nahraj hru';
-            tip5.innerHTML = '&nbsp;LOAD&nbsp;';
+            const tip5 = document.createElement("span");
+            tip5.title = "Příkaz - nahraj hru";
+            tip5.innerHTML = "&nbsp;LOAD&nbsp;";
             inputTips.appendChild(tip5);
 
             // Slogan
-            const slogan = document.createElement('div');
-            slogan.id = 'slogan';
+            const slogan = document.createElement("div");
+            slogan.id = "slogan";
             gameContainer.appendChild(slogan);
 
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'F1') {
+            document.addEventListener("keydown", function(event) {
+                if (event.key === "F1") {
                     event.preventDefault();
                     if (sideOpen) {
                         closeSide();
@@ -175,11 +175,11 @@ function initState() {
         },
         onStart: function() {
             printRandomSlogan();
-            const sidebarOpen = document.querySelector('#game-sidebar-open');
+            const sidebarOpen = document.querySelector("#game-sidebar-open");
             if (sidebarOpen) {
-                sidebarOpen.style.display = 'block';
+                sidebarOpen.style.display = "block";
             }
-            this.printInputHelp('Zadej příkaz. Například "prozkoumej poklop". Pro automatické doplnění příkazu zkus klávesu TAB.');
+            this.printInputHelp("Zadej příkaz. Například "prozkoumej poklop". Pro automatické doplnění příkazu zkus klávesu TAB.");
         },
         onEnd: function(endState) {
             if (!endState) {
@@ -229,8 +229,8 @@ function initState() {
                     if (dynamiteLocation) {
                         if (dynamiteLocation.id === "m18") {
                             dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === "sochu"), 1);
-                            dynamiteLocation.items.push('trosky');
-                            dynamiteLocation.items.push('cihlu');
+                            dynamiteLocation.items.push("trosky");
+                            dynamiteLocation.items.push("cihlu");
                         }
                         dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === dynamiteItemName), 1);
                     }
@@ -257,45 +257,45 @@ function initState() {
         startLocation: "m9",
         // ITEMS
         items: [{
-            name: 'bednu',
-            aliases: ['bedna'],
-            desc: 'Je ze dřeva.',
+            name: "bednu",
+            aliases: ["bedna"],
+            desc: "Je ze dřeva.",
             readInit: function(obj) {
                 obj.onExamine = function(game) {
                     if (!this.examined) {
                         this.examined = true;
-                        game.print('Něco jsi našel!', undefined, 300);
-                        game.location.items.push('košík');
+                        game.print("Něco jsi našel!", undefined, 300);
+                        game.location.items.push("košík");
                         game.printLocationInfo();
                     }
 
                 }
             }
         }, {
-            name: 'košík',
+            name: "košík",
             aliases: ["kosik"],
             desc: "Je to hezký proutěný košík, i když poněkud špinavý.",
             readInit: function(obj) {
                 obj.onExamine = function(game) {
                     if (!this.examined) {
                         this.examined = true;
-                        game.print('Něco jsi našel!', undefined, 300);
-                        game.location.items.push('krabici');
+                        game.print("Něco jsi našel!", undefined, 300);
+                        game.location.items.push("krabici");
                         game.printLocationInfo();
                     }
 
                 }
             }
         }, {
-            name: 'krabici',
-            aliases: ['krabice'],
-            desc: 'Je z papíru.',
+            name: "krabici",
+            aliases: ["krabice"],
+            desc: "Je z papíru.",
             readInit: function(obj) {
                 obj.onExamine = function(game) {
                     if (!this.examined) {
                         this.examined = true;
-                        game.print('Něco jsi našel!', undefined, 300);
-                        game.location.items.push('klíč');
+                        game.print("Něco jsi našel!", undefined, 300);
+                        game.location.items.push("klíč");
                         game.printLocationInfo();
                     }
                 }
@@ -384,8 +384,8 @@ function initState() {
                 obj.onExamine = function(game) {
                     if (!this.examined) {
                         this.examined = true;
-                        game.print('Něco jsi našel!');
-                        game.location.items.push('knihu');
+                        game.print("Něco jsi našel!");
+                        game.location.items.push("knihu");
                         game.printLocationInfo();
                     }
                 }
@@ -411,7 +411,7 @@ function initState() {
                 obj.onExamine = function(game) {
                     if (!this.examined) {
                         this.examined = true;
-                        game.print('Něco jsi našel!');
+                        game.print("Něco jsi našel!");
                         game.location.items.push(dynamiteItemName);
                         game.printLocationInfo();
                     }
@@ -465,7 +465,7 @@ function initState() {
         }, {
             id: "m3",
             desc: "Jsi v malém jižním výklenku jeskyňky. Je tu spousta papíru.",
-            items: ['úvodník'],
+            items: ["úvodník"],
             exits: [{
                 name: "S",
                 location: "m4"
@@ -509,7 +509,7 @@ function initState() {
         }, {
             id: "m5",
             desc: "Jsi v úzké podzemní chodbě vedoucí na východ. Je tu vlhko.",
-            items: ['krumpáč'],
+            items: ["krumpáč"],
             exits: [{
                 name: "V",
                 location: "m4"
@@ -520,7 +520,7 @@ function initState() {
         }, {
             id: "m6",
             desc: "Jsi v bývalém skladišti. Je tu neskutečný nepořádek.",
-            items: ['bednu'],
+            items: ["bednu"],
             exits: [{
                 name: "J",
                 location: "m9"
@@ -528,7 +528,7 @@ function initState() {
         }, {
             id: "m7",
             desc: "Stojíš v tmavém výklenku.",
-            items: ['zapalovač'],
+            items: ["zapalovač"],
             exits: [{
                 name: "V",
                 location: "m9"
@@ -536,7 +536,7 @@ function initState() {
         }, {
             id: "m8",
             desc: "Stojíš před ošklivým smrdutým záchodem. Táhne od něj nepříjemný zápach.",
-            items: ['dveře'],
+            items: ["dveře"],
             exits: [{
                 name: "S",
                 location: "m9"
@@ -587,7 +587,7 @@ function initState() {
         }, {
             id: "m9",
             desc: "Stojíš v malé zaprášené místnosti.",
-            items: ['poklop'],
+            items: ["poklop"],
             exits: [{
                 name: "S",
                 location: "m6"
@@ -642,7 +642,7 @@ function initState() {
         }, {
             id: "m10",
             desc: "Jsi na špinavém záchodě. Radši to nebudu příliš popisovat, mohlo by se ti udělat nevolno.",
-            items: ['mísu'],
+            items: ["mísu"],
             exits: [{
                 name: "Z",
                 location: "m8"
@@ -650,7 +650,7 @@ function initState() {
         }, {
             id: "m11",
             desc: "Stojíš před krásně vyzdobeným oltářem.",
-            items: ['oltář'],
+            items: ["oltář"],
             exits: [{
                 name: "Z",
                 location: "m20"
@@ -739,7 +739,7 @@ function initState() {
         }, {
             id: "m18",
             desc: "Jsi v malém parčíku. Je tu plno zeleně.",
-            items: ['sochu'],
+            items: ["sochu"],
             exits: [{
                 name: "Z",
                 location: "m17"
@@ -854,7 +854,7 @@ function initState() {
             aliases: ["slovnik", "akce"],
             perform: function(game) {
                 game.clearOutput();
-                game.print('Můžeš zadat příkazy: ' + game.getActions().map(action => action.name).join(', '));
+                game.print("Můžeš zadat příkazy: " + game.getActions().map(action => action.name).join(", "));
             }
         }, {
             name: "pomoc",
@@ -872,7 +872,7 @@ function initState() {
 }
 
 function printRandomSlogan() {
-    document.querySelector('#slogan').innerText = slogans[getRandomInt(slogans.length)];
+    document.querySelector("#slogan").innerText = slogans[getRandomInt(slogans.length)];
 }
 
 function getRandomInt(max) {
@@ -881,9 +881,9 @@ function getRandomInt(max) {
 
 function openSide() {
     sideOpen = true;
-    const sidebar = document.querySelector('#game-sidebar');
-    const sidebarClose = document.querySelector('#game-sidebar-close');
-    const container = document.querySelector('#game-container');
+    const sidebar = document.querySelector("#game-sidebar");
+    const sidebarClose = document.querySelector("#game-sidebar-close");
+    const container = document.querySelector("#game-container");
     sidebar.style.width = "50%";
     container.style.marginRight = "50%";
     sidebarClose.style.display = "block";
@@ -891,10 +891,10 @@ function openSide() {
 
 function closeSide() {
     sideOpen = false;
-    const sidebar = document.querySelector('#game-sidebar');
-    const sidebarClose = document.querySelector('#game-sidebar-close');
-    const container = document.querySelector('#game-container');
-    const inputBox = document.querySelector('#game-input');
+    const sidebar = document.querySelector("#game-sidebar");
+    const sidebarClose = document.querySelector("#game-sidebar-close");
+    const container = document.querySelector("#game-container");
+    const inputBox = document.querySelector("#game-input");
     sidebar.style.width = "0";
     container.style.marginRight = "0";
     inputBox.focus();
