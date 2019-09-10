@@ -73,30 +73,36 @@ function initState() {
                 while (gameContainer.firstChild) {
                     gameContainer.removeChild(gameContainer.firstChild);
                 }
+                const funcs = [];
                 const text1 = document.createElement("div");
                 text1.className = "intro-text1";
                 gameContainer.appendChild(text1);
-                typewriter(text1, "ÚV Software si u příležitosti 20. výročí osvobození Československa spojeneckými armádami dovoluje nabídnout vám logickou konverzační hru:");
-
+                
                 const text2 = document.createElement('div');
                 text2.className = 'intro-text2';
-                titleToHtml(gameTitle, text2);
                 gameContainer.appendChild(text2);
 
                 const text3 = document.createElement('div');
                 text3.className = 'intro-text3';
                 gameContainer.appendChild(text3);
-                typewriter(text3, "Program Revoluční Experimentální Socialisticky Tvořivé Avantgardní Voloviny Básníků a Analfabetů");
-
-                const text5 = document.createElement('div');
-                text5.className = 'intro-text5';
-                text5.innerHTML = '<span class="enter-cmd">&#9166;</span> Stiskni klávesu ENTER...';
-                gameContainer.appendChild(text5);
-
-                const text4 = document.createElement('div');
-                text4.className = 'intro-text4';
-                text4.innerHTML = '&copy; 1988 ÚV Software<br>Námět &copy; 1968 Život';
-                gameContainer.appendChild(text4);
+                
+                funcs.push(followup => typewriter(text1, "ÚV Software si u příležitosti 20. výročí osvobození Československa spojeneckými armádami dovoluje nabídnout vám logickou konverzační hru:", 0, followup));
+                funcs.push(followup => {
+                    titleToHtml(gameTitle, text2);
+                    typewriter(text3, "Program Revoluční Experimentální Socialisticky Tvořivé Avantgardní Voloviny Básníků a Analfabetů", 0, followup);
+                });
+                funcs.push(followup => {
+                    const text5 = document.createElement('div');
+                    text5.className = 'intro-text5';
+                    text5.innerHTML = '<span class="enter-cmd">&#9166;</span> Stiskni klávesu ENTER...';
+                    gameContainer.appendChild(text5);
+    
+                    const text4 = document.createElement('div');
+                    text4.className = 'intro-text4';
+                    text4.innerHTML = '&copy; 1988 ÚV Software<br>Námět &copy; 1968 Život';
+                    gameContainer.appendChild(text4);
+                });
+                queue(0, funcs);
             }
         ],
         outro: [function(gameContainer) {
