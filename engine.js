@@ -16,7 +16,7 @@ function createEngine() {
             gameContainerDiv.removeChild(gameContainerDiv.firstChild);
         }
         if (engine.initState.intro) {
-            showIntro(0, engine.initState.intro, function() {
+            intro(0, engine.initState.intro, function() {
                 engine.initGame();
                 engine.start();
             });
@@ -28,12 +28,14 @@ function createEngine() {
 
     engine.actions = [{
         name: "restart",
+        builtin: true,
         perform: function() {
             location.reload();
         }
     }, {
         name: 'save',
         aliases: ['uloz', 'ulož'],
+        builtin: true,
         perform: function(game, params) {
             const positionName = engine.save(params);
             game.clearOutput();
@@ -44,6 +46,7 @@ function createEngine() {
     }, {
         name: 'load',
         aliases: ['nahrat', 'nahraj'],
+        builtin: true,
         perform: function(game, params) {
             const positionName = engine.load(params);
             game.clearOutput();
@@ -140,24 +143,29 @@ function createEngine() {
                 });
             }
 
-            let builtin = true;
-            let action = engine.actions.find(a => game.aliasObjectMatchesName(a, parts[0]));
-            if (!action) {
-                builtin = false;
-                action = game.getAction(parts[0]);
-            }
+            let action = null;
+            const actionName = parts[0];
+            const actions = game.getActions().filter(action => game.aliasObjectMatchesName(action, actionName));
+            // Add built-in actions
+            engine.actions.filter(action => engine.game.aliasObjectMatchesName(action, actionName)).forEach(action => actions.push(action));
 
-            if (action) {
-                if (game.printCommand) {
-                    game.print('$ ' + inputValue, "command");
-                }
-            } else {
+            if (actions.length === 0) {
                 if (game.onMissingAction) {
                     game.onMissingAction(game, parts[0]);
                 } else if (game.messages && game.messages.unknownAction) {
                     game.print(game.messages.unknownAction);
                 }
+            } else if (actions.length === 1) {
+                if (game.printCommand) {
+                    game.print('$ ' + inputValue, "command");
+                }
+                action = actions[0];
+            } else {
+                if (game.messages && game.messages.multipleActionsMatch) {
+                    game.print(game.messages.multipleActionsMatch + " " + actions.map(action => action.name).join(", "));
+                }
             }
+
             game.clearInputHelp();
             if (game.messages && game.messages.inputHelpTip) {
                 game.printInputHelp(game.messages.inputHelpTip);
@@ -166,7 +174,7 @@ function createEngine() {
             if (action) {
                 action.perform(game, params);
                 if (game.onActionPerformed) {
-                    game.onActionPerformed(game, action, builtin);
+                    game.onActionPerformed(game, action);
                 }
             }
         }
@@ -490,33 +498,40 @@ function createGame(initialState, savedPosition) {
 
     game.enterLocation = function(location) {
         this.location = location;
-        this.printLocationInfo();
+        this.printLocationInfo(true);
     };
 
-    // Prints current location info
-    game.printLocationInfo = function() {
-        this.clearLocation();
+    game.printLocationInfo = function(runInQueue) {
+        game.clearLocation();
         const location = game.location;
+        const funcs = [];
         if (location.name) {
-            this.printLocation('*** ' + location.name + " ***", "name");
+            funcs.push(followup => game.printLocation(location.name, "name", 0, followup, !runInQueue));
         }
         if (location.desc) {
             const descStr = location.desc instanceof Function ? location.desc() : location.desc;
-            this.printLocation(descStr, "desc");
+            funcs.push(followup => game.printLocation(descStr, "desc", 0, followup, !runInQueue));
         }
         if (location.exits && location.exits.length > 0) {
-            this.printLocation(this.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "), "exits");
+            funcs.push(followup => game.printLocation(game.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "), "exits", 0, followup, !runInQueue));
         }
         let itemsStr = "";
         if (location.items && location.items.length > 0) {
-            itemsStr = this.messages.locationItems + ": " + location.items.map(i => game.mapItem(i).name).join(", ");
-        } else if (this.messages.noLocationItems) {
-            itemsStr = this.messages.noLocationItems;
+            itemsStr = game.messages.locationItems + ": " + location.items.map(i => game.mapItem(i).name).join(", ");
+        } else if (game.messages.noLocationItems) {
+            itemsStr = game.messages.noLocationItems;
         }
-        this.printLocation(itemsStr, "items");
-        this.printLocation("-".repeat(itemsStr.length), 'typewriter');
-        if (this.onLocationInfo) {
-            this.onLocationInfo(this);
+        funcs.push(followup => game.printLocation(itemsStr, "items", 0, followup, !runInQueue));
+        funcs.push(followup => game.printLocation("-".repeat(itemsStr.length), "dashes", 0, followup, !runInQueue));
+        funcs.push(function() {
+            if (game.onLocationInfo) {
+                game.onLocationInfo(game);
+            }
+        });
+        if (runInQueue) {
+            queue(0, funcs);
+        } else {
+            funcs.forEach(func => func());
         }
     };
 
@@ -527,29 +542,43 @@ function createGame(initialState, savedPosition) {
         }
     };
 
-
-    game.printLocation = function(str, cssClass) {
+    game.printLocation = function(text, cssClass, delay, followup, skipTypewriter) {
         const line = document.createElement('div');
         if (cssClass) {
             line.className = cssClass;
         }
-        locationDiv.appendChild(line).innerText = str;
-    };
-
-    game.print = function(str, cssClass, delay) {
-        const line = document.createElement('div');
-        if (cssClass) {
-            line.className = cssClass;
-        } else {
-            line.className = 'typewriter';
-        }
-        line.innerText = str;
         if (delay) {
             setTimeout(function() {
-                outputDiv.insertBefore(line, null)
+                locationDiv.appendChild(line);
+                if (skipTypewriter) {
+                    line.textContent = text;
+                } else {
+                    typewriter(line, text, 0, followup);
+                }
+            }, delay);
+        } else {
+            locationDiv.appendChild(line);
+            if (skipTypewriter) {
+                line.textContent = text;
+            } else {
+                typewriter(line, text, 0, followup);
+            }
+        }
+    };
+
+    game.print = function(text, cssClass, delay) {
+        const line = document.createElement('div');
+        if (cssClass) {
+            line.className = cssClass;
+        }
+        if (delay) {
+            setTimeout(function() {
+                outputDiv.insertBefore(line, null);
+                typewriter(line, text);
             }, delay);
         } else {
             outputDiv.insertBefore(line, null)
+            typewriter(line, text);
         }
     };
 
@@ -609,7 +638,7 @@ function createGame(initialState, savedPosition) {
             }
             location.items.splice(location.items.findIndex(it => it === item.name), 1);
             this.inventory.push(item.name);
-            this.printLocationInfo();
+            this.printLocationInfo(false);
             if (item.onTake) {
                 item.onTake(this);
             }
@@ -627,7 +656,7 @@ function createGame(initialState, savedPosition) {
             }
             location.items.push(item.name);
             this.inventory.splice(this.inventory.findIndex(it => it === item.name), 1);
-            this.printLocationInfo();
+            this.printLocationInfo(false);
             return item;
         }
         return null;
@@ -665,6 +694,11 @@ function createGame(initialState, savedPosition) {
         this.clearLocation();
         if (game.onEnd) {
             game.onEnd(endState);
+        } else if (initialState.outro) {
+            while (gameContainerDiv.firstChild) {
+                gameContainerDiv.removeChild(gameContainerDiv.firstChild);
+            }
+            outro(0, initialState.outro);
         }
         this.endState = endState;
     };
@@ -733,6 +767,8 @@ function createGame(initialState, savedPosition) {
         return newPathsFound;
     };
 
+    // val - input
+    // name - property to match
     game.matchName = function(val, name) {
         if (!val || !name) {
             return false;
@@ -767,17 +803,56 @@ function createGame(initialState, savedPosition) {
     return game;
 }
 
-function showIntro(index, introFuns, startFun) {
+function intro(index, introFuns, startFun) {
     const gameContainerDiv = document.querySelector('#game-container');
     introFuns[index](gameContainerDiv);
     document.onkeydown = function(e) {
         if (e.key === 'Enter') {
             document.onkeydown = null;
             if (introFuns.length > (index + 1)) {
-                showIntro(index + 1, introFuns, startFun);
+                intro(index + 1, introFuns, startFun);
             } else {
                 startFun();
             }
+        }
+    }
+}
+
+function outro(index, outroFuns) {
+    const gameContainerDiv = document.querySelector('#game-container');
+    outroFuns[index](gameContainerDiv);
+    document.onkeydown = function(e) {
+        if (e.key === 'Enter') {
+            document.onkeydown = null;
+            if (outroFuns.length > (index + 1)) {
+                intro(index + 1, outroFuns);
+            }
+        }
+    }
+}
+
+function queue(index, funcs) {
+    if (funcs.length > (index + 1)) {
+        funcs[index](function() {
+            queue(index + 1, funcs);
+        });
+    } else {
+        funcs[index](null);
+    }
+}
+
+function typewriter(element, text, idx, followup) {
+    let indexVal = idx ? idx++ : 0;
+    const textVal = text.slice(0, ++indexVal);
+    element.textContent = textVal;
+    if (text.length > indexVal) {
+        const next = function() {
+            typewriter(element, text, indexVal, followup);
+        }
+        setTimeout(next, 20);
+    } else {
+        if (followup) {
+            followup();
         }
     }
 }

@@ -1,5 +1,5 @@
 body {
-	background-color: #151515;
+	background-color: black;
 	font-family: 'VT323', 'Roboto Mono', monospace;
 	text-transform: none;
 	color: white;
@@ -40,6 +40,10 @@ h1#game-title span:nth-child(even) {
 
 #game-output div, #game-location div {
 	line-height: normal;
+}
+
+#game-location {
+	height: 5em;
 }
 
 #game-location .exits {
@@ -132,9 +136,24 @@ div.intro-text4 {
 	font-size: 1em;
 }
 
+div.intro-title {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 60%;
+}
+
+img.intro-img {
+	height: auto;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+}
+
 div.intro-text5 {
 	float: right;
-	font-size: 1.5em;
+	font-size: 1em;
 	background-color: white;
 	color: black;
 	text-align: right;
@@ -213,7 +232,12 @@ div#game-sidebar ul {
 	animation: typing 2s steps(40, end), blink-caret .75s step-end infinite;
 }
 
-@keyframes typing {
-  from { width: 0 }
-  to { width: 100% }
+@
+keyframes typing {from { width:0
+	
+}
+
+to {
+	width: 100%
+}
 }
