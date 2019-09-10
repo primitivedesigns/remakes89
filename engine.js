@@ -11,7 +11,7 @@ function createEngine() {
 
     engine.run = function() {
         // First reset UI controls
-        const gameContainerDiv = document.querySelector('#game-container');
+        const gameContainerDiv = document.querySelector("#game-container");
         while (gameContainerDiv.firstChild) {
             gameContainerDiv.removeChild(gameContainerDiv.firstChild);
         }
@@ -33,28 +33,28 @@ function createEngine() {
             location.reload();
         }
     }, {
-        name: 'save',
-        aliases: ['uloz', 'ulož'],
+        name: "save",
+        aliases: ["uloz", "ulož"],
         builtin: true,
         perform: function(game, params) {
             const positionName = engine.save(params);
             game.clearOutput();
             if (game.messages.gameSaved) {
-                game.print(game.messages.gameSaved + ' [' + positionName + ']');
+                game.print(game.messages.gameSaved + " [" + positionName + "]");
             }
         }
     }, {
-        name: 'load',
-        aliases: ['nahrat', 'nahraj'],
+        name: "load",
+        aliases: ["nahrat", "nahraj"],
         builtin: true,
         perform: function(game, params) {
             const positionName = engine.load(params);
             game.clearOutput();
-            // NOTE: we cannot use the 'game' param because a new game was
+            // NOTE: we cannot use the "game" param because a new game was
             // loaded already
             if (engine.game.messages.gameLoaded) {
-                engine.game.print(engine.game.messages.gameLoaded + ' [' + positionName +
-                    ']');
+                engine.game.print(engine.game.messages.gameLoaded + " [" + positionName +
+                    "]");
             }
         },
         autocomplete: function(game, str) {
@@ -77,7 +77,7 @@ function createEngine() {
     engine.initGame = function(position) {
         engine.game = createGame(this.initState, position);
         engine.game.clearAll();
-        console.log('Game initialized');
+        console.log("Game initialized");
     }
 
     engine.start = function() {
@@ -90,20 +90,20 @@ function createEngine() {
             this.game.time = 0;
         }
 
-        const inputBox = document.querySelector('#game-input');
+        const inputBox = document.querySelector("#game-input");
         inputBox.focus();
         const historyLimit = 20;
         const lineLimit = 20;
         const inputs = this.inputs;
 
         inputBox.onkeydown = (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "Enter") {
                 processInput();
-            } else if (e.key === 'ArrowUp') {
+            } else if (e.key === "ArrowUp") {
                 historyPrev();
-            } else if (e.key === 'ArrowDown') {
+            } else if (e.key === "ArrowDown") {
                 historyNext();
-            } else if (e.key === 'Tab') {
+            } else if (e.key === "Tab") {
                 e.preventDefault();
                 autocomplete();
             }
@@ -126,7 +126,7 @@ function createEngine() {
             } else {
                 inputs.push(inputValue);
             }
-            inputBox.value = '';
+            inputBox.value = "";
             this.historyPos = inputs.length;
 
             // Parse the command
@@ -157,7 +157,7 @@ function createEngine() {
                 }
             } else if (actions.length === 1) {
                 if (game.printCommand) {
-                    game.print('$ ' + inputValue, "command");
+                    game.print("$ " + inputValue, "command");
                 }
                 action = actions[0];
             } else {
@@ -206,7 +206,7 @@ function createEngine() {
                 engine.actions.forEach(action => actions.push(action));
                 engine.game.clearInputHelp();
                 const prefix = engine.game.messages.inputHelpPrefix ? engine.game.messages.inputHelpPrefix : "";
-                engine.game.printInputHelp(prefix + actions.map(action => action.name).join(', '));
+                engine.game.printInputHelp(prefix + actions.map(action => action.name).join(", "));
                 return;
             }
             const parts = inputValue.split(/\s+/);
@@ -217,13 +217,13 @@ function createEngine() {
 
                 if (actions.length === 0) {
                     engine.game.clearInputHelp();
-                    engine.game.printInputHelp('\xa0');
+                    engine.game.printInputHelp("\xa0");
                 } else if (actions.length === 1) {
                     let val = actions[0].name;
                     if (!val.startsWith(inputValue)) {
                         val = actions[0].aliases.find(alias => alias.startsWith(inputValue));
                     }
-                    inputBox.value = val + ' ';
+                    inputBox.value = val + " ";
                 } else {
                     engine.game.clearInputHelp();
                     const prefix = engine.game.messages.inputHelpPrefix ? engine.game.messages.inputHelpPrefix : "";
@@ -233,7 +233,7 @@ function createEngine() {
                             val = action.aliases.find(alias => alias.startsWith(inputValue));
                         }
                         return val;
-                    }).join(', '));
+                    }).join(", "));
                 }
             } else if (parts.length == 2) {
                 let action = engine.actions.find(a => engine.game.aliasObjectMatchesName(a, parts[0]));
@@ -244,11 +244,11 @@ function createEngine() {
                     const results = action.autocomplete(engine.game, parts[1]);
                     if (results) {
                         if (results.length === 1) {
-                            inputBox.value = parts[0] + ' ' + results[0].name + ' ';
+                            inputBox.value = parts[0] + " " + results[0].name + " ";
                         } else if (results.length > 1) {
                             engine.game.clearInputHelp();
                             const prefix = engine.game.messages.inputHelpPrefix ? engine.game.messages.inputHelpPrefix : "";
-                            engine.game.printInputHelp(prefix + results.map(r => r.name).join(', '));
+                            engine.game.printInputHelp(prefix + results.map(r => r.name).join(", "));
                         }
                     }
                 }
@@ -261,22 +261,22 @@ function createEngine() {
 
     engine.save = function(params) {
         const position = {};
-        const positionName = params.length === 0 ? 'save' : params[0];
+        const positionName = params.length === 0 ? "save" : params[0];
         position.locations = this.game.locations;
         position.items = this.game.items;
         position.time = this.game.time;
         position.location = this.game.location.id;
         position.inventory = this.game.inventory;
         localStorage.setItem(positionName, JSON.stringify(position));
-        console.log('Game saved: ' + positionName);
+        console.log("Game saved: " + positionName);
         return positionName;
     }
 
     engine.load = function(params) {
-        const positionName = params.length === 0 ? 'save' : params[0];
+        const positionName = params.length === 0 ? "save" : params[0];
         this.initGame(JSON.parse(localStorage.getItem(positionName)));
         this.start();
-        console.log('Game loaded: ' + positionName);
+        console.log("Game loaded: " + positionName);
         return positionName;
     }
 
@@ -285,7 +285,7 @@ function createEngine() {
 
 function createGame(initialState, savedPosition) {
 
-    const gameContainerDiv = document.querySelector('#game-container');
+    const gameContainerDiv = document.querySelector("#game-container");
     while (gameContainerDiv.firstChild) {
         gameContainerDiv.removeChild(gameContainerDiv.firstChild);
     }
@@ -313,35 +313,35 @@ function createGame(initialState, savedPosition) {
 
     // Init UI controls
     // game-title
-    const title = document.createElement('h1');
-    title.id = 'game-title';
+    const title = document.createElement("h1");
+    title.id = "game-title";
     if (initialState.title) {
         title.innerText = initialState.title;
     }
     gameContainerDiv.insertBefore(title, null);
     // game-location
-    locationDiv = document.createElement('div');
-    locationDiv.id = 'game-location';
+    locationDiv = document.createElement("div");
+    locationDiv.id = "game-location";
     gameContainerDiv.appendChild(locationDiv);
     // game-output
-    outputDiv = document.createElement('div');
-    outputDiv.id = 'game-output';
+    outputDiv = document.createElement("div");
+    outputDiv.id = "game-output";
     gameContainerDiv.appendChild(outputDiv);
     // game-input-container
-    const inputContainerDiv = document.createElement('div');
-    inputContainerDiv.id = 'game-input-container';
+    const inputContainerDiv = document.createElement("div");
+    inputContainerDiv.id = "game-input-container";
     gameContainerDiv.appendChild(inputContainerDiv);
     // game-input-help
-    inputHelpDiv = document.createElement('div');
-    inputHelpDiv.id = 'game-input-help';
+    inputHelpDiv = document.createElement("div");
+    inputHelpDiv.id = "game-input-help";
     inputContainerDiv.appendChild(inputHelpDiv);
     // game-input
-    const inputBox = document.createElement('input');
-    inputBox.id = 'game-input';
+    const inputBox = document.createElement("input");
+    inputBox.id = "game-input";
     inputContainerDiv.appendChild(inputBox);
     // game-input-tip
-    const inputTip = document.createElement('div');
-    inputTip.id = 'game-input-tip';
+    const inputTip = document.createElement("div");
+    inputTip.id = "game-input-tip";
     inputContainerDiv.appendChild(inputTip);
 
     if (initialState.onInitControls) {
@@ -412,7 +412,7 @@ function createGame(initialState, savedPosition) {
         return null;
     };
 
-    // Returns true if an object's name or alias matches the specified name,
+    // Returns true if an object"s name or alias matches the specified name,
     // false otherwise
     game.aliasObjectMatchesName = function(obj, name) {
         if (!obj || !name) {
@@ -543,7 +543,7 @@ function createGame(initialState, savedPosition) {
     };
 
     game.printLocation = function(text, cssClass, delay, followup, skipTypewriter) {
-        const line = document.createElement('div');
+        const line = document.createElement("div");
         if (cssClass) {
             line.className = cssClass;
         }
@@ -567,7 +567,7 @@ function createGame(initialState, savedPosition) {
     };
 
     game.print = function(text, cssClass, delay) {
-        const line = document.createElement('div');
+        const line = document.createElement("div");
         if (cssClass) {
             line.className = cssClass;
         }
@@ -583,7 +583,7 @@ function createGame(initialState, savedPosition) {
     };
 
     game.printInputHelp = function(str, cssClass) {
-        const line = document.createElement('div');
+        const line = document.createElement("div");
         if (cssClass) {
             line.className = cssClass;
         }
@@ -804,10 +804,10 @@ function createGame(initialState, savedPosition) {
 }
 
 function intro(index, introFuns, startFun) {
-    const gameContainerDiv = document.querySelector('#game-container');
+    const gameContainerDiv = document.querySelector("#game-container");
     introFuns[index](gameContainerDiv);
     document.onkeydown = function(e) {
-        if (e.key === 'Enter') {
+        if (e.key === "Enter") {
             document.onkeydown = null;
             if (introFuns.length > (index + 1)) {
                 intro(index + 1, introFuns, startFun);
@@ -819,10 +819,10 @@ function intro(index, introFuns, startFun) {
 }
 
 function outro(index, outroFuns) {
-    const gameContainerDiv = document.querySelector('#game-container');
+    const gameContainerDiv = document.querySelector("#game-container");
     outroFuns[index](gameContainerDiv);
     document.onkeydown = function(e) {
-        if (e.key === 'Enter') {
+        if (e.key === "Enter") {
             document.onkeydown = null;
             if (outroFuns.length > (index + 1)) {
                 intro(index + 1, outroFuns);
