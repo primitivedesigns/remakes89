@@ -192,8 +192,10 @@ function initState() {
                 if (!book || !book.burning) {
                     game.clearLocation();
                     game.printLocation("Je tu tma.");
+                    return false;
                 }
             }
+            return true;
         },
         onShiftTime: function(game) {
             // The book should disappear after 12 time units

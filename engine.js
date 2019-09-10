@@ -503,6 +503,12 @@ function createGame(initialState, savedPosition) {
 
     game.printLocationInfo = function(runInQueue) {
         game.clearLocation();
+
+        if (game.onLocationInfo && !game.onLocationInfo(game)) {
+            // If onLocationInfo() returns false do not show the info
+            return;
+        }
+
         const location = game.location;
         const funcs = [];
         if (location.name) {
@@ -523,11 +529,6 @@ function createGame(initialState, savedPosition) {
         }
         funcs.push(followup => game.printLocation(itemsStr, "items", 0, followup, !runInQueue));
         funcs.push(followup => game.printLocation("-".repeat(itemsStr.length), "dashes", 0, followup, !runInQueue));
-        funcs.push(function() {
-            if (game.onLocationInfo) {
-                game.onLocationInfo(game);
-            }
-        });
         if (runInQueue) {
             queue(0, funcs);
         } else {
