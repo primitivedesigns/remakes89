@@ -453,7 +453,8 @@ function initState() {
             }, {
                 name: "N",
                 location: "m20"
-            }]
+            }],
+            hint: "Bude třeba něco zapálit něco, co bude dlouho hořet. Pokud se to nepovede napoprvé, tak to nevzdávej!"
         }, {
             id: "m2",
             desc: "Jsi v dlouhé podzemní chodbě vedoucí na východ.",
@@ -463,7 +464,8 @@ function initState() {
             }, {
                 name: "N",
                 location: "m4"
-            }]
+            }],
+            hint: "Bude třeba něco zapálit něco, co bude dlouho hořet. Pokud se to nepovede napoprvé, tak to nevzdávej!"
         }, {
             id: "m3",
             desc: "Jsi v malém jižním výklenku jeskyňky. Je tu spousta papíru.",
@@ -471,7 +473,8 @@ function initState() {
             exits: [{
                 name: "S",
                 location: "m4"
-            }]
+            }],
+            hint: "Najdeš tu něco, co ti dodá sílu."
         }, {
             id: "m4",
             desc: "Jsi v malé podzemní jeskyňce. Při chůzi tvé kroky podivně duní.",
@@ -482,6 +485,7 @@ function initState() {
                 name: "Z",
                 location: "m5"
             }],
+            hint: "Zamysli se, proč tvé kroky duní.",
             readInit: function(obj) {
                 obj.actions = [{
                     name: "kopej",
@@ -518,7 +522,8 @@ function initState() {
             }, {
                 name: "N",
                 location: "m9"
-            }]
+            }],
+            hint: "Seber, co vidíš, a neotálej!"
         }, {
             id: "m6",
             desc: "Jsi v bývalém skladišti. Je tu neskutečný nepořádek.",
@@ -526,7 +531,8 @@ function initState() {
             exits: [{
                 name: "J",
                 location: "m9"
-            }]
+            }],
+            hint: "Zkus to tu pořádně prozkoumat."
         }, {
             id: "m7",
             desc: "Stojíš v tmavém výklenku.",
@@ -534,7 +540,8 @@ function initState() {
             exits: [{
                 name: "V",
                 location: "m9"
-            }]
+            }],
+            hint: "Seber, co tu vidíš!"
         }, {
             id: "m8",
             desc: "Stojíš před ošklivým smrdutým záchodem. Táhne od něj nepříjemný zápach.",
@@ -543,6 +550,7 @@ function initState() {
                 name: "S",
                 location: "m9"
             }],
+            hint: "Do dveří bude třeba zadat čtyřmístný kód. Zkus si vzpomenout na důležité roky v dějinách Československa.",
             readInit: function(obj) {
                 obj.actions = [{
                     name: "zadej",
@@ -648,7 +656,8 @@ function initState() {
             exits: [{
                 name: "Z",
                 location: "m8"
-            }]
+            }],
+            hint: "V míse není voda, takže to, co v ní najdeš, bude suché."
         }, {
             id: "m11",
             desc: "Stojíš před krásně vyzdobeným oltářem.",
@@ -656,7 +665,8 @@ function initState() {
             exits: [{
                 name: "Z",
                 location: "m20"
-            }]
+            }],
+            hint: "Prohledej to tu."
         }, {
             id: "m12",
             desc: "Jsi ve městě. Je tu velký zmatek.",
@@ -672,7 +682,8 @@ function initState() {
             }, {
                 name: "Z",
                 location: "m13"
-            }]
+            }],
+            hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
         }, {
             id: "m13",
             desc: "Bloudíš městem.",
@@ -685,7 +696,8 @@ function initState() {
             }, {
                 name: "Z",
                 location: "m12"
-            }]
+            }],
+            hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
         }, {
             id: "m14",
             desc: "Jsi ve městě. Ulice jsou nepředstavitelně špinavé...",
@@ -701,7 +713,8 @@ function initState() {
             }, {
                 name: "Z",
                 location: "m17"
-            }]
+            }],
+            hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
         }, {
             id: "m15",
             desc: "Jsi ve městě. Asi jsi zabloudil...",
@@ -711,7 +724,8 @@ function initState() {
             }, {
                 name: "Z",
                 location: "m13"
-            }]
+            }],
+            hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
         }, {
             id: "m16",
             desc: "Procházíš městem.",
@@ -727,7 +741,8 @@ function initState() {
             }, {
                 name: "Z",
                 location: "m12"
-            }]
+            }],
+            hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
         }, {
             id: "m17",
             desc: "Bloudíš městem. Tudy cesta nevede...",
@@ -737,7 +752,8 @@ function initState() {
             }, {
                 name: "Z",
                 location: "m16"
-            }]
+            }],
+            hint: "Přihořívá!"
         }, {
             id: "m18",
             desc: "Jsi v malém parčíku. Je tu plno zeleně.",
@@ -745,7 +761,8 @@ function initState() {
             exits: [{
                 name: "Z",
                 location: "m17"
-            }]
+            }],
+            hint: "Nedoporučuje se být přímým účastníkem výbuchu!"
         }, {
             id: "m20",
             desc: "Jsi v malém kostelíku. Je docela hezky vyzdoben.",
@@ -758,7 +775,8 @@ function initState() {
             }, {
                 name: "D",
                 location: "m1"
-            }]
+            }],
+            hint: "Tady nic zajímavého nenajdeš."
         }],
         // GLOBAL ACTIONS
         actions: [{
