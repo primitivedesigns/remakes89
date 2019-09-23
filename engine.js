@@ -300,6 +300,7 @@ function createGame(initialState, savedPosition) {
     game.onShiftTime = initialState.onShiftTime;
     game.onMissingAction = initialState.onMissingAction;
     game.onActionPerformed = initialState.onActionPerformed;
+    game.buildLocationMessage = initialState.buildLocationMessage;
 
     if (savedPosition) {
         game.locations = savedPosition.locations;
@@ -308,7 +309,7 @@ function createGame(initialState, savedPosition) {
         game.startLocation = savedPosition.location;
         game.inventory = savedPosition.inventory;
     } else {
-        game.inventory = [];
+        game.inventory = initialState.inventory;
     }
 
     // Init UI controls
@@ -498,6 +499,9 @@ function createGame(initialState, savedPosition) {
 
     game.enterLocation = function(location) {
         this.location = location;
+        if (location.onEnter) {
+            location.onEnter();
+        }
         this.printLocationInfo(true);
     };
 
@@ -510,29 +514,36 @@ function createGame(initialState, savedPosition) {
         }
 
         const location = game.location;
-        const funcs = [];
-        if (location.name) {
-            funcs.push(followup => game.printLocation(location.name, "name", 0, followup, !runInQueue));
-        }
-        if (location.desc) {
-            const descStr = location.desc instanceof Function ? location.desc() : location.desc;
-            funcs.push(followup => game.printLocation(descStr, "desc", 0, followup, !runInQueue));
-        }
-        if (location.exits && location.exits.length > 0) {
-            funcs.push(followup => game.printLocation(game.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "), "exits", 0, followup, !runInQueue));
-        }
-        let itemsStr = "";
-        if (location.items && location.items.length > 0) {
-            itemsStr = game.messages.locationItems + ": " + location.items.map(i => game.mapItem(i).name).join(", ");
-        } else if (game.messages.noLocationItems) {
-            itemsStr = game.messages.noLocationItems;
-        }
-        funcs.push(followup => game.printLocation(itemsStr, "items", 0, followup, !runInQueue));
-        funcs.push(followup => game.printLocation("-".repeat(itemsStr.length), "dashes", 0, followup, !runInQueue));
-        if (runInQueue) {
-            queue(0, funcs);
+        const buildLocationMessage = game.buildLocationMessage;
+
+        if (buildLocationMessage) {
+            game.printLocation(buildLocationMessage(location, game), "custom")
         } else {
-            funcs.forEach(func => func());
+            // By default, each message is written on a separate line
+            const funcs = [];
+            if (location.name) {
+                funcs.push(followup => game.printLocation(location.name, "name", 0, followup, !runInQueue));
+            }
+            if (location.desc) {
+                const descStr = location.desc instanceof Function ? location.desc() : location.desc;
+                funcs.push(followup => game.printLocation(descStr, "desc", 0, followup, !runInQueue));
+            }
+            if (location.exits && location.exits.length > 0) {
+                funcs.push(followup => game.printLocation(game.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "), "exits", 0, followup, !runInQueue));
+            }
+            let itemsStr = "";
+            if (location.items && location.items.length > 0) {
+                itemsStr = game.messages.locationItems + ": " + location.items.map(i => game.mapItem(i).name).join(", ");
+            } else if (game.messages.noLocationItems) {
+                itemsStr = game.messages.noLocationItems;
+            }
+            funcs.push(followup => game.printLocation(itemsStr, "items", 0, followup, !runInQueue));
+            funcs.push(followup => game.printLocation("-".repeat(itemsStr.length), "dashes", 0, followup, !runInQueue));
+            if (runInQueue) {
+                queue(0, funcs);
+            } else {
+                funcs.forEach(func => func());
+            }
         }
     };
 
@@ -630,7 +641,7 @@ function createGame(initialState, savedPosition) {
         }
     };
 
-    game.takeItem = function(name) {
+    game.takeItem = function(name, updateLocationInfo = true) {
         const item = this.getLocationItem(name);
         if (item && (item.takeable === undefined || item.takeable)) {
             const location = this.location;
@@ -639,7 +650,9 @@ function createGame(initialState, savedPosition) {
             }
             location.items.splice(location.items.findIndex(it => it === item.name), 1);
             this.inventory.push(item.name);
-            this.printLocationInfo(false);
+            if (updateLocationInfo) {
+                this.printLocationInfo(false);
+            }
             if (item.onTake) {
                 item.onTake(this);
             }
@@ -648,7 +661,7 @@ function createGame(initialState, savedPosition) {
         return null;
     };
 
-    game.dropItem = function(name) {
+    game.dropItem = function(name, updateLocationInfo = true) {
         const item = this.getInventoryItem(name);
         if (item) {
             const location = this.location;
@@ -657,7 +670,9 @@ function createGame(initialState, savedPosition) {
             }
             location.items.push(item.name);
             this.inventory.splice(this.inventory.findIndex(it => it === item.name), 1);
-            this.printLocationInfo(false);
+            if (updateLocationInfo) {
+                this.printLocationInfo(false);
+            }
             return item;
         }
         return null;
@@ -850,7 +865,7 @@ function typewriter(element, text, idx, followup) {
         const next = function() {
             typewriter(element, text, indexVal, followup);
         }
-        setTimeout(next, 20);
+        setTimeout(next, 10);
     } else {
         if (followup) {
             followup();
