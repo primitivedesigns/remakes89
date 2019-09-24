@@ -317,7 +317,7 @@ function createGame(initialState, savedPosition) {
     const title = document.createElement("h1");
     title.id = "game-title";
     if (initialState.title) {
-        title.innerText = initialState.title;
+        title.textContent = initialState.title;
     }
     gameContainerDiv.insertBefore(title, null);
     // game-location
@@ -500,7 +500,7 @@ function createGame(initialState, savedPosition) {
     game.enterLocation = function(location) {
         this.location = location;
         if (location.onEnter) {
-            location.onEnter();
+            location.onEnter(game);
         }
         this.printLocationInfo(true);
     };
@@ -681,7 +681,7 @@ function createGame(initialState, savedPosition) {
     game.useItem = function(name) {
         const item = this.getItem(this.getItems(), name);
         if (item && item.onUse) {
-            item.onUse(this);
+            item.onUse(game);
             return true;
         }
         return false;
