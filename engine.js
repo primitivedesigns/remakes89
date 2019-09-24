@@ -174,7 +174,7 @@ function createEngine() {
             if (action) {
                 action.perform(game, params);
                 if (game.onActionPerformed) {
-                    game.onActionPerformed(game, action);
+                    game.onActionPerformed(game, action, params);
                 }
             }
         }
@@ -362,6 +362,10 @@ function createGame(initialState, savedPosition) {
             initialItem.readInit(item);
         }
     });
+
+    game.removeInputContainer = function() {
+        gameContainerDiv.removeChild(inputContainerDiv);
+    }
 
     // ==============
     // Game functions
@@ -705,9 +709,11 @@ function createGame(initialState, savedPosition) {
             this.print(item.desc instanceof Function ? item.desc() : item.desc);
         }
     };
-    game.end = function(endState) {
-        this.clearOutput();
-        this.clearLocation();
+    game.end = function(endState, clearAll = true) {
+        if (clearAll) {
+            this.clearOutput();
+            this.clearLocation();
+        }
         if (game.onEnd) {
             game.onEnd(endState);
         } else if (initialState.outro) {

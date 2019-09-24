@@ -76,6 +76,13 @@ function initState() {
             }
             this.printInputHelp('Zadej příkaz. Například "prozkoumej ocas". Pro automatické doplnění příkazu zkus klávesu TAB.');
         },
+        onEnd: function(endState) {
+            if (endState === "killed") {
+                this.print("INDIANA JONES JE MRTEV!", null, 1000);
+                this.print("ZPRÁVA Z AMERICKÉHO TISKU : Československa vláda oznámila, že náš drahý hrdina - INDIANA JONES - zemřel nešťastnou náhodou při autonehodě. Pokrač. na str. 54.", null, 1500);
+                this.removeInputContainer();
+            }
+        },
         buildLocationMessage: function(location, game) {
             let message = "";
             if (location.desc) {
@@ -93,6 +100,21 @@ function initState() {
             }
             return message;
         },
+        onActionPerformed: function(game, action, params) {
+            if (!action.builtin) {
+                game.shiftTime(1);
+
+                if (game.location.id === "m1") {
+                    if (game.location.actionTaken && game.getLocationItem("fízla")) {
+                        game.print("Fízl se na tebe krvežíznivě vrhnul a začal tě mlátit. A mlátil a mlátil...", "end", 500);
+                        game.end("killed", false);
+                        // TODO restart
+                    } else {
+                        game.location.actionTaken = true;
+                    }
+                }
+            }
+        },
         isInputCaseSensitive: false,
         startLocation: "m2",
         partialMatchLimit: 2,
@@ -105,7 +127,6 @@ function initState() {
             name: "fízla",
             aliases: ["fizla"],
             desc: "Chystá se zmlátit tě.",
-            //fízla lze zabít použitím sekery. Pokud okamžitě nepoužiješ sekeru, pak message: "Fizl se na tebe krvežíznivě vrhnul a začal tě mlátit. A mlátil a mlátil..." a GAMEOVER / použití sekery vytvoří item mrtvolu fízla
             takeable: false
         }, {
             name: "mrtvolu fízla",
@@ -231,7 +252,8 @@ function initState() {
             }, {
                 name: "dovnitř",
                 location: "m19"
-            }]
+            }],
+            actionTaken: false
         }, {
             id: "m2",
             desc: "O.K. Jsi pod sochou svatého Václava. Vidíš zatarasený vchod do metra. Nahoře je muzeum, ale přístup k němu je zatarasený.",
