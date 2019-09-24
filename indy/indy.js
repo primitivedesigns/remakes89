@@ -1,18 +1,22 @@
-const gameTitle = "DOBRODRUŽSTVÍ INDIANA JONESE NA VÁCLAVSKÉM NÁMĚSTÍ";
 // const gameTitle = "DOBRODRUŽSTVÍ INDIANA JONESE NA VÁCLAVSKÉM NÁMĚSTÍ V PRAZE DNE 16.1.1989";
+
+let sideOpen = false;
+let beepOn = true;
 
 function initState() {
 
     const game = {
-        title: gameTitle,
+        //title: gameTitle,
         messages: {
-            // Na začátku všech popisů místností je "O.K." Také to je před hláškami o úspěšném použití předmětů. Asi by se to mohlo dát rovnou do enginu.
-            // Výpis místnosti je v původní hře v dost náhodném pořadí.Někdy se píšou věci před východy, jindy jinak, protože to je natvrdo. Navrhuju udělat výpis v pořadí: DESC + VÝCHODY + Věci. Ale na rozdíl od Prestavby to je v souvislém textu.
             locationItems: "Vidíš",
-            // pokud nejsou predmety, nic se nepise
             noLocationItems: "",
             locationExits: "Můžeš jít",
-            unknownAction: "To bohužel nejde!!!"
+            unknownAction: "To bohužel nejde!!!",
+            multipleActionsMatch: "Vstupu odpovídá více příkazů: ",
+            inputHelpTip: "\xa0",
+            inputHelpPrefix: "Pokračuj: ",
+            gameSaved: "Hra uložena.",
+            gameLoaded: "Uložená pozice nahrána.",
         },
         intro: [function(gameContainer) {
             const title = document.createElement("div");
@@ -30,10 +34,6 @@ function initState() {
             typewriter(text5, "Stiskni klávesu ENTER...");
         }],
         onInitControls: function(gameContainer) {
-            // Custom title
-            const titleH1 = document.querySelector("#game-title");
-            titleH1.textContent = gameTitle;
-
             // Input tips
             const inputTips = document.querySelector("#game-input-tip");
             const tip1 = document.createElement("span");
@@ -95,27 +95,32 @@ function initState() {
         },
         isInputCaseSensitive: false,
         startLocation: "m2",
+        partialMatchLimit: 2,
+        inventoryLimit: 2,
         // ITEMS
         items: [{
             name: "diamanty",
             desc: "Jsou to čtyři nádherné drahokamy."
         }, {
             name: "fízla",
+            aliases: ["fizla"],
             desc: "Chystá se zmlátit tě.",
             //fízla lze zabít použitím sekery. Pokud okamžitě nepoužiješ sekeru, pak message: "Fizl se na tebe krvežíznivě vrhnul a začal tě mlátit. A mlátil a mlátil..." a GAMEOVER / použití sekery vytvoří item mrtvolu fízla
             takeable: false
         }, {
-            name: "mrtvolu_fízla",
+            name: "mrtvolu fízla",
             // víceslovné předměty dávám s podtržítkem
             desc: "Má hluboko v hlavě zaseklou sekeru (dobrá práce)! Našels' u něj štít.",
-            onExamine: function(game) {
-                game.print("");
-                game.location.items.push({
-                    name: "štít",
-                    desc: "Je vhodně upraven proti padajícímu kamení."
-                })
+            readInit: function(obj) {
+                obj.onExamine = function(game) {
+                    game.location.items.push("štít");
+                }
             },
             takeable: false
+        }, {
+            name: "štít",
+            aliases: ["stit"],
+            desc: "Je vhodně upraven proti padajícímu kamení."
         }, {
             name: "ocas",
             readInit: function(obj) {
@@ -124,19 +129,31 @@ function initState() {
                         this.examined = true;
                         game.location.items.push("sekeru");
                     }
-                },
+                };
                 obj.desc = function() {
                     let ret = "Je to ocas koně,na kterém sedí svatý Václav.";
                     if (!this.examined) {
                         ret += " Ve skulince pod ocasem jsi našel sekeru.";
                     }
                     return ret;
-                }
+                };
             },
             takeable: false
         }, {
             name: "sekeru",
-            desc: "Do tupé policajtské hlavy by zajela jako po másle."
+            desc: "Do tupé policajtské hlavy by zajela jako po másle.",
+            readInit: function(obj) {
+                obj.onUse = function(game) {
+                    const cop = game.getLocationItem("fízla");
+                    if (cop) {
+                        game.print("O.K. Zasekl jsi mu sekeru do hlavy tak hluboko,že nejde vytáhnout. Vidíš mrtvolu fízla.");
+                        game.location.items.splice(game.location.items.findIndex(item => item.name === "fízla"), 1);
+                        game.location.items.push("mrtvolu fízla");
+                    } else {
+                        game.print(game.messages.unknownAction);
+                    }
+                }
+            }
         }, {
             name: "kámen",
             desc: "Není to obyčejný kámen, je to dlažební kostka."
@@ -201,7 +218,6 @@ function initState() {
             takeable: false
         }],
         inventory: ["diamanty"],
-        // na začátku máš diamanty, popis: "Jsou to čtyři nádherné drahokamy."
         locations: [{
             id: "m1",
             desc: "O.K. Stojíš před domem potravin. Vchod do metra je naštěstí volný. Z balkónu v domě se pobaveně dívá nepříjemný člověk (zřejmě komunista) na poctivě odváděnou práci členů VB.",
@@ -234,6 +250,11 @@ function initState() {
             id: "m3",
             desc: "O.K. Stojíš u volného vstupu u metra. Jakmile ses ukázal, přiběhl policajt, prošacoval tě, a když u tebe našel legitimaci člena tajné policie, popřál mnoho štěstí v další práci, lehce se uklonil a odešel (hlupák).",
             //verze, pokud nemáš legitimaci: O.K. Stojíš u volného vstupu u metra. Jakmile ses ukázal, přiběhl policajt, prošacoval tě, a když u tebe nic nenašel, zavolal si na pomoc 'kamarády' a zmlátili tě do němoty. Když od tebe odbíhali na nějakou ženu s kočárkem, jednomu z nich vypadla z pouzdra mačeta. Doplazil ses pro ni a spáchals' HARAKIRI.
+            onEnter: function(game) {
+                if (true) {
+                    // TODO
+                }
+            },
             exits: [{
                 name: "doleva",
                 location: "m2"
@@ -248,10 +269,10 @@ function initState() {
             id: "m4",
             desc: "O.K. Stojíš u prodejny Supraphon. Než ses však stačil rozhlédnout, pokropila tě sprška vodního děla. Spadl jsi na zem a rozbil sis hlavu.",
             readInit: function(obj) {
-                obj.onEnter = function() {
-                    // TODO
+                    obj.onEnter = function() {
+                        // TODO
+                    }
                 }
-            }
                 // automatický GAME OVER
         }, {
             id: "m5",
@@ -376,6 +397,17 @@ function initState() {
                 return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => game.aliasObjectNameStartsWith(item, str));
             }
         }, {
+            name: "použij",
+            aliases: ["pouzij"],
+            perform: function(game, params) {
+                if (!game.useItem(params.join(" "))) {
+                    game.print(game.messages.unknownAction);
+                }
+            },
+            autocomplete: function(game, str) {
+                return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => game.aliasObjectNameStartsWith(item, str));
+            }
+        }, {
             name: "dolů",
             perform: function(game, params) {
                 game.goToLocation("dolů");
@@ -419,11 +451,15 @@ function initState() {
             name: "vezmi",
             aliases: ["seber", "vzít", "vzit"],
             perform: function(game, params) {
-                const item = game.takeItem(params[0], false);
-                if (item) {
-                    game.print("Vzal jsi " + item.name + ".");
+                if (game.inventory.length >= 2) {
+                    game.print("Inventář je plný!");
                 } else {
-                    game.print("Tohle nejde vzít.");
+                    const item = game.takeItem(params[0], false);
+                    if (item) {
+                        game.print("Vzal jsi " + item.name + ".");
+                    } else {
+                        game.print("Tohle nejde vzít.");
+                    }
                 }
             },
             autocomplete: function(game, str) {
@@ -457,4 +493,26 @@ function initState() {
     }
 
     return game;
+}
+
+function openSide() {
+    sideOpen = true;
+    const sidebar = document.querySelector("#game-sidebar");
+    const sidebarClose = document.querySelector("#game-sidebar-close");
+    const container = document.querySelector("#game-container");
+    sidebar.style.width = "50%";
+    container.style.marginRight = "50%";
+    sidebarClose.style.display = "block";
+}
+
+function closeSide() {
+    sideOpen = false;
+    const sidebar = document.querySelector("#game-sidebar");
+    const sidebarClose = document.querySelector("#game-sidebar-close");
+    const container = document.querySelector("#game-container");
+    const inputBox = document.querySelector("#game-input");
+    sidebar.style.width = "0";
+    container.style.marginRight = "0";
+    inputBox.focus();
+    sidebarClose.style.display = "none";
 }
