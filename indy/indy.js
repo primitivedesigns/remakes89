@@ -13,6 +13,7 @@ const items = [{
     takeable: false
 }, {
     name: "mrtvolu fízla",
+    aliases: ["mrtvolu fizla"],
     desc: "Má hluboko v hlavě zaseklou sekeru (dobrá práce)! Našels' u něj štít.",
     readInit: function(obj) {
         obj.onExamine = function(game) {
@@ -87,6 +88,7 @@ const items = [{
     }
 }, {
     name: "slovník",
+    aliases: ["slovnik"],
     desc: "Podrobný česko-anglicky slovník.",
     readInit: function(obj) {
         obj.onUse = function(game) {
@@ -101,6 +103,7 @@ const items = [{
     takeable: false
 }, {
     name: "nápis na zdi",
+    aliases: ["napis na zdi"],
     desc: "Bez slovníku jej nerozluštíš.",
     takeable: false
 }, {
@@ -112,29 +115,32 @@ const items = [{
     takeable: false
 }, {
     name: "tyč",
+    aliases: ["tyc"],
     desc: "Na ledacos by se hodila.",
     readInit: function(obj) {
         obj.onUse = function(game) {
             if (game.location.id === "m8" && game.getLocationItem("poldu")) {
                 game.print("O.K. Vypáčil jsi poklop kanálu. Poklop spadnul do šachty. Polda se na tebe z řevem vrhnul,ale v okamžiku, kdy tě chtěl udeřit, zahučel přímo před tebou do kanálu.");
-                game.location.items.splice(game.location.items.findIndex(item => item.name === "poldu"), 1);
+                game.removeLocationItem("poldu");
             } else if (game.location.id === "m10" && game.getLocationItem("chlupatýho")) {
                 game.print("O.K. Praštil jsi chlupatýho tyčí přes hlavu.");
-                game.location.items.splice(game.location.items.findIndex(item => item.name === "chlupatýho"), 1);
+                game.removeLocationItem("chlupatýho");
                 game.location.items.push("mrtvolu chlupatýho");
             } else if (game.location.id === "m18" && obj.throwable) {
                 game.print("O.K. Mrštil jsi tyčí nalevo a uslyšel jsi zasténání. Cha,cha,cha,cha.");
                 game.removeInventoryItem("tyč");
-                game.getLocation("m17").items.push("mrtvolu milicionáře");
+                game.addLocationItem("m17", "mrtvolu milicionáře");
             }
         }
     }
 }, {
     name: "chlupatýho",
+    aliases: ["chlupatyho"],
     desc: "Chystá se zmlátit tě.",
     takeable: false,
 }, {
     name: "mrtvolu chlupatýho",
+    aliases: ["mrtvolu chlupatyho"],
     desc: "Někdo mu rozrazil tyči lebku (kdo asi?). Má na sobě uniformu.",
     readInit: function(obj) {
         obj.onExamine = function(game) {
@@ -187,6 +193,7 @@ const items = [{
     takeable: false
 }, {
     name: "oltář",
+    aliases: ["oltar"],
     desc: "Jako by ti něco říkalo: Polož sem diamanty.",
     takeable: false
 }, {
@@ -199,6 +206,7 @@ const items = [{
     takeable: false
 }, {
     name: "příslušníka",
+    aliases: ["prislusnika"],
     desc: "Chystá se zmlátit tě.",
     takeable: false
 }, {
@@ -215,10 +223,12 @@ const items = [{
     desc: "Patří členu tajné policie, který je ti velice podobný.",
 }, {
     name: "mrtvolu milicionáře",
+    aliases: ["mrtvolu milicionare"],
     desc: "Někdo po něm mrštil tyči. Hádám tak dle toho,že ji má zaraženou v hlavě.",
     takeable: false,
 }, {
     name: "špenát",
+    aliases: ["spenat"],
     desc: "Ještě je v záruční lhůtě.",
     readInit: function(obj) {
         obj.onUse = function(game) {
@@ -226,6 +236,12 @@ const items = [{
             const rodRet = game.findItem("tyč");
             if (rodRet.item) {
                 rodRet.item.throwable = true;
+            }
+            const spinachRet = game.findItem(obj.name);
+            if (spinachRet.location) {
+                game.removeLocationItem(obj.name, spinachRet.location);
+            } else {
+                game.removeInventoryItem(obj.name);
             }
         }
     }
@@ -485,12 +501,18 @@ const locations = [{
     }
 }, {
     id: "m14",
-    desc: "O.K. Sedíš na lavičce. (Už nemůžeš, co?) Kolem ucha ti hvízdla kulka. Nahoře jsou zátarasy.",
-    cops: true,
+    cops: false,
     readInit: function(obj) {
-        obj.onEnter = function(game) {
+        obj.desc = function(game) {
+            let ret = "O.K. Sedíš na lavičce. (Už nemůžeš, co?) Kolem ucha ti hvízdla kulka. Nahoře jsou zátarasy.";
+            if (obj.cops) {
+                ret += " Blíží se k tobě řada policajtů.";
+            }
+            return ret;
+        };
+        obj.onEnter = function() {
             if (!obj.explored) {
-                game.print("Blíží se k tobě řada policajtů.");
+                obj.cops = true;
             }
         };
         obj.onLeave = function() {
@@ -545,7 +567,7 @@ const locations = [{
             if (!obj.explored) {
                 return "O.K. Sedíš v květináči mezi kytičkami a nadává ti milicionář. Cituji : 'Jestli tě tu uvidím ještě jednou, tak uvidíš.'";
             } else {
-                if (game.getInventoryItem("mrtvolu milicionáře")) {
+                if (game.getLocationItem("mrtvolu milicionáře")) {
                     return "O.K. Sedíš v květináči mezi kytičkami.";
                 } else {
                     return "O.K. Sedíš v květináči mezi kytičkami a nadává ti milicionář. Cituji : 'Já tě upozorňoval,ty hajzle.'";
@@ -553,7 +575,7 @@ const locations = [{
             }
         };
         obj.onEnter = function(game) {
-            if (obj.explored && !game.getInventoryItem("mrtvolu milicionáře")) {
+            if (obj.explored && !game.getLocationItem("mrtvolu milicionáře")) {
                 game.print("Když se vypovídal, vrhnul se na tebe.", "end", 1000);
                 game.end("killed", false);
             }
@@ -620,29 +642,31 @@ const actions = [{
     }
 }, {
     name: "dolů",
-    aliases: ["dolu"],
+    aliases: ["dolu", "d"],
     perform: function(game, params) {
         game.goToLocation("dolů");
     }
 }, {
     name: "nahoru",
+    aliases: ["n"],
     perform: function(game, params) {
         game.goToLocation("nahoru");
     }
 }, {
     name: "doleva",
-    aliases: ["vlevo"],
+    aliases: ["vlevo", "l"],
     perform: function(game, params) {
         game.goToLocation("doleva");
     }
 }, {
     name: "doprava",
-    aliases: ["vpravo"],
+    aliases: ["vpravo", "p"],
     perform: function(game, params) {
         game.goToLocation("doprava");
     }
 }, {
     name: "dovnitř",
+    aliases: ["dovnitr"],
     perform: function(game, params) {
         game.goToLocation("dovnitř");
     }
@@ -855,18 +879,22 @@ function initState() {
                         game.location.actionTaken = true;
                     }
                 } else if (game.location.id === "m14") {
-                    if (game.location.cops) {
+                    if (game.location.actionTaken && game.location.cops) {
                         game.print("Řada policajtů se přiblížila až k tobě. Než jsi stačil vstát, pustili se do tebe obušky.", "end", 1000);
                         game.end("killed", false);
+                    } else {
+                        game.location.actionTaken = true;
                     }
                 } else if (game.location.id === "m16") {
-                    if (game.getLocationItem("příslušníka")) {
+                    if (game.location.actionTaken && game.getLocationItem("příslušníka")) {
                         if (game.getLocationItem("diamanty")) {
                             game.print("Příslušník správně pochopil a diskrétně odešel.");
                         } else {
                             game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end", 1000);
                             game.end("killed", false);
                         }
+                    } else {
+                        game.location.actionTaken = true;
                     }
                 }
             }

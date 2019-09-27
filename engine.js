@@ -1,28 +1,33 @@
-function runGame(initState) {
-    const engine = createEngine(initState);
+function runGame(initState, headless) {
+    const engine = createEngine(headless);
     engine.initState = initState;
     engine.run();
     return engine;
 }
 
-function createEngine() {
+function createEngine(headless) {
 
     const engine = {};
 
     engine.run = function() {
-        // First reset UI controls
-        const gameContainerDiv = document.querySelector("#game-container");
-        while (gameContainerDiv.firstChild) {
-            gameContainerDiv.removeChild(gameContainerDiv.firstChild);
-        }
-        if (engine.initState.intro) {
-            intro(0, engine.initState.intro, function() {
-                engine.initGame();
-                engine.start();
-            });
-        } else {
+        if (headless) {
             engine.initGame();
             engine.start();
+        } else {
+            // First reset UI controls
+            const gameContainerDiv = document.querySelector("#game-container");
+            while (gameContainerDiv.firstChild) {
+                gameContainerDiv.removeChild(gameContainerDiv.firstChild);
+            }
+            if (engine.initState.intro) {
+                intro(0, engine.initState.intro, function() {
+                    engine.initGame();
+                    engine.start();
+                });
+            } else {
+                engine.initGame();
+                engine.start();
+            }
         }
     }
 
@@ -75,39 +80,95 @@ function createEngine() {
     }];
 
     engine.initGame = function(position) {
-        engine.game = createGame(this.initState, position);
+        engine.game = createGame(this.initState, position, headless);
         engine.game.clearAll();
         console.log("Game initialized");
     }
 
-    engine.start = function() {
-        this.inputs = [];
-        this.historyPos = 0;
-        if (this.game.onStart) {
-            this.game.onStart();
+    engine.processCommand = function(command) {
+        if (headless) {
+            console.log(">> " + command);
         }
-        if (!this.game.time) {
-            this.game.time = 0;
+        const game = engine.game;
+        const parts = command.split(/\s+/);
+        if (parts.length === 0) {
+            return;
+        }
+        const params = [];
+        if (parts.length > 1) {
+            parts.slice(1).forEach(part => {
+                if (part && part.trim().length > 0) {
+                    params.push(part.trim());
+                }
+            });
         }
 
-        const inputBox = document.querySelector("#game-input");
-        inputBox.focus();
-        const historyLimit = 20;
-        const lineLimit = 20;
-        const inputs = this.inputs;
+        let action = null;
+        const actionName = parts[0];
+        const actions = game.getActions().filter(action => game.aliasObjectMatchesName(action, actionName));
+        // Add built-in actions
+        engine.actions.filter(action => engine.game.aliasObjectMatchesName(action, actionName)).forEach(action => actions.push(action));
 
-        inputBox.onkeydown = (e) => {
-            if (e.key === "Enter") {
-                processInput();
-            } else if (e.key === "ArrowUp") {
-                historyPrev();
-            } else if (e.key === "ArrowDown") {
-                historyNext();
-            } else if (e.key === "Tab") {
-                e.preventDefault();
-                autocomplete();
+        if (actions.length === 0) {
+            if (game.onMissingAction) {
+                game.onMissingAction(game, parts[0]);
+            } else if (game.messages && game.messages.unknownAction) {
+                game.print(game.messages.unknownAction);
             }
-        };
+        } else if (actions.length === 1) {
+            if (game.printCommand) {
+                game.print("$ " + inputValue, "command");
+            }
+            action = actions[0];
+        } else {
+            if (game.messages && game.messages.multipleActionsMatch) {
+                game.print(game.messages.multipleActionsMatch + " " + actions.map(action => action.name).join(", "));
+            }
+        }
+
+        game.clearInputHelp();
+        if (game.messages && game.messages.inputHelpTip) {
+            game.printInputHelp(game.messages.inputHelpTip);
+        }
+
+        if (action) {
+            action.perform(game, params);
+            if (game.onActionPerformed) {
+                game.onActionPerformed(game, action, params);
+            }
+        }
+    }
+
+    engine.start = function() {
+        if (!headless) {
+            this.inputs = [];
+            this.historyPos = 0;
+            if (this.game.onStart) {
+                this.game.onStart();
+            }
+            if (!this.game.time) {
+                this.game.time = 0;
+            }
+
+            const inputBox = document.querySelector("#game-input");
+            inputBox.focus();
+            const historyLimit = 20;
+            const lineLimit = 20;
+            const inputs = this.inputs;
+
+            inputBox.onkeydown = (e) => {
+                if (e.key === "Enter") {
+                    processInput();
+                } else if (e.key === "ArrowUp") {
+                    historyPrev();
+                } else if (e.key === "ArrowDown") {
+                    historyNext();
+                } else if (e.key === "Tab") {
+                    e.preventDefault();
+                    autocomplete();
+                }
+            };
+        }
 
         function processInput() {
             const game = engine.game;
@@ -129,54 +190,7 @@ function createEngine() {
             inputBox.value = "";
             this.historyPos = inputs.length;
 
-            // Parse the command
-            const parts = inputValue.split(/\s+/);
-            if (parts.length === 0) {
-                return;
-            }
-            const params = [];
-            if (parts.length > 1) {
-                parts.slice(1).forEach(part => {
-                    if (part && part.trim().length > 0) {
-                        params.push(part.trim());
-                    }
-                });
-            }
-
-            let action = null;
-            const actionName = parts[0];
-            const actions = game.getActions().filter(action => game.aliasObjectMatchesName(action, actionName));
-            // Add built-in actions
-            engine.actions.filter(action => engine.game.aliasObjectMatchesName(action, actionName)).forEach(action => actions.push(action));
-
-            if (actions.length === 0) {
-                if (game.onMissingAction) {
-                    game.onMissingAction(game, parts[0]);
-                } else if (game.messages && game.messages.unknownAction) {
-                    game.print(game.messages.unknownAction);
-                }
-            } else if (actions.length === 1) {
-                if (game.printCommand) {
-                    game.print("$ " + inputValue, "command");
-                }
-                action = actions[0];
-            } else {
-                if (game.messages && game.messages.multipleActionsMatch) {
-                    game.print(game.messages.multipleActionsMatch + " " + actions.map(action => action.name).join(", "));
-                }
-            }
-
-            game.clearInputHelp();
-            if (game.messages && game.messages.inputHelpTip) {
-                game.printInputHelp(game.messages.inputHelpTip);
-            }
-
-            if (action) {
-                action.perform(game, params);
-                if (game.onActionPerformed) {
-                    game.onActionPerformed(game, action, params);
-                }
-            }
+            engine.processCommand(inputValue);
         }
 
         function historyPrev() {
@@ -283,11 +297,13 @@ function createEngine() {
     return engine;
 }
 
-function createGame(initialState, savedPosition) {
+function createGame(initialState, savedPosition, headless) {
 
-    const gameContainerDiv = document.querySelector("#game-container");
-    while (gameContainerDiv.firstChild) {
-        gameContainerDiv.removeChild(gameContainerDiv.firstChild);
+    if (!headless) {
+        const gameContainerDiv = document.querySelector("#game-container");
+        while (gameContainerDiv.firstChild) {
+            gameContainerDiv.removeChild(gameContainerDiv.firstChild);
+        }
     }
 
     let locationDiv, outputDiv, inputHelpDiv;
@@ -312,41 +328,45 @@ function createGame(initialState, savedPosition) {
         game.inventory = initialState.inventory;
     }
 
-    // Init UI controls
-    // game-title
-    const title = document.createElement("h1");
-    title.id = "game-title";
-    if (initialState.title) {
-        title.textContent = initialState.title;
-    }
-    gameContainerDiv.insertBefore(title, null);
-    // game-location
-    locationDiv = document.createElement("div");
-    locationDiv.id = "game-location";
-    gameContainerDiv.appendChild(locationDiv);
-    // game-output
-    outputDiv = document.createElement("div");
-    outputDiv.id = "game-output";
-    gameContainerDiv.appendChild(outputDiv);
-    // game-input-container
-    const inputContainerDiv = document.createElement("div");
-    inputContainerDiv.id = "game-input-container";
-    gameContainerDiv.appendChild(inputContainerDiv);
-    // game-input-help
-    inputHelpDiv = document.createElement("div");
-    inputHelpDiv.id = "game-input-help";
-    inputContainerDiv.appendChild(inputHelpDiv);
-    // game-input
-    const inputBox = document.createElement("input");
-    inputBox.id = "game-input";
-    inputContainerDiv.appendChild(inputBox);
-    // game-input-tip
-    const inputTip = document.createElement("div");
-    inputTip.id = "game-input-tip";
-    inputContainerDiv.appendChild(inputTip);
+    if (headless) {
+        console.log("Creating headless game...");
+    } else {
+        // Init UI controls
+        // game-title
+        const title = document.createElement("h1");
+        title.id = "game-title";
+        if (initialState.title) {
+            title.textContent = initialState.title;
+        }
+        gameContainerDiv.insertBefore(title, null);
+        // game-location
+        locationDiv = document.createElement("div");
+        locationDiv.id = "game-location";
+        gameContainerDiv.appendChild(locationDiv);
+        // game-output
+        outputDiv = document.createElement("div");
+        outputDiv.id = "game-output";
+        gameContainerDiv.appendChild(outputDiv);
+        // game-input-container
+        const inputContainerDiv = document.createElement("div");
+        inputContainerDiv.id = "game-input-container";
+        gameContainerDiv.appendChild(inputContainerDiv);
+        // game-input-help
+        inputHelpDiv = document.createElement("div");
+        inputHelpDiv.id = "game-input-help";
+        inputContainerDiv.appendChild(inputHelpDiv);
+        // game-input
+        const inputBox = document.createElement("input");
+        inputBox.id = "game-input";
+        inputContainerDiv.appendChild(inputBox);
+        // game-input-tip
+        const inputTip = document.createElement("div");
+        inputTip.id = "game-input-tip";
+        inputContainerDiv.appendChild(inputTip);
 
-    if (initialState.onInitControls) {
-        initialState.onInitControls(gameContainerDiv);
+        if (initialState.onInitControls) {
+            initialState.onInitControls(gameContainerDiv);
+        }
     }
 
     // Re-init locations and items
@@ -364,6 +384,9 @@ function createGame(initialState, savedPosition) {
     });
 
     game.removeInputContainer = function() {
+        if (headless) {
+            return;
+        }
         gameContainerDiv.removeChild(inputContainerDiv);
     }
 
@@ -447,12 +470,12 @@ function createGame(initialState, savedPosition) {
 
     // Returns an inventory item for the specified name or undefined
     game.getInventoryItem = function(name) {
-        return game.inventory ? this.getItem(game.inventory.map(item => game.mapItem(item)), name) : null;
+        return game.inventory ? game.getItem(game.inventory.map(item => game.mapItem(item)), name) : undefined;
     };
 
     // Remove an inventory item of the specified name if present
     game.removeInventoryItem = function(name) {
-        const idx = game.inventory.findIndex(item => item.name === name);
+        const idx = game.inventory.findIndex(item => item === name);
         if (idx != -1) {
             game.inventory.splice(idx, 1);
         }
@@ -460,8 +483,32 @@ function createGame(initialState, savedPosition) {
 
     // Returns a location item for the specified name or undefined
     game.getLocationItem = function(name) {
-        return this.getItem(game.location.items.map(item => game.mapItem(item)), name);
+        if (game.location.items) {
+            return game.getItem(game.location.items.map(item => game.mapItem(item)), name);
+        }
+        return undefined;
     };
+
+    // Remove an item from the current location if present
+    game.removeLocationItem = function(name, location) {
+        const loc = location ? location : game.location;
+        const idx = loc.items.findIndex(item => item === name);
+        if (idx != -1) {
+            loc.items.splice(idx, 1);
+        }
+    }
+
+    game.addLocationItem = function(locationId, itemName) {
+        const location = game.getLocation(locationId);
+        if (location) {
+            if (!location.items) {
+                location.items = [];
+            }
+            location.items.push(itemName);
+        } else {
+            console.log("Location [" + locationId + "] not found");
+        }
+    }
 
     // Attempts to find an inventory/location item
     game.findItem = function(name) {
@@ -572,12 +619,19 @@ function createGame(initialState, savedPosition) {
 
     // Clear location info
     game.clearLocation = function() {
+        if (headless) {
+            return;
+        }
         while (locationDiv.firstChild) {
             locationDiv.removeChild(locationDiv.firstChild);
         }
     };
 
     game.printLocation = function(text, cssClass, delay, followup, skipTypewriter) {
+        if (headless) {
+            console.log(text);
+            return;
+        }
         const line = document.createElement("div");
         if (cssClass) {
             line.className = cssClass;
@@ -602,6 +656,10 @@ function createGame(initialState, savedPosition) {
     };
 
     game.print = function(text, cssClass, delay) {
+        if (headless) {
+            console.log(text);
+            return;
+        }
         const line = document.createElement("div");
         if (cssClass) {
             line.className = cssClass;
@@ -618,6 +676,9 @@ function createGame(initialState, savedPosition) {
     };
 
     game.printInputHelp = function(str, cssClass) {
+        if (headless) {
+            return;
+        }
         const line = document.createElement("div");
         if (cssClass) {
             line.className = cssClass;
@@ -627,6 +688,9 @@ function createGame(initialState, savedPosition) {
 
     // Clear input help div
     game.clearInputHelp = function() {
+        if (headless) {
+            return;
+        }
         while (inputHelpDiv.firstChild) {
             inputHelpDiv.removeChild(inputHelpDiv.firstChild);
         }
@@ -634,11 +698,13 @@ function createGame(initialState, savedPosition) {
 
     // Clear output div
     game.clearOutput = function() {
+        if (headless) {
+            return;
+        }
         while (outputDiv.firstChild) {
             outputDiv.removeChild(outputDiv.firstChild);
         }
     };
-
 
     game.goToLocation = function(exitName) {
         this.clearOutput();
