@@ -140,6 +140,9 @@ function createEngine(headless) {
     }
 
     engine.start = function() {
+
+        let inputBox, historyLimit, lineLimit, inputs;
+
         if (!headless) {
             this.inputs = [];
             this.historyPos = 0;
@@ -150,11 +153,11 @@ function createEngine(headless) {
                 this.game.time = 0;
             }
 
-            const inputBox = document.querySelector("#game-input");
+            inputBox = document.querySelector("#game-input");
             inputBox.focus();
-            const historyLimit = 20;
-            const lineLimit = 20;
-            const inputs = this.inputs;
+            historyLimit = 20;
+            lineLimit = 20;
+            inputs = this.inputs;
 
             inputBox.onkeydown = (e) => {
                 if (e.key === "Enter") {
@@ -299,14 +302,15 @@ function createEngine(headless) {
 
 function createGame(initialState, savedPosition, headless) {
 
+    let gameContainerDiv; 
     if (!headless) {
-        const gameContainerDiv = document.querySelector("#game-container");
+        gameContainerDiv = document.querySelector("#game-container");
         while (gameContainerDiv.firstChild) {
             gameContainerDiv.removeChild(gameContainerDiv.firstChild);
         }
     }
 
-    let locationDiv, outputDiv, inputHelpDiv;
+    let inputBox, title, locationDiv, outputDiv, inputHelpDiv, inputContainerDiv, inputTip;
 
     const game = JSON.parse(JSON.stringify(initialState));
     game.actions = initialState.actions;
@@ -333,7 +337,7 @@ function createGame(initialState, savedPosition, headless) {
     } else {
         // Init UI controls
         // game-title
-        const title = document.createElement("h1");
+        title = document.createElement("h1");
         title.id = "game-title";
         if (initialState.title) {
             title.textContent = initialState.title;
@@ -348,7 +352,7 @@ function createGame(initialState, savedPosition, headless) {
         outputDiv.id = "game-output";
         gameContainerDiv.appendChild(outputDiv);
         // game-input-container
-        const inputContainerDiv = document.createElement("div");
+        inputContainerDiv = document.createElement("div");
         inputContainerDiv.id = "game-input-container";
         gameContainerDiv.appendChild(inputContainerDiv);
         // game-input-help
@@ -356,11 +360,11 @@ function createGame(initialState, savedPosition, headless) {
         inputHelpDiv.id = "game-input-help";
         inputContainerDiv.appendChild(inputHelpDiv);
         // game-input
-        const inputBox = document.createElement("input");
+        inputBox = document.createElement("input");
         inputBox.id = "game-input";
         inputContainerDiv.appendChild(inputBox);
         // game-input-tip
-        const inputTip = document.createElement("div");
+        inputTip = document.createElement("div");
         inputTip.id = "game-input-tip";
         inputContainerDiv.appendChild(inputTip);
 
