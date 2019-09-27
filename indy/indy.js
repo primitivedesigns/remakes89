@@ -13,7 +13,6 @@ const items = [{
     takeable: false
 }, {
     name: "mrtvolu fízla",
-    // víceslovné předměty dávám s podtržítkem
     desc: "Má hluboko v hlavě zaseklou sekeru (dobrá práce)! Našels' u něj štít.",
     readInit: function(obj) {
         obj.onExamine = function(game) {
@@ -64,7 +63,7 @@ const items = [{
             const cop = game.getLocationItem("fízla");
             if (cop) {
                 game.print("O.K. Zasekl jsi mu sekeru do hlavy tak hluboko,že nejde vytáhnout. Vidíš mrtvolu fízla.");
-                game.location.items.splice(game.location.items.findIndex(item => item.name === "fízla"), 1);
+                game.location.items.splice(game.location.items.findIndex(item => item.name === cop.name), 1);
                 game.location.items.push("mrtvolu fízla");
             } else {
                 game.print(game.messages.unknownAction);
@@ -73,6 +72,7 @@ const items = [{
     }
 }, {
     name: "kámen",
+    aliases: ["kamen"],
     desc: "Není to obyčejný kámen, je to dlažební kostka.",
     takeable: false,
     unusable: true,
@@ -87,68 +87,159 @@ const items = [{
     }
 }, {
     name: "slovník",
-    desc: "Podrobný česko-anglicky slovník."
+    desc: "Podrobný česko-anglicky slovník.",
+    readInit: function(obj) {
+        obj.onUse = function(game) {
+            if (game.location.id === "m7") {
+                game.print("O.K. Přeložil sis nápis na zdi. Cituji: Jakeš je vůl, KAREL.");
+            }
+        }
+    }
 }, {
     name: "mrtvolu policajta",
     desc: "Byl nepochybně zasažen dlažební kostkou.",
     takeable: false
 }, {
-    name: "nápis_na_zdi",
+    name: "nápis na zdi",
     desc: "Bez slovníku jej nerozluštíš.",
     takeable: false
-        // POUŽIJ SLOVNÍK: "O.K. Přeložil sis nápis na zdi. Cituji: Jakeš je vůl, KAREL."
 }, {
     name: "pistoli",
     desc: "Bohužel v ní nejsou náboje.",
 }, {
     name: "poldu",
     desc: "Chystá se zmlátit tě.",
-    //fízla lze zabít použitím tyče. Pokud okamžitě nepoužiješ sekeru, pak message: "Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku." a GAMEOVER
-    // použít tyč - hláška "O.K. Vypáčil jsi poklop kanálu. Poklop spadnul do šachty. Polda se na tebe z řevem vrhnul,ale v okamžiku, kdy tě chtěl udeřit, zahučel přímo před tebou do kanálu."
     takeable: false
 }, {
     name: "tyč",
     desc: "Na ledacos by se hodila.",
+    readInit: function(obj) {
+        obj.onUse = function(game) {
+            if (game.location.id === "m8" && game.getLocationItem("poldu")) {
+                game.print("O.K. Vypáčil jsi poklop kanálu. Poklop spadnul do šachty. Polda se na tebe z řevem vrhnul,ale v okamžiku, kdy tě chtěl udeřit, zahučel přímo před tebou do kanálu.");
+                game.location.items.splice(game.location.items.findIndex(item => item.name === "poldu"), 1);
+            } else if (game.location.id === "m10" && game.getLocationItem("chlupatýho")) {
+                game.print("O.K. Praštil jsi chlupatýho tyčí přes hlavu.");
+                game.location.items.splice(game.location.items.findIndex(item => item.name === "chlupatýho"), 1);
+                game.location.items.push("mrtvolu chlupatýho");
+            } else if (game.location.id === "m18" && obj.throwable) {
+                game.print("O.K. Mrštil jsi tyčí nalevo a uslyšel jsi zasténání. Cha,cha,cha,cha.");
+                game.removeInventoryItem("tyč");
+                game.getLocation("m17").items.push("mrtvolu milicionáře");
+            }
+        }
+    }
 }, {
     name: "chlupatýho",
     desc: "Chystá se zmlátit tě.",
     takeable: false,
 }, {
-    name: "mrtvolu_chlupatýho",
+    name: "mrtvolu chlupatýho",
     desc: "Někdo mu rozrazil tyči lebku (kdo asi?). Má na sobě uniformu.",
-    onExamine: function(game) {
-        game.location.items.push({
-            name: "uniformu",
-            desc: "Je to uniforma člena Veřejné bezpečnosti."
-                // V původní hře nejde uniformu prozkoumat, což podle mě zjevně chyba, tak jsem text dofabuloval
-                // Pokud použiješ uniformu, tak si ji oblékneš: "O.K. Oblékl sis uniformu člena Veřejné bezpečnosti." Mohl by být i synonymum Obleč uniformu
-                // V původní hře ji svlékneš tím, že ji položíš. "Svlékl sis uniformu." To je podle mě matoucí a můžeme to udělat jinak.
-                // Pokud máš uniformu, mění se události v některých místnostech
-
-        });
-        game.printLocationInfo();
+    readInit: function(obj) {
+        obj.onExamine = function(game) {
+            game.location.items.push("uniformu");
+        };
     },
     takeable: false,
 }, {
-    name: "člena_VB",
+    name: "uniformu",
+    desc: "Je to uniforma člena Veřejné bezpečnosti.",
+    readInit: function(obj) {
+            const dressAction = {
+                name: "obleč",
+                aliases: ["oblec"],
+                perform: function(game, params) {
+                    if (params.join(" ") === "uniformu") {
+                        let uniform = game.getInventoryItem("uniformu");
+                        if (!uniform) {
+                            uniform = game.takeItem("uniformu", false);
+                        }
+                        if (uniform) {
+                            obj.dressed = true;
+                            game.print("O.K. Oblékl sis uniformu člena Veřejné bezpečnosti.");
+                        }
+                    }
+                }
+            }
+            obj.onUse = function(game) {
+                dressAction.perform(game, ["uniformu"]);
+            };
+            obj.actions = [{
+                name: "svleč",
+                aliases: ["svlec"],
+                perform: function(game, params) {
+                    if (params.join(" ") === "uniformu") {
+                        obj.dressed = false;
+                        game.print("Svlékl sis uniformu.");
+                    }
+                }
+            }, dressAction];
+        }
+        // V původní hře nejde uniformu prozkoumat, což podle mě zjevně chyba, tak jsem text dofabuloval
+        // Pokud použiješ uniformu, tak si ji oblékneš: "O.K. Oblékl sis uniformu člena Veřejné bezpečnosti." Mohl by být i synonymum Obleč uniformu
+        // V původní hře ji svlékneš tím, že ji položíš. "Svlékl sis uniformu." To je podle mě matoucí a můžeme to udělat jinak.
+        // Pokud máš uniformu, mění se události v některých místnostech
+}, {
+    name: "člena VB",
+    aliases: ["clena VB"],
     desc: "Kontroluje kolemjdoucí.",
-    // opět to nebylo v původní hře, deskripci jsem dopsal
     takeable: false
 }, {
     name: "oltář",
     desc: "Jako by ti něco říkalo: Polož sem diamanty.",
-    // pokud položíš diamanty: "Jakmile jsi je položil, někdo je z oltáře ukradl." - item zmizí. Neděje se to jinde, pouze v této místnosti. 
     takeable: false
 }, {
     name: "cedulku",
     desc: "Je na ní napsáno: 'A ven se dostane jen ten, kdo má čtyři magické diamanty.'",
     takeable: false
+}, {
+    name: "civila",
+    desc: "Je na něm vidět, že nemá v lásce komunisty.",
+    takeable: false
+}, {
+    name: "příslušníka",
+    desc: "Chystá se zmlátit tě.",
+    takeable: false
+}, {
+    name: "mrtvolu civila",
+    desc: "Je ti velice podobný. Má u sebe legitimaci.",
+    takeable: false,
+    readInit: function(obj) {
+        obj.onExamine = function(game) {
+            game.location.items.push("legitimaci");
+        };
+    }
+}, {
+    name: "legitimaci",
+    desc: "Patří členu tajné policie, který je ti velice podobný.",
+}, {
+    name: "mrtvolu milicionáře",
+    desc: "Někdo po něm mrštil tyči. Hádám tak dle toho,že ji má zaraženou v hlavě.",
+    takeable: false,
+}, {
+    name: "špenát",
+    desc: "Ještě je v záruční lhůtě.",
+    readInit: function(obj) {
+        obj.onUse = function(game) {
+            game.print("O.K. Snědl jsi špenát a hned se cítíš silnější, že bys mohl tyčí házet.");
+            const rodRet = game.findItem("tyč");
+            if (rodRet.item) {
+                rodRet.item.throwable = true;
+            }
+        }
+    }
 }];
 
 const locations = [{
     id: "m1",
     desc: "O.K. Stojíš před domem potravin. Vchod do metra je naštěstí volný. Z balkónu v domě se pobaveně dívá nepříjemný člověk (zřejmě komunista) na poctivě odváděnou práci členů VB.",
     items: ["fízla"],
+    readInit: function(obj) {
+        obj.onEnter = function(game) {
+            obj.actionTaken = false;
+        }
+    },
     exits: [{
         name: "dolů",
         location: "m4"
@@ -159,7 +250,6 @@ const locations = [{
         name: "dovnitř",
         location: "m19"
     }],
-    actionTaken: false
 }, {
     id: "m2",
     desc: "O.K. Jsi pod sochou svatého Václava. Vidíš zatarasený vchod do metra. Nahoře je muzeum, ale přístup k němu je zatarasený.",
@@ -229,14 +319,16 @@ const locations = [{
         name: "dolů",
         location: "m8"
     }],
-    actionTaken: false,
     readInit: function(obj) {
+        obj.onEnter = function(game) {
+            obj.actionTaken = false;
+        };
         obj.decorateItemName = function(itemName) {
             if (itemName === "kámen" && !this.actionTaken) {
                 return "kámen, který padá na tebe";
             }
             return itemName;
-        }
+        };
     }
 }, {
     id: "m6",
@@ -267,14 +359,19 @@ const locations = [{
 }, {
     id: "m7",
     desc: "O.K. Stojíš před prodejnou knihy. Není nic slyšet, protože veliký dav tu skanduje heslo 'AŤ ŽIJE KAREL!' Vidíš nápis na zdi. Vlevo je zatarasený vchod do Opletalky.",
-    items: ["nápis_na_zdi", "pistoli"],
+    items: ["nápis na zdi", "pistoli"],
     exits: [{
-        name: "doleva",
-        location: "m9"
+        name: "nahoru",
+        location: "m4"
+    }, {
+        name: "doprava",
+        location: "m8"
+    }, {
+        name: "dolů",
+        location: "m10"
     }]
 }, {
     id: "m8",
-    //chybí
     desc: "O.K. Stojíš mezi patníky u kanálu. Není tu nic zvláštního. Dole jsou zátarasy.",
     items: ["poldu"],
     exits: [{
@@ -287,10 +384,31 @@ const locations = [{
         name: "nahoru",
         location: "m5"
     }],
+    readInit: function(obj) {
+        obj.onEnter = function(game) {
+            obj.actionTaken = false;
+        }
+    }
 }, {
     id: "m9",
-    desc: "O.K. Stojíš pod lešením. Dole jsou zátarasy. Slyšíš tichý, leč podezřelý tikot. Vidíš do ústí zatarasené ulice Ve Smečkách.",
-    // pokud došlo k výbuchu: "O.K. Balancuješ na kraji obrovského kráteru. Na dně vidíš ceduli 'Dům módy'. Neudržels' však rovnováhu a padáš dolů." a GAME OVER
+    exploded: false,
+    readInit: function(obj) {
+        obj.desc = function() {
+            if (this.exploded) {
+                return "O.K. Balancuješ na kraji obrovského kráteru. Na dně vidíš ceduli 'Dům módy'.";
+            } else {
+                return "O.K. Stojíš pod lešením. Dole jsou zátarasy. Slyšíš tichý, leč podezřelý tikot. Vidíš do ústí zatarasené ulice Ve Smečkách.";
+            }
+        };
+        obj.onEnter = function(game) {
+            if (this.exploded) {
+                game.print("Neudržels' však rovnováhu a padáš dolů.", "end", 1000);
+                game.end("killed", false);
+            } else {
+                this.countDownTime = game.time;
+            }
+        }
+    },
     items: ["tyč"],
     exits: [{
         name: "doleva",
@@ -299,15 +417,23 @@ const locations = [{
         name: "nahoru",
         location: "m6"
     }],
-    // Pokud uděláš víc než 1 akci: "Zahlédl jsi záblesk, po kterém následuje ohromný výbuch. Než tě zasáhla střepina, došlo ti,co znamenal ten tikot." GAMEOVER
-    // Pokud odejdeš po 1 akci (seber tyč): "Místo, ze kterého jsi právě vyšel, vyletělo do povětří. Tys měl ale štěstí."
 }, {
     id: "m10",
-    desc: "O.K. Nacházíš se před LUXOL CLUBEM. Vedle je kino Jalta. Najednou se na tebe vrhnul chlupatej,a když u tebe nic nenašel, zklamaně odešel. Dole vidíš zátarasy.",
-    // Pokud máš pistoli, tak: "O.K. Nacházíš se před LUXOL CLUBEM. Vedle je kino Jalta. Dole vidíš zátarasy. Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistolí,odprásknul tě." GAME OVER
-    // První akce musí být použít tyč, pak: "O.K. Praštil jsi chlupatýho tyčí přes hlavu." objeví se item mrtvola chlupatýho, zmizí item chlupatýho
-    // Pokud uděláš cokoli jiného, pak: "Policajta naštvalo, že u tebe nenašel co hledal a vrhnul se na tebe." GAME OVER
+    desc: "O.K. Nacházíš se před LUXOL CLUBEM. Vedle je kino Jalta. Dole vidíš zátarasy.",
     items: ["chlupatýho"],
+    readInit: function(obj) {
+        obj.onEnter = function(game) {
+            obj.actionTaken = false;
+            if (!game.location.explored) {
+                if (game.getInventoryItem("pistoli")) {
+                    game.print("Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistolí,odprásknul tě.", "end", 1000);
+                    game.end("kill", false);
+                } else {
+                    game.print("Najednou se na tebe vrhnul chlupatej,a když u tebe nic nenašel, zklamaně odešel.");
+                }
+            }
+        }
+    },
     exits: [{
         name: "nahoru",
         location: "m7"
@@ -318,8 +444,18 @@ const locations = [{
 }, {
     id: "m11",
     desc: "O.K. Jsi v křoví.",
-    // Pokud na sobě nemáš uniformu: "O.K. Jsi v křoví. Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali sis tebou hrát." GAMEOVER
-    items: ["člena_VB"],
+    items: ["člena VB"],
+    readInit: function(obj) {
+        obj.onEnter = function(game) {
+            if (!game.location.explored) {
+                const uniform = game.getInventoryItem("uniformu");
+                if (!uniform || !uniform.dressed) {
+                    game.print("Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali sis tebou hrát.", "end", 1000);
+                    game.end("killed", false);
+                }
+            }
+        }
+    },
     exits: [{
         name: "doleva",
         location: "m10"
@@ -338,6 +474,126 @@ const locations = [{
         name: "dolů",
         location: "m15"
     }]
+}, {
+    id: "m13",
+    desc: "O.K. Jsi před grandhotelem EVROPA. Zahlédl jsi však videokameru zamířenou přímo na tebe.",
+    readInit: function(obj) {
+        obj.onEnter = function(game) {
+            game.print("Uznal jsi, že veškerý odpor je marný a spáchal jsi sebevraždu.", "end", 1000);
+            game.end("killed", false);
+        }
+    }
+}, {
+    id: "m14",
+    desc: "O.K. Sedíš na lavičce. (Už nemůžeš, co?) Kolem ucha ti hvízdla kulka. Nahoře jsou zátarasy.",
+    cops: true,
+    readInit: function(obj) {
+        obj.onEnter = function(game) {
+            if (!obj.explored) {
+                game.print("Blíží se k tobě řada policajtů.");
+            }
+        };
+        obj.onLeave = function() {
+            obj.cops = false;
+        }
+    },
+    exits: [{
+        name: "doleva",
+        location: "m13"
+    }, {
+        name: "doprava",
+        location: "m15"
+    }, {
+        name: "dolů",
+        location: "m17"
+    }],
+}, {
+    id: "m15",
+    desc: "O.K. Stojíš pod lešením. Napravo je ústí do zatarasené Štěpánské ulice. Dole jsou také zátarasy.",
+    items: ["civila"],
+    readInit: function(obj) {
+        obj.onEnter = function(game) {
+            const uniform = game.getInventoryItem("uniformu");
+            if (uniform && uniform.dressed) {
+                game.print("Vrhnul se na tebe civilní občan pod dojmem, že jsi člen VB. Máš totiž ještě oblečenou uniformu.", "end", 1000);
+                game.end("killed", false);
+            }
+        };
+    },
+    exits: [{
+        name: "doleva",
+        location: "m14"
+    }, {
+        name: "nahoru",
+        location: "m12"
+    }],
+}, {
+    id: "m16",
+    desc: "O.K. Ležíš před obchodním domem DRUŽBA. Praštil tě totiž příslušník. Vchod do metra je zatarasen. Dole za zátarasy je tramvajové koleje.",
+    items: ["příslušníka", "mrtvolu civila"],
+    exits: [{
+        name: "doprava",
+        location: "m17"
+    }, {
+        name: "nahoru",
+        location: "m13"
+    }],
+}, {
+    id: "m17",
+    readInit: function(obj) {
+        obj.desc = function(game) {
+            if (!obj.explored) {
+                return "O.K. Sedíš v květináči mezi kytičkami a nadává ti milicionář. Cituji : 'Jestli tě tu uvidím ještě jednou, tak uvidíš.'";
+            } else {
+                if (game.getInventoryItem("mrtvolu milicionáře")) {
+                    return "O.K. Sedíš v květináči mezi kytičkami.";
+                } else {
+                    return "O.K. Sedíš v květináči mezi kytičkami a nadává ti milicionář. Cituji : 'Já tě upozorňoval,ty hajzle.'";
+                }
+            }
+        };
+        obj.onEnter = function(game) {
+            if (obj.explored && !game.getInventoryItem("mrtvolu milicionáře")) {
+                game.print("Když se vypovídal, vrhnul se na tebe.", "end", 1000);
+                game.end("killed", false);
+            }
+        }
+    },
+    exits: [{
+        name: "doleva",
+        location: "m16"
+    }, {
+        name: "doprava",
+        location: "m18"
+    }, {
+        name: "nahoru",
+        location: "m14"
+    }],
+}, {
+    id: "m18",
+    desc: "O.K. Stojíš u zataraseného vchodu do metra. Dole a nahoře jsou zátarasy.",
+    items: ["špenát"],
+    exits: [{
+        name: "doleva",
+        location: "m17"
+    }],
+}, {
+    id: "m19",
+    desc: "O.K. Dostal ses do metra. Všude je tu rozšířen slzný plyn.",
+    readInit: function(obj) {
+        obj.onEnter = function(game) {
+            game.print("Je ho tu tolik,že ses udusil.", "end", 1000);
+            game.end("killed");
+        }
+    }
+}, {
+    id: "m20",
+    desc: "O.K. OBELSTIL JSI I TU NEJVĚTŠÍ FÍZLOVSKOU SVINI. ŠTASTNĚ JSI SE DOSTAL NA LETIŠTĚ A ODLETĚL DOMŮ. GRATULUJI K VÍTĚZSTVÍ!!!!!!!!!!",
+    readInit: function(obj) {
+        obj.onEnter = function(game) {
+            game.end("win");
+        }
+    }
 }];
 
 const actions = [{
@@ -394,9 +650,13 @@ const actions = [{
     name: "polož",
     aliases: ["poloz", "polozit", "položit"],
     perform: function(game, params) {
-        const item = game.dropItem(params[0], false);
+        const item = game.dropItem(params.join(" "), false);
         if (item) {
             game.print("Položil jsi " + item.name + ".");
+            if (item.name === "diamanty" && game.location.id === "m12") {
+                game.print("Jakmile jsi je položil, někdo je z oltáře ukradl.");
+                game.inventory.splice(game.inventory.findIndex(it => it === "diamanty"), 1);
+            }
         } else {
             game.print("Tohle nejde položit.");
         }
@@ -409,15 +669,11 @@ const actions = [{
     name: "vezmi",
     aliases: ["seber", "vzít", "vzit"],
     perform: function(game, params) {
-        if (game.inventory.length >= 2) {
-            game.print("Inventář je plný!");
+        const item = game.takeItem(params.join(" "), false);
+        if (item) {
+            game.print("Vzal jsi " + item.name + ".");
         } else {
-            const item = game.takeItem(params[0], false);
-            if (item) {
-                game.print("Vzal jsi " + item.name + ".");
-            } else {
-                game.print("Tohle nejde vzít.");
-            }
+            game.print("Tohle nejde vzít.");
         }
     },
     autocomplete: function(game, str) {
@@ -500,6 +756,7 @@ function initState() {
             inputHelpPrefix: "Pokračuj: ",
             gameSaved: "Hra uložena.",
             gameLoaded: "Uložená pozice nahrána.",
+            inventoryFull: "Inventář je plný!",
         },
         intro: [function(gameContainer) {
             const title = document.createElement("div");
@@ -517,6 +774,21 @@ function initState() {
             typewriter(text5, "Stiskni klávesu ENTER...");
         }],
         onInitControls: initControls,
+        onShiftTime: function(game) {
+            const m9 = game.getLocation("m9");
+            if (m9.countDownTime && !m9.exploded) {
+                const bombTime = game.time - m9.countDownTime;
+                if (bombTime > 2) {
+                    if (game.location.id === "m9") {
+                        game.print("Zahlédl jsi záblesk, po kterém následuje ohromný výbuch. Než tě zasáhla střepina, došlo ti,co znamenal ten tikot.", "end", 1000);
+                        game.end("killed", false);
+                    } else {
+                        m9.exploded = true;
+                        game.print("Místo, ze kterého jsi právě vyšel, vyletělo do povětří. Tys měl ale štěstí.", null, 1000);
+                    }
+                }
+            }
+        },
         onStart: function() {
             const sidebarOpen = document.querySelector("#game-sidebar-open");
             if (sidebarOpen) {
@@ -556,17 +828,45 @@ function initState() {
 
                 if (game.location.id === "m1") {
                     if (game.location.actionTaken && game.getLocationItem("fízla")) {
-                        game.print("Fízl se na tebe krvežíznivě vrhnul a začal tě mlátit. A mlátil a mlátil...", "end", 500);
+                        game.print("Fízl se na tebe krvežíznivě vrhnul a začal tě mlátit. A mlátil a mlátil...", "end", 1000);
                         game.end("killed", false);
                     } else {
                         game.location.actionTaken = true;
                     }
                 } else if (game.location.id === "m5") {
                     if (game.location.actionTaken && !game.location.shieldUsed) {
-                        game.print("Kámen se přibližuje víc a víc. Pořád se zvětšuje a zvětšuje a zvětšuje a zvětšu-", "end", 500);
+                        game.print("Kámen se přibližuje víc a víc. Pořád se zvětšuje a zvětšuje a zvětšuje a zvětšu-", "end", 1000);
                         game.end("killed", false);
                     } else {
                         game.location.actionTaken = true;
+                    }
+                } else if (game.location.id === "m8") {
+                    if (game.location.actionTaken && game.getLocationItem("poldu")) {
+                        game.print("Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku.", "end", 1000);
+                        game.end("killed", false);
+                    } else {
+                        game.location.actionTaken = true;
+                    }
+                } else if (game.location.id === "m10") {
+                    if (game.location.actionTaken && game.getLocationItem("chlupatýho")) {
+                        game.print("Policajta naštvalo, že u tebe nenašel co hledal a vrhnul se na tebe.", "end", 1000);
+                        game.end("killed", false);
+                    } else {
+                        game.location.actionTaken = true;
+                    }
+                } else if (game.location.id === "m14") {
+                    if (game.location.cops) {
+                        game.print("Řada policajtů se přiblížila až k tobě. Než jsi stačil vstát, pustili se do tebe obušky.", "end", 1000);
+                        game.end("killed", false);
+                    }
+                } else if (game.location.id === "m16") {
+                    if (game.getLocationItem("příslušníka")) {
+                        if (game.getLocationItem("diamanty")) {
+                            game.print("Příslušník správně pochopil a diskrétně odešel.");
+                        } else {
+                            game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end", 1000);
+                            game.end("killed", false);
+                        }
                     }
                 }
             }

@@ -450,6 +450,14 @@ function createGame(initialState, savedPosition) {
         return game.inventory ? this.getItem(game.inventory.map(item => game.mapItem(item)), name) : null;
     };
 
+    // Remove an inventory item of the specified name if present
+    game.removeInventoryItem = function(name) {
+        const idx = game.inventory.findIndex(item => item.name === name);
+        if (idx != -1) {
+            game.inventory.splice(idx, 1);
+        }
+    }
+
     // Returns a location item for the specified name or undefined
     game.getLocationItem = function(name) {
         return this.getItem(game.location.items.map(item => game.mapItem(item)), name);
@@ -506,9 +514,16 @@ function createGame(initialState, savedPosition) {
     };
 
     game.enterLocation = function(location) {
-        this.location = location;
+        const lastLocation = game.location;
+        if (lastLocation && lastLocation.onLeave) {
+            lastLocation.onLeave(game);
+        }
+        game.location = location;
         if (location.onEnter) {
             location.onEnter(game);
+        }
+        if (!location.explored) {
+            location.explored = true;
         }
         this.printLocationInfo(true);
     };
@@ -650,21 +665,27 @@ function createGame(initialState, savedPosition) {
     };
 
     game.takeItem = function(name, updateLocationInfo = true) {
-        const item = this.getLocationItem(name);
-        if (item && (item.takeable === undefined || item.takeable)) {
-            const location = this.location;
-            if (!this.inventory) {
-                this.inventory = [];
+        if (game.inventoryLimit && game.inventory.length >= game.inventoryLimit) {
+            if (game.messages.inventoryFull) {
+                game.print(game.messages.inventoryFull);
             }
-            location.items.splice(location.items.findIndex(it => it === item.name), 1);
-            this.inventory.push(item.name);
-            if (updateLocationInfo) {
-                this.printLocationInfo(false);
+        } else {
+            const item = this.getLocationItem(name);
+            if (item && (item.takeable === undefined || item.takeable)) {
+                const location = this.location;
+                if (!this.inventory) {
+                    this.inventory = [];
+                }
+                location.items.splice(location.items.findIndex(it => it === item.name), 1);
+                this.inventory.push(item.name);
+                if (updateLocationInfo) {
+                    this.printLocationInfo(false);
+                }
+                if (item.onTake) {
+                    item.onTake(this);
+                }
+                return item;
             }
-            if (item.onTake) {
-                item.onTake(this);
-            }
-            return item;
         }
         return null;
     };
@@ -699,10 +720,11 @@ function createGame(initialState, savedPosition) {
     game.examineItem = function(name) {
         const item = this.getItem(this.getItems(), name);
         if (item) {
-            this.printItemInfo(item);
+            game.printItemInfo(item);
             if (item.onExamine) {
                 item.onExamine(this);
             }
+            item.examined = true;
             return true;
         }
         return false;
@@ -711,7 +733,7 @@ function createGame(initialState, savedPosition) {
     game.printItemInfo = function(item) {
         const foundItem = item instanceof Object ? item : this.getItem(this.getItems(), item);
         if (item) {
-            this.print(item.desc instanceof Function ? item.desc() : item.desc);
+            this.print(item.desc instanceof Function ? item.desc(game) : item.desc);
         }
     };
     game.end = function(endState, clearAll = true) {

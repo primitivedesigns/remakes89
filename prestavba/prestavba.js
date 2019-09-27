@@ -264,8 +264,7 @@ function initState() {
             desc: "Je ze dřeva.",
             readInit: function(obj) {
                 obj.onExamine = function(game) {
-                    if (!this.examined) {
-                        this.examined = true;
+                    if (!obj.examined) {
                         game.print("Něco jsi našel!", undefined, 300);
                         game.location.items.push("košík");
                         game.printLocationInfo();
