@@ -494,6 +494,10 @@ function createGame(initialState, savedPosition) {
         return items.map(item => game.mapItem(item));
     };
 
+    game.getUsableItems = function() {
+        return this.getItems().filter(item => !item.unusable);
+    }
+
     // Return all takeable items in the current location
     game.getTakeableItems = function() {
         if (game.location.items) {
@@ -529,7 +533,7 @@ function createGame(initialState, savedPosition) {
                 funcs.push(followup => game.printLocation(location.name, "name", 0, followup, !runInQueue));
             }
             if (location.desc) {
-                const descStr = location.desc instanceof Function ? location.desc() : location.desc;
+                const descStr = location.desc instanceof Function ? location.desc(game) : location.desc;
                 funcs.push(followup => game.printLocation(descStr, "desc", 0, followup, !runInQueue));
             }
             if (location.exits && location.exits.length > 0) {
@@ -684,8 +688,9 @@ function createGame(initialState, savedPosition) {
 
     game.useItem = function(name) {
         const item = this.getItem(this.getItems(), name);
-        if (item && item.onUse) {
+        if (item && !item.unusable && item.onUse) {
             item.onUse(game);
+            item.used = true;
             return true;
         }
         return false;

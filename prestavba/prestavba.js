@@ -620,7 +620,7 @@ function initState() {
                         }
                     },
                     autocomplete: function(game, str) {
-                        return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => game.aliasObjectNameStartsWith(item, str));
+                        return (!str || str.length === 0) ? game.getUsableItems() : game.getUsableItems().filter(item => game.aliasObjectNameStartsWith(item, str));
                     }
                 }, {
                     name: "otevři",
