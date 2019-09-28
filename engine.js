@@ -329,7 +329,8 @@ function createGame(initialState, savedPosition, headless) {
         game.startLocation = savedPosition.location;
         game.inventory = savedPosition.inventory;
     } else {
-        game.inventory = initialState.inventory;
+        game.inventory = [];
+        initialState.inventory.forEach(item => game.inventory.push(item));
     }
 
     if (headless) {
