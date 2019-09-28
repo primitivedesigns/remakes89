@@ -26,6 +26,525 @@ let sideOpen = false;
 let beepOn = true;
 const beep = new Audio("snd/beep.wav");
 
+const items = [{
+    name: "bednu",
+    aliases: ["bedna"],
+    desc: "Je ze dřeva.",
+    readInit: function(obj) {
+        obj.onExamine = function(game) {
+            if (!obj.examined) {
+                game.print("Něco jsi našel!", undefined, 300);
+                game.location.items.push("košík");
+                game.printLocationInfo();
+            }
+
+        }
+    }
+}, {
+    name: "košík",
+    aliases: ["kosik"],
+    desc: "Je to hezký proutěný košík, i když poněkud špinavý.",
+    readInit: function(obj) {
+        obj.onExamine = function(game) {
+            if (!this.examined) {
+                this.examined = true;
+                game.print("Něco jsi našel!", undefined, 300);
+                game.location.items.push("krabici");
+                game.printLocationInfo();
+            }
+
+        }
+    }
+}, {
+    name: "krabici",
+    aliases: ["krabice"],
+    desc: "Je z papíru.",
+    readInit: function(obj) {
+        obj.onExamine = function(game) {
+            if (!this.examined) {
+                this.examined = true;
+                game.print("Něco jsi našel!", undefined, 300);
+                game.location.items.push("klíč");
+                game.printLocationInfo();
+            }
+        }
+    }
+}, {
+    name: "klíč",
+    aliases: ["klic"],
+    desc: "Je to čtverhranný klíč k poklopu."
+}, {
+    name: "úvodník",
+    aliases: ["uvodnik", "noviny"],
+    desc: "Je to úvodník Rudého práva.",
+    read: false,
+    readInit: function(obj) {
+        obj.actions = [{
+            name: "přečti",
+            aliases: ["čti", "cti", "precti", "cist", "číst"],
+            perform: function(game) {
+                const newspaper = game.findItem("úvodník").item;
+                if (newspaper) {
+                    newspaper.read = true;
+                    game.clearOutput();
+                    game.print("Přečetl jsi si úvodník Rudého práva. Okamžitě jsi dostal chuť k práci, která je základní ctí socialistického občana.");
+                } else {
+                    // This should never happen
+                    console.log("Newspaper not found");
+                }
+            }
+        }];
+    }
+}, {
+    name: "zapalovač",
+    aliases: ["zapalovac"],
+    desc: "Jistě by s ním šlo leccos zapálit. Je to totiž kvalitní zapalovač \"Made in USSR\".",
+    readInit: function(obj) {
+        obj.actions = [{
+            name: "zapal",
+            aliases: ["zapalit", "zapálit"],
+            perform: function(game, params) {
+                game.clearOutput();
+                if (getRandomInt(3) === 0) {
+                    const book = game.getInventoryItem(bookItemName);
+                    const dynamite = game.getItem(game.getItems(), dynamiteItemName);
+                    if (book && game.aliasObjectMatchesName(book, params[0])) {
+                        game.print("Zapálil jsi Kapitál. Kéž osvítí tvoji cestu!");
+                        book.burning = game.time;
+                        // Show info in a dark location
+                        game.printLocationInfo();
+                    } else if (dynamite && game.aliasObjectMatchesName(dynamite, params[0])) {
+                        game.print("Zapálil jsi doutnák...");
+                        dynamite.ignited = game.time;
+                    } else {
+                        game.print(game.messages.unknownAction);
+                    }
+                } else {
+                    game.print("Zapalovač vynechal...");
+                }
+            },
+            autocomplete: function(game, str) {
+                return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
+            }
+        }]
+    }
+}, {
+    name: "dveře",
+    aliases: ["dvere"],
+    takeable: false,
+    open: false,
+    locked: true,
+    readInit: function(obj) {
+        obj.desc = function() {
+            return "Jsou " + (this.open ? "otevřené" : "zavřené") + " a " + (this.locked ? "zamčené" : "odemčené") + ". Je na nich zámek na číselný čtyřmístný kód.";
+        }
+    }
+}, {
+    name: "poklop",
+    desc: "Je to těžký ocelový poklop se zámkem na čtverhranný klíč.",
+    takeable: false,
+    closed: true
+}, {
+    name: "mísu",
+    aliases: ["misu"],
+    desc: "Je úplně zaschlá.",
+    takeable: false,
+    readInit: function(obj) {
+        obj.onExamine = function(game) {
+            if (!this.examined) {
+                this.examined = true;
+                game.print("Něco jsi našel!");
+                game.location.items.push("knihu");
+                game.printLocationInfo();
+            }
+        }
+    }
+}, {
+    name: bookItemName,
+    aliases: ["kapital", "kapitál"],
+    burning: null,
+    readInit: function(obj) {
+        obj.desc = function() {
+            if (this.burning == null) {
+                return "Je to Marxův Kapitál.";
+            } else {
+                return "Vydává jasné světlo pokroku!!!";
+            }
+        }
+    }
+}, {
+    name: "oltář",
+    aliases: ["oltar"],
+    desc: "Jsou na něm obrazy Svaté trojice - Marxe, Engelse a Lenina...",
+    readInit: function(obj) {
+        obj.onExamine = function(game) {
+            if (!this.examined) {
+                this.examined = true;
+                game.print("Něco jsi našel!");
+                game.location.items.push(dynamiteItemName);
+                game.printLocationInfo();
+            }
+        }
+    }
+}, {
+    name: dynamiteItemName,
+    desc: "Je to klasická koule s doutnákem."
+}, {
+    name: "sochu",
+    desc: "Lenin...",
+}, {
+    name: "trosky jakési sochy",
+    aliases: ["trosky jakesi sochy"],
+    desc: "Vidím kus lebky, ucho a ruku ukazující cestu do šťastné komunistické budoucnosti.",
+    takeable: false
+}, {
+    name: "cihlu",
+    desc: "Je celá ze zlata.",
+    readInit: function(obj) {
+        obj.onTake = function(game) {
+            game.end(true);
+        }
+    }
+}, {
+    name: "krumpáč",
+    aliases: ["krumpac"],
+    desc: "Je velice zrezivělý, ale jinak použitelný."
+}]
+
+const locations = [{
+    id: "m1",
+    desc: "Jsi na konci dlouhé podzemní chodby. Je tu žebřík vedoucí kamsi nahoru.",
+    exits: [{
+        name: "Z",
+        location: "m2"
+    }, {
+        name: "N",
+        location: "m20"
+    }],
+    hint: "Bude třeba něco zapálit něco, co bude dlouho hořet. Pokud se to nepovede napoprvé, tak to nevzdávej!"
+}, {
+    id: "m2",
+    desc: "Jsi v dlouhé podzemní chodbě vedoucí na východ.",
+    exits: [{
+        name: "V",
+        location: "m1"
+    }, {
+        name: "N",
+        location: "m4"
+    }],
+    hint: "Bude třeba něco zapálit něco, co bude dlouho hořet. Pokud se to nepovede napoprvé, tak to nevzdávej!"
+}, {
+    id: "m3",
+    desc: "Jsi v malém jižním výklenku jeskyňky. Je tu spousta papíru.",
+    items: ["úvodník"],
+    exits: [{
+        name: "S",
+        location: "m4"
+    }],
+    hint: "Najdeš tu něco, co ti dodá sílu."
+}, {
+    id: "m4",
+    desc: "Jsi v malé podzemní jeskyňce. Při chůzi tvé kroky podivně duní.",
+    exits: [{
+        name: "J",
+        location: "m3"
+    }, {
+        name: "Z",
+        location: "m5"
+    }],
+    hint: "Zamysli se, proč tvé kroky duní.",
+    readInit: function(obj) {
+        obj.actions = [{
+            name: "kopej",
+            aliases: ["kopat"],
+            perform: function(game, params) {
+                const pickaxe = game.getInventoryItem("krumpáč");
+                const newspaper = game.findItem("úvodník").item;
+                if (pickaxe) {
+                    if (newspaper && newspaper.read) {
+                        game.clearOutput();
+                        game.print("Podařilo se ti prokopat se do nižšího podlaží!");
+                        game.location.exits.push({
+                            name: "D",
+                            location: "m2"
+                        });
+                        game.printLocationInfo();
+                    } else {
+                        game.clearOutput();
+                        game.print("Nechce se ti makat.");
+                    }
+                } else {
+                    game.print(game.messages.unknownAction);
+                }
+            }
+        }]
+    }
+}, {
+    id: "m5",
+    desc: "Jsi v úzké podzemní chodbě vedoucí na východ. Je tu vlhko.",
+    items: ["krumpáč"],
+    exits: [{
+        name: "V",
+        location: "m4"
+    }, {
+        name: "N",
+        location: "m9"
+    }],
+    hint: "Seber, co vidíš, a neotálej!"
+}, {
+    id: "m6",
+    desc: "Jsi v bývalém skladišti. Je tu neskutečný nepořádek.",
+    items: ["bednu"],
+    exits: [{
+        name: "J",
+        location: "m9"
+    }],
+    hint: "Zkus to tu pořádně prozkoumat."
+}, {
+    id: "m7",
+    desc: "Stojíš ve tmavém výklenku.",
+    items: ["zapalovač"],
+    exits: [{
+        name: "V",
+        location: "m9"
+    }],
+    hint: "Seber, co tu vidíš!"
+}, {
+    id: "m8",
+    desc: "Stojíš před ošklivým smrdutým záchodem. Táhne od něj nepříjemný zápach.",
+    items: ["dveře"],
+    exits: [{
+        name: "S",
+        location: "m9"
+    }],
+    hint: "Do dveří bude třeba zadat čtyřmístný kód. Zkus si vzpomenout na důležité roky v dějinách Československa.",
+    readInit: function(obj) {
+        obj.actions = [{
+            name: "zadej",
+            aliases: ["kod", "kód", "zadat"],
+            perform: function(game, params) {
+                const door = game.getLocationItem("dveře");
+                game.clearOutput();
+
+                if (params[0] === "1948" && door.locked) {
+                    door.locked = false;
+                    game.print("Zámek klapnul!");
+                } else {
+                    game.print(game.messages.unknownAction);
+                }
+            }
+        }, {
+            name: "otevři",
+            aliases: ["otevri", "otevrit", "otevřít"],
+            perform: function(game, params) {
+                const door = game.getLocationItem("dveře");
+                game.clearOutput();
+                if (game.aliasObjectMatchesName(door, params.join(" "))) {
+                    if (door.locked) {
+                        game.print("Dveře jsou zamčené.");
+                    } else {
+                        door.open = true;
+                        game.print("Cesta na záchod je volná!");
+                        game.location.exits.push({
+                            name: "V",
+                            location: "m10"
+                        });
+                        game.printLocationInfo();
+                    }
+                } else {
+                    game.print(game.messages.unknownAction);
+                }
+            },
+            autocomplete: function(game, str) {
+                return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => game.aliasObjectNameStartsWith(item, str));
+            }
+        }]
+    }
+}, {
+    id: "m9",
+    desc: "Stojíš v malé zaprášené místnosti.",
+    items: ["poklop"],
+    exits: [{
+        name: "S",
+        location: "m6"
+    }, {
+        name: "J",
+        location: "m8"
+    }, {
+        name: "Z",
+        location: "m7"
+    }],
+    hint: "Poklop bude třeba odemknout klíčem, který někdo někde pohodil.",
+    readInit: function(obj) {
+        obj.actions = [{
+            name: "použij",
+            aliases: ["pouzij"],
+            perform: function(game, params) {
+                const openAction = obj.actions.find(action => action.name === "otevři");
+                if (openAction) {
+                    openAction.perform(game, ["poklop"]);
+                }
+            },
+            autocomplete: function(game, str) {
+                return (!str || str.length === 0) ? game.getUsableItems() : game.getUsableItems().filter(item => game.aliasObjectNameStartsWith(item, str));
+            }
+        }, {
+            name: "otevři",
+            aliases: ["otevri", "otevrit", "otevřít", "odemkni", "odemknout"],
+            perform: function(game, params) {
+                game.clearOutput();
+                const trapdoor = game.getLocationItem("poklop");
+                if (trapdoor && trapdoor.closed && game.matchName(params[0], "poklop")) {
+                    if (game.getInventoryItem("klíč")) {
+                        trapdoor.closed = false;
+                        game.print("S pomocí klíče se ti podařilo otevřít poklop.");
+                        game.location.exits.push({
+                            name: "D",
+                            location: "m5"
+                        });
+                        game.printLocationInfo();
+                    } else {
+                        game.print("Nemáš klíč!");
+                    }
+                } else {
+                    game.print(game.messages.unknownAction);
+                }
+            },
+            autocomplete: function(game, str) {
+                return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => game.aliasObjectNameStartsWith(item, str));
+            }
+        }]
+    }
+}, {
+    id: "m10",
+    desc: "Jsi na špinavém záchodě. Radši to nebudu příliš popisovat, mohlo by se ti udělat nevolno.",
+    items: ["mísu"],
+    exits: [{
+        name: "Z",
+        location: "m8"
+    }],
+    hint: "V míse není voda, takže to, co v ní najdeš, bude suché."
+}, {
+    id: "m11",
+    desc: "Stojíš před krásně vyzdobeným oltářem.",
+    items: ["oltář"],
+    exits: [{
+        name: "Z",
+        location: "m20"
+    }],
+    hint: "Prohledej to tu."
+}, {
+    id: "m12",
+    desc: "Jsi ve městě. Je tu velký zmatek.",
+    exits: [{
+        name: "S",
+        location: "m20"
+    }, {
+        name: "V",
+        location: "m13"
+    }, {
+        name: "J",
+        location: "m14"
+    }, {
+        name: "Z",
+        location: "m13"
+    }],
+    hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
+}, {
+    id: "m13",
+    desc: "Bloudíš městem.",
+    exits: [{
+        name: "S",
+        location: "m9"
+    }, {
+        name: "V",
+        location: "m14"
+    }, {
+        name: "Z",
+        location: "m12"
+    }],
+    hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
+}, {
+    id: "m14",
+    desc: "Jsi ve městě. Ulice jsou nepředstavitelně špinavé...",
+    exits: [{
+        name: "S",
+        location: "m12"
+    }, {
+        name: "V",
+        location: "m15"
+    }, {
+        name: "J",
+        location: "m16"
+    }, {
+        name: "Z",
+        location: "m17"
+    }],
+    hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
+}, {
+    id: "m15",
+    desc: "Jsi ve městě. Asi jsi zabloudil...",
+    exits: [{
+        name: "V",
+        location: "m12"
+    }, {
+        name: "Z",
+        location: "m13"
+    }],
+    hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
+}, {
+    id: "m16",
+    desc: "Procházíš městem.",
+    exits: [{
+        name: "S",
+        location: "m14"
+    }, {
+        name: "V",
+        location: "m17"
+    }, {
+        name: "J",
+        location: "m12"
+    }, {
+        name: "Z",
+        location: "m12"
+    }],
+    hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
+}, {
+    id: "m17",
+    desc: "Bloudíš městem. Tudy cesta nevede...",
+    exits: [{
+        name: "V",
+        location: "m18"
+    }, {
+        name: "Z",
+        location: "m16"
+    }],
+    hint: "Přihořívá!"
+}, {
+    id: "m18",
+    desc: "Jsi v malém parčíku. Je tu plno zeleně.",
+    items: ["sochu"],
+    exits: [{
+        name: "Z",
+        location: "m17"
+    }],
+    hint: "Nedoporučuje se být přímým účastníkem výbuchu!"
+}, {
+    id: "m20",
+    desc: "Jsi v malém kostelíku. Je docela hezky vyzdoben.",
+    exits: [{
+        name: "V",
+        location: "m11"
+    }, {
+        name: "J",
+        location: "m12"
+    }, {
+        name: "D",
+        location: "m1"
+    }],
+    hint: "Tady nic zajímavého nenajdeš."
+}];
+
 function initState() {
 
     function titleToHtml(title, container) {
@@ -182,8 +701,10 @@ function initState() {
             this.printInputHelp('Zadej příkaz. Například "prozkoumej poklop". Pro automatické doplnění příkazu zkus klávesu TAB.');
         },
         onEnd: function(endState) {
-            if (!endState) {
-                this.print("Obrovská exploze otřásla městem, což jsi včak jako její přímý účastník neslyšel.");
+            if (endState) {
+                this.runOutro();
+            } else {
+                this.removeInputContainer();
             }
         },
         onLocationInfo: function(game) {
@@ -224,18 +745,19 @@ function initState() {
                     // Exploded!
                     if ((dynamiteLocation && dynamiteLocation.id === game.location.id) || dynamiteLocation == null) {
                         // GAME OVER
+                        game.print("Obrovská exploze otřásla městem, což jsi však jako její přímý účastník neslyšel.", "end", 1000);
                         game.end(false);
                         return;
                     }
                     game.print("Země se otřásla výbuchem.");
                     if (dynamiteLocation) {
                         if (dynamiteLocation.id === "m18") {
-                            dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === "sochu"), 1);
-                            dynamiteLocation.items.push("trosky");
+                            game.removeLocationItem("sochu", dynamiteLocation);
+                            dynamiteLocation.items.push("trosky jakési sochy");
                             dynamiteLocation.items.push("cihlu");
                         }
-                        dynamiteLocation.items.splice(dynamiteLocation.items.findIndex(item => item.name === dynamiteItemName), 1);
                     }
+                    game.removeItem(dynamiteItemName);
                 }
             }
         },
@@ -258,525 +780,9 @@ function initState() {
         partialMatchLimit: 2,
         startLocation: "m9",
         // ITEMS
-        items: [{
-            name: "bednu",
-            aliases: ["bedna"],
-            desc: "Je ze dřeva.",
-            readInit: function(obj) {
-                obj.onExamine = function(game) {
-                    if (!obj.examined) {
-                        game.print("Něco jsi našel!", undefined, 300);
-                        game.location.items.push("košík");
-                        game.printLocationInfo();
-                    }
-
-                }
-            }
-        }, {
-            name: "košík",
-            aliases: ["kosik"],
-            desc: "Je to hezký proutěný košík, i když poněkud špinavý.",
-            readInit: function(obj) {
-                obj.onExamine = function(game) {
-                    if (!this.examined) {
-                        this.examined = true;
-                        game.print("Něco jsi našel!", undefined, 300);
-                        game.location.items.push("krabici");
-                        game.printLocationInfo();
-                    }
-
-                }
-            }
-        }, {
-            name: "krabici",
-            aliases: ["krabice"],
-            desc: "Je z papíru.",
-            readInit: function(obj) {
-                obj.onExamine = function(game) {
-                    if (!this.examined) {
-                        this.examined = true;
-                        game.print("Něco jsi našel!", undefined, 300);
-                        game.location.items.push("klíč");
-                        game.printLocationInfo();
-                    }
-                }
-            }
-        }, {
-            name: "klíč",
-            aliases: ["klic"],
-            desc: "Je to čtverhranný klíč k poklopu."
-        }, {
-            name: "úvodník",
-            aliases: ["uvodnik", "noviny"],
-            desc: "Je to úvodník Rudého práva.",
-            read: false,
-            readInit: function(obj) {
-                obj.actions = [{
-                    name: "přečti",
-                    aliases: ["čti", "cti", "precti", "cist", "číst"],
-                    perform: function(game) {
-                        const newspaper = game.findItem("úvodník").item;
-                        if (newspaper) {
-                            newspaper.read = true;
-                            game.clearOutput();
-                            game.print("Přečetl jsi si úvodník Rudého práva. Okamžitě jsi dostal chuť k práci, která je základní ctí socialistického občana.");
-                        } else {
-                            // This should never happen
-                            console.log("Newspaper not found");
-                        }
-                    }
-                }];
-            }
-        }, {
-            name: "zapalovač",
-            aliases: ["zapalovac"],
-            desc: "Jistě by s ním šlo leccos zapálit. Je to totiž kvalitní zapalovač \"Made in USSR\".",
-            readInit: function(obj) {
-                obj.actions = [{
-                    name: "zapal",
-                    aliases: ["zapalit", "zapálit"],
-                    perform: function(game, params) {
-                        game.clearOutput();
-                        if (getRandomInt(3) === 0) {
-                            const book = game.getInventoryItem(bookItemName);
-                            const dynamite = game.getItem(game.getItems(), dynamiteItemName);
-                            if (book && game.aliasObjectMatchesName(book, params[0])) {
-                                game.print("Zapálil jsi Kapitál. Kéž osvítí tvoji cestu!");
-                                book.burning = game.time;
-                                // Show info in a dark location
-                                game.printLocationInfo();
-                            } else if (dynamite && game.aliasObjectMatchesName(dynamite, params[0])) {
-                                game.print("Zapálil jsi doutnák...");
-                                dynamite.ignited = game.time;
-                            } else {
-                                game.print(game.messages.unknownAction);
-                            }
-                        } else {
-                            game.print("Zapalovač vynechal...");
-                        }
-                    },
-                    autocomplete: function(game, str) {
-                        return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => item.name.startsWith(str));
-                    }
-                }]
-            }
-        }, {
-            name: "dveře",
-            aliases: ["dvere"],
-            takeable: false,
-            open: false,
-            locked: true,
-            readInit: function(obj) {
-                obj.desc = function() {
-                    return "Jsou " + (this.open ? "otevřené" : "zavřené") + " a " + (this.locked ? "zamčené" : "odemčené") + ". Je na nich zámek na číselný čtyřmístný kód.";
-                }
-            }
-        }, {
-            name: "poklop",
-            desc: "Je to těžký ocelový poklop se zámkem na čtverhranný klíč.",
-            takeable: false,
-            closed: true
-        }, {
-            name: "mísu",
-            aliases: ["misu"],
-            desc: "Je úplně zaschlá.",
-            takeable: false,
-            readInit: function(obj) {
-                obj.onExamine = function(game) {
-                    if (!this.examined) {
-                        this.examined = true;
-                        game.print("Něco jsi našel!");
-                        game.location.items.push("knihu");
-                        game.printLocationInfo();
-                    }
-                }
-            }
-        }, {
-            name: bookItemName,
-            aliases: ["kapital", "kapitál"],
-            burning: null,
-            readInit: function(obj) {
-                obj.desc = function() {
-                    if (this.burning == null) {
-                        return "Je to Marxův Kapitál.";
-                    } else {
-                        return "Vydává jasné světlo pokroku!!!";
-                    }
-                }
-            }
-        }, {
-            name: "oltář",
-            aliases: ["oltar"],
-            desc: "Jsou na něm obrazy Svaté trojice - Marxe, Engelse a Lenina...",
-            readInit: function(obj) {
-                obj.onExamine = function(game) {
-                    if (!this.examined) {
-                        this.examined = true;
-                        game.print("Něco jsi našel!");
-                        game.location.items.push(dynamiteItemName);
-                        game.printLocationInfo();
-                    }
-                }
-            }
-        }, {
-            name: dynamiteItemName,
-            desc: "Je to klasická koule s doutnákem."
-        }, {
-            name: "sochu",
-            desc: "Lenin...",
-        }, {
-            name: "trosky",
-            // TODO name: "trosky jakési sochy",
-            desc: "Vidím kus lebky, ucho a ruku ukazující cestu do šťastné komunistické budoucnosti.",
-            takeable: false
-        }, {
-            name: "cihlu",
-            desc: "Je celá ze zlata.",
-            readInit: function(obj) {
-                obj.onTake = function(game) {
-                    game.end(true);
-                }
-            }
-        }, {
-            name: "krumpáč",
-            aliases: ["krumpac"],
-            desc: "Je velice zrezivělý, ale jinak použitelný."
-        }],
+        items: items,
         // GAME LOCATIONS
-        locations: [{
-            id: "m1",
-            desc: "Jsi na konci dlouhé podzemní chodby. Je tu žebřík vedoucí kamsi nahoru.",
-            exits: [{
-                name: "Z",
-                location: "m2"
-            }, {
-                name: "N",
-                location: "m20"
-            }],
-            hint: "Bude třeba něco zapálit něco, co bude dlouho hořet. Pokud se to nepovede napoprvé, tak to nevzdávej!"
-        }, {
-            id: "m2",
-            desc: "Jsi v dlouhé podzemní chodbě vedoucí na východ.",
-            exits: [{
-                name: "V",
-                location: "m1"
-            }, {
-                name: "N",
-                location: "m4"
-            }],
-            hint: "Bude třeba něco zapálit něco, co bude dlouho hořet. Pokud se to nepovede napoprvé, tak to nevzdávej!"
-        }, {
-            id: "m3",
-            desc: "Jsi v malém jižním výklenku jeskyňky. Je tu spousta papíru.",
-            items: ["úvodník"],
-            exits: [{
-                name: "S",
-                location: "m4"
-            }],
-            hint: "Najdeš tu něco, co ti dodá sílu."
-        }, {
-            id: "m4",
-            desc: "Jsi v malé podzemní jeskyňce. Při chůzi tvé kroky podivně duní.",
-            exits: [{
-                name: "J",
-                location: "m3"
-            }, {
-                name: "Z",
-                location: "m5"
-            }],
-            hint: "Zamysli se, proč tvé kroky duní.",
-            readInit: function(obj) {
-                obj.actions = [{
-                    name: "kopej",
-                    aliases: ["kopat"],
-                    perform: function(game, params) {
-                        const pickaxe = game.getInventoryItem("krumpáč");
-                        const newspaper = game.findItem("úvodník").item;
-                        if (pickaxe) {
-                            if (newspaper && newspaper.read) {
-                                game.clearOutput();
-                                game.print("Podařilo se ti prokopat se do nižšího podlaží!");
-                                game.location.exits.push({
-                                    name: "D",
-                                    location: "m2"
-                                });
-                                game.printLocationInfo();
-                            } else {
-                                game.clearOutput();
-                                game.print("Nechce se ti makat.");
-                            }
-                        } else {
-                            game.print(game.messages.unknownAction);
-                        }
-                    }
-                }]
-            }
-        }, {
-            id: "m5",
-            desc: "Jsi v úzké podzemní chodbě vedoucí na východ. Je tu vlhko.",
-            items: ["krumpáč"],
-            exits: [{
-                name: "V",
-                location: "m4"
-            }, {
-                name: "N",
-                location: "m9"
-            }],
-            hint: "Seber, co vidíš, a neotálej!"
-        }, {
-            id: "m6",
-            desc: "Jsi v bývalém skladišti. Je tu neskutečný nepořádek.",
-            items: ["bednu"],
-            exits: [{
-                name: "J",
-                location: "m9"
-            }],
-            hint: "Zkus to tu pořádně prozkoumat."
-        }, {
-            id: "m7",
-            desc: "Stojíš v tmavém výklenku.",
-            items: ["zapalovač"],
-            exits: [{
-                name: "V",
-                location: "m9"
-            }],
-            hint: "Seber, co tu vidíš!"
-        }, {
-            id: "m8",
-            desc: "Stojíš před ošklivým smrdutým záchodem. Táhne od něj nepříjemný zápach.",
-            items: ["dveře"],
-            exits: [{
-                name: "S",
-                location: "m9"
-            }],
-            hint: "Do dveří bude třeba zadat čtyřmístný kód. Zkus si vzpomenout na důležité roky v dějinách Československa.",
-            readInit: function(obj) {
-                obj.actions = [{
-                    name: "zadej",
-                    aliases: ["kod", "kód", "zadat"],
-                    perform: function(game, params) {
-                        const door = game.getLocationItem("dveře");
-                        game.clearOutput();
-
-                        if (params[0] === "1948" && door.locked) {
-                            door.locked = false;
-                            game.print("Zámek klapnul!");
-                        } else {
-                            game.print(game.messages.unknownAction);
-                        }
-                    }
-                }, {
-                    name: "otevři",
-                    aliases: ["otevri", "otevrit", "otevřít"],
-                    perform: function(game, params) {
-                        const door = game.getLocationItem("dveře");
-                        game.clearOutput();
-
-                        if (game.matchName(params[0], "dveře")) {
-                            if (door.locked) {
-                                game.print("Dveře jsou zamčené.");
-                            } else {
-                                door.open = true;
-                                game.print("Cesta na záchod je volná!");
-                                game.location.exits.push({
-                                    name: "V",
-                                    location: "m10"
-                                });
-                                game.printLocationInfo();
-                            }
-                        } else {
-                            game.print(game.messages.unknownAction);
-                        }
-                    },
-                    autocomplete: function(game, str) {
-                        return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => game.aliasObjectNameStartsWith(item, str));
-                    }
-                }]
-            }
-        }, {
-            id: "m9",
-            desc: "Stojíš v malé zaprášené místnosti.",
-            items: ["poklop"],
-            exits: [{
-                name: "S",
-                location: "m6"
-            }, {
-                name: "J",
-                location: "m8"
-            }, {
-                name: "Z",
-                location: "m7"
-            }],
-            hint: "Poklop bude třeba odemknout klíčem, který někdo někde pohodil.",
-            readInit: function(obj) {
-                obj.actions = [{
-                    name: "použij",
-                    aliases: ["pouzij"],
-                    perform: function(game, params) {
-                        const openAction = obj.actions.find(action => action.name === "otevři");
-                        if (openAction) {
-                            openAction.perform(game, ["poklop"]);
-                        }
-                    },
-                    autocomplete: function(game, str) {
-                        return (!str || str.length === 0) ? game.getUsableItems() : game.getUsableItems().filter(item => game.aliasObjectNameStartsWith(item, str));
-                    }
-                }, {
-                    name: "otevři",
-                    aliases: ["otevri", "otevrit", "otevřít", "odemkni", "odemknout"],
-                    perform: function(game, params) {
-                        game.clearOutput();
-                        const trapdoor = game.getLocationItem("poklop");
-                        if (trapdoor && trapdoor.closed && game.matchName(params[0], "poklop")) {
-                            if (game.getInventoryItem("klíč")) {
-                                trapdoor.closed = false;
-                                game.print("S pomocí klíče se ti podařilo otevřít poklop.");
-                                game.location.exits.push({
-                                    name: "D",
-                                    location: "m5"
-                                });
-                                game.printLocationInfo();
-                            } else {
-                                game.print("Nemáš klíč!");
-                            }
-                        } else {
-                            game.print(game.messages.unknownAction);
-                        }
-                    },
-                    autocomplete: function(game, str) {
-                        return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => game.aliasObjectNameStartsWith(item, str));
-                    }
-                }]
-            }
-        }, {
-            id: "m10",
-            desc: "Jsi na špinavém záchodě. Radši to nebudu příliš popisovat, mohlo by se ti udělat nevolno.",
-            items: ["mísu"],
-            exits: [{
-                name: "Z",
-                location: "m8"
-            }],
-            hint: "V míse není voda, takže to, co v ní najdeš, bude suché."
-        }, {
-            id: "m11",
-            desc: "Stojíš před krásně vyzdobeným oltářem.",
-            items: ["oltář"],
-            exits: [{
-                name: "Z",
-                location: "m20"
-            }],
-            hint: "Prohledej to tu."
-        }, {
-            id: "m12",
-            desc: "Jsi ve městě. Je tu velký zmatek.",
-            exits: [{
-                name: "S",
-                location: "m20"
-            }, {
-                name: "V",
-                location: "m13"
-            }, {
-                name: "J",
-                location: "m14"
-            }, {
-                name: "Z",
-                location: "m13"
-            }],
-            hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
-        }, {
-            id: "m13",
-            desc: "Bloudíš městem.",
-            exits: [{
-                name: "S",
-                location: "m9"
-            }, {
-                name: "V",
-                location: "m14"
-            }, {
-                name: "Z",
-                location: "m12"
-            }],
-            hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
-        }, {
-            id: "m14",
-            desc: "Jsi ve městě. Ulice jsou nepředstavitelně špinavé...",
-            exits: [{
-                name: "S",
-                location: "m12"
-            }, {
-                name: "V",
-                location: "m15"
-            }, {
-                name: "J",
-                location: "m16"
-            }, {
-                name: "Z",
-                location: "m17"
-            }],
-            hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
-        }, {
-            id: "m15",
-            desc: "Jsi ve městě. Asi jsi zabloudil...",
-            exits: [{
-                name: "V",
-                location: "m12"
-            }, {
-                name: "Z",
-                location: "m13"
-            }],
-            hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
-        }, {
-            id: "m16",
-            desc: "Procházíš městem.",
-            exits: [{
-                name: "S",
-                location: "m14"
-            }, {
-                name: "V",
-                location: "m17"
-            }, {
-                name: "J",
-                location: "m12"
-            }, {
-                name: "Z",
-                location: "m12"
-            }],
-            hint: "V tomhle městě ti mapa nepomůže. Zkus postupovat až tam, odkud už cesta nevede."
-        }, {
-            id: "m17",
-            desc: "Bloudíš městem. Tudy cesta nevede...",
-            exits: [{
-                name: "V",
-                location: "m18"
-            }, {
-                name: "Z",
-                location: "m16"
-            }],
-            hint: "Přihořívá!"
-        }, {
-            id: "m18",
-            desc: "Jsi v malém parčíku. Je tu plno zeleně.",
-            items: ["sochu"],
-            exits: [{
-                name: "Z",
-                location: "m17"
-            }],
-            hint: "Nedoporučuje se být přímým účastníkem výbuchu!"
-        }, {
-            id: "m20",
-            desc: "Jsi v malém kostelíku. Je docela hezky vyzdoben.",
-            exits: [{
-                name: "V",
-                location: "m11"
-            }, {
-                name: "J",
-                location: "m12"
-            }, {
-                name: "D",
-                location: "m1"
-            }],
-            hint: "Tady nic zajímavého nenajdeš."
-        }],
+        locations: locations,
         // GLOBAL ACTIONS
         actions: [{
             name: "prozkoumej",
@@ -891,7 +897,10 @@ function initState() {
 }
 
 function printRandomSlogan() {
-    document.querySelector("#slogan").innerText = slogans[getRandomInt(slogans.length)];
+    const sloganNode = document.querySelector("#slogan");
+    if (sloganNode) {
+        sloganNode.textContent = slogans[getRandomInt(slogans.length)];
+    }
 }
 
 function getRandomInt(max) {

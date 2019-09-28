@@ -143,15 +143,16 @@ function createEngine(headless) {
 
         let inputBox, historyLimit, lineLimit, inputs;
 
+        if (this.game.onStart) {
+            this.game.onStart();
+        }
+        if (!this.game.time) {
+            this.game.time = 0;
+        }
+
         if (!headless) {
             this.inputs = [];
             this.historyPos = 0;
-            if (this.game.onStart) {
-                this.game.onStart();
-            }
-            if (!this.game.time) {
-                this.game.time = 0;
-            }
 
             inputBox = document.querySelector("#game-input");
             inputBox.focus();
@@ -313,6 +314,7 @@ function createGame(initialState, savedPosition, headless) {
     let inputBox, title, outputContainerDiv, locationDiv, outputDiv, inputHelpDiv, inputContainerDiv, inputTip;
 
     const game = JSON.parse(JSON.stringify(initialState));
+    game.endState = undefined;
     game.actions = initialState.actions;
     game.onStart = initialState.onStart;
     game.onEnd = initialState.onEnd;
@@ -610,30 +612,44 @@ function createGame(initialState, savedPosition, headless) {
         if (buildLocationMessage) {
             game.printLocation(buildLocationMessage(location, game), "custom")
         } else {
-            // By default, each message is written on a separate line
-            const funcs = [];
-            if (location.name) {
-                funcs.push(followup => game.printLocation(location.name, "name", 0, followup, !runInQueue));
-            }
-            if (location.desc) {
-                const descStr = location.desc instanceof Function ? location.desc(game) : location.desc;
-                funcs.push(followup => game.printLocation(descStr, "desc", 0, followup, !runInQueue));
-            }
-            if (location.exits && location.exits.length > 0) {
-                funcs.push(followup => game.printLocation(game.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "), "exits", 0, followup, !runInQueue));
-            }
-            let itemsStr = "";
-            if (location.items && location.items.length > 0) {
-                itemsStr = game.messages.locationItems + ": " + location.items.map(i => game.mapItem(i).name).join(", ");
-            } else if (game.messages.noLocationItems) {
-                itemsStr = game.messages.noLocationItems;
-            }
-            funcs.push(followup => game.printLocation(itemsStr, "items", 0, followup, !runInQueue));
-            funcs.push(followup => game.printLocation("-".repeat(itemsStr.length), "dashes", 0, followup, !runInQueue));
-            if (runInQueue) {
-                queue(0, funcs);
+            if (headless) {
+                if (location.desc) {
+                    const descStr = location.desc instanceof Function ? location.desc(game) : location.desc;
+                    game.printLocation(descStr);
+                }
+                if (location.exits) {
+                    game.printLocation(game.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "));
+                }
+                let itemsStr = "";
+                if (location.items) {
+                    game.printLocation(game.messages.locationItems + ": " + location.items.map(i => game.mapItem(i).name).join(", "));
+                }
             } else {
-                funcs.forEach(func => func());
+                // By default, each message is written on a separate line
+                const funcs = [];
+                if (location.name) {
+                    funcs.push(followup => game.printLocation(location.name, "name", 0, followup, !runInQueue));
+                }
+                if (location.desc) {
+                    const descStr = location.desc instanceof Function ? location.desc(game) : location.desc;
+                    funcs.push(followup => game.printLocation(descStr, "desc", 0, followup, !runInQueue));
+                }
+                if (location.exits && location.exits.length > 0) {
+                    funcs.push(followup => game.printLocation(game.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "), "exits", 0, followup, !runInQueue));
+                }
+                let itemsStr = "";
+                if (location.items && location.items.length > 0) {
+                    itemsStr = game.messages.locationItems + ": " + location.items.map(i => game.mapItem(i).name).join(", ");
+                } else if (game.messages.noLocationItems) {
+                    itemsStr = game.messages.noLocationItems;
+                }
+                funcs.push(followup => game.printLocation(itemsStr, "items", 0, followup, !runInQueue));
+                funcs.push(followup => game.printLocation("-".repeat(itemsStr.length), "dashes", 0, followup, !runInQueue));
+                if (runInQueue) {
+                    queue(0, funcs);
+                } else {
+                    funcs.forEach(func => func());
+                }
             }
         }
     };
@@ -823,6 +839,19 @@ function createGame(initialState, savedPosition, headless) {
             this.print(item.desc instanceof Function ? item.desc(game) : item.desc);
         }
     };
+
+    game.runOutro = function() {
+        if (headless) {
+            return;
+        }
+        if (initialState.outro) {
+            while (gameContainerDiv.firstChild) {
+                gameContainerDiv.removeChild(gameContainerDiv.firstChild);
+            }
+            outro(0, initialState.outro);
+        }
+    }
+
     game.end = function(endState, clearAll = true) {
         if (clearAll) {
             this.clearOutput();
@@ -830,11 +859,8 @@ function createGame(initialState, savedPosition, headless) {
         }
         if (game.onEnd) {
             game.onEnd(endState);
-        } else if (initialState.outro) {
-            while (gameContainerDiv.firstChild) {
-                gameContainerDiv.removeChild(gameContainerDiv.firstChild);
-            }
-            outro(0, initialState.outro);
+        } else {
+            runOutro();
         }
         this.endState = endState;
     };
