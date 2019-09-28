@@ -302,7 +302,7 @@ function createEngine(headless) {
 
 function createGame(initialState, savedPosition, headless) {
 
-    let gameContainerDiv; 
+    let gameContainerDiv;
     if (!headless) {
         gameContainerDiv = document.querySelector("#game-container");
         while (gameContainerDiv.firstChild) {
@@ -494,7 +494,17 @@ function createGame(initialState, savedPosition, headless) {
         return undefined;
     };
 
-    // Remove an item from the current location if present
+    // Remove an item
+    game.removeItem = function(name) {
+        const itemRet = game.findItem(name);
+        if (itemRet.location) {
+            game.removeLocationItem(name, itemRet.location);
+        } else {
+            game.removeInventoryItem(name);
+        }
+    }
+
+    // Remove an item from the specified/current location
     game.removeLocationItem = function(name, location) {
         const loc = location ? location : game.location;
         const idx = loc.items.findIndex(item => item === name);

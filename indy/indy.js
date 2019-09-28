@@ -83,6 +83,7 @@ const items = [{
                 game.print("O.K. Vrhnul jsi kámen napravo. Zprava (a to je pozoruhodné) jsi zaslechl výkřik.");
                 // Set m6 property
                 game.getLocation("m6").shouldFail = false;
+                game.removeItem(obj.name);
             }
         }
     }
@@ -128,7 +129,7 @@ const items = [{
                 game.location.items.push("mrtvolu chlupatýho");
             } else if (game.location.id === "m18" && obj.throwable) {
                 game.print("O.K. Mrštil jsi tyčí nalevo a uslyšel jsi zasténání. Cha,cha,cha,cha.");
-                game.removeInventoryItem("tyč");
+                game.removeItem(obj.name);
                 game.addLocationItem("m17", "mrtvolu milicionáře");
             }
         }
@@ -237,12 +238,7 @@ const items = [{
             if (rodRet.item) {
                 rodRet.item.throwable = true;
             }
-            const spinachRet = game.findItem(obj.name);
-            if (spinachRet.location) {
-                game.removeLocationItem(obj.name, spinachRet.location);
-            } else {
-                game.removeInventoryItem(obj.name);
-            }
+            game.removeItem(obj.name);
         }
     }
 }];

@@ -9,14 +9,14 @@ function testInventoryLimit(engine) {
     let failed = false;
     engine.processCommand("prozkoumej ocas");
     engine.processCommand("seber sekeru");
-    if (assertTrue(engine.game.getInventoryItem("sekeru"), "Ma mit sekeru, inventar: " + JSON.stringify(engine.game.inventory)) ) {
+    if (assertTrue(engine.game.getInventoryItem("sekeru"), "Ma mit sekeru, inventar: " + JSON.stringify(engine.game.inventory))) {
         return;
     }
     engine.processCommand("doleva");
     engine.processCommand("pouzij sekeru");
     engine.processCommand("prozkoumej mrtvolu fizla");
     engine.processCommand("seber stit");
-    if(assertFalse(engine.game.getInventoryItem("stit"), "Nema mit stit")) {
+    if (assertFalse(engine.game.getInventoryItem("stit"), "Nema mit stit")) {
         return;
     }
     success("Test passed");
@@ -38,7 +38,7 @@ function testFullPath(engine) {
         }
         engine.processCommand(command);
     });
-    
+
     if (engine.game.endState != "win") {
         error("Test failed with end state [" + engine.game.endState + "]");
     } else {
