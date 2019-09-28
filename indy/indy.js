@@ -2,6 +2,7 @@
 
 let sideOpen = false;
 let beepOn = true;
+const beep = new Audio("snd/beep.wav");
 
 const items = [{
     name: "diamanty",
@@ -48,7 +49,7 @@ const items = [{
             }
         };
         obj.desc = function() {
-            let ret = "Je to ocas koně,na kterém sedí svatý Václav.";
+            let ret = "Je to ocas koně, na kterém sedí svatý Václav.";
             if (!this.examined) {
                 ret += " Ve skulince pod ocasem jsi našel sekeru.";
             }
@@ -758,7 +759,10 @@ const initControls = function(gameContainer) {
                 openSide();
             }
         }
-        // TODO Play beep sound
+        // Play beep sound
+        if (beepOn) {
+            beep.play();
+        }
     });
 }
 

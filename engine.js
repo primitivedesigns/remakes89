@@ -310,7 +310,7 @@ function createGame(initialState, savedPosition, headless) {
         }
     }
 
-    let inputBox, title, locationDiv, outputDiv, inputHelpDiv, inputContainerDiv, inputTip;
+    let inputBox, title, outputContainerDiv, locationDiv, outputDiv, inputHelpDiv, inputContainerDiv, inputTip;
 
     const game = JSON.parse(JSON.stringify(initialState));
     game.actions = initialState.actions;
@@ -330,7 +330,9 @@ function createGame(initialState, savedPosition, headless) {
         game.inventory = savedPosition.inventory;
     } else {
         game.inventory = [];
-        initialState.inventory.forEach(item => game.inventory.push(item));
+        if (initialState.inventory) {
+            initialState.inventory.forEach(item => game.inventory.push(item));
+        }
     }
 
     if (headless) {
@@ -344,14 +346,18 @@ function createGame(initialState, savedPosition, headless) {
             title.textContent = initialState.title;
         }
         gameContainerDiv.insertBefore(title, null);
+        // game-output-container
+        outputContainerDiv = document.createElement("div");
+        outputContainerDiv.id = "game-output-container";
+        gameContainerDiv.appendChild(outputContainerDiv);
         // game-location
         locationDiv = document.createElement("div");
         locationDiv.id = "game-location";
-        gameContainerDiv.appendChild(locationDiv);
+        outputContainerDiv.appendChild(locationDiv);
         // game-output
         outputDiv = document.createElement("div");
         outputDiv.id = "game-output";
-        gameContainerDiv.appendChild(outputDiv);
+        outputContainerDiv.appendChild(outputDiv);
         // game-input-container
         inputContainerDiv = document.createElement("div");
         inputContainerDiv.id = "game-input-container";

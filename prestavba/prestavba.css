@@ -76,13 +76,10 @@ div#slogan {
 
 #game-input-container {
 	width: auto;
-	background-color: #242424;
 	border: none;
 	padding: 0.3em;
-	padding-left: 1em;
 	color: white;
 	bottom: 0;
-	border-radius: 0px 15px 0px 15px;
 }
 
 #game-input {
@@ -91,8 +88,9 @@ div#slogan {
 	width: 100%;
 	background-color: #242424;
 	border: none;
-	padding-top: 0.4em;
-	padding-bottom: 0.4em;
+	padding: 0.4em;
+	margin-bottom: 0.4em;
+	margin-top: 0.4em;
 	color: white;
 	bottom: 0;
 	border-radius: 15px;
