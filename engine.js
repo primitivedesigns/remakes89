@@ -28,6 +28,8 @@ function createEngine(headless) {
                 engine.initGame();
                 engine.start();
             }
+
+            initOutputQueue();
         }
     }
 
@@ -589,16 +591,16 @@ function createGame(initialState, savedPosition, headless) {
             lastLocation.onLeave(game);
         }
         game.location = location;
+        game.printLocationInfo(true);
         if (location.onEnter) {
             location.onEnter(game);
         }
         if (!location.explored) {
             location.explored = true;
         }
-        this.printLocationInfo(true);
     };
 
-    game.printLocationInfo = function(runInQueue) {
+    game.printLocationInfo = function(useTypewriter) {
         game.clearLocation();
 
         if (game.onLocationInfo && !game.onLocationInfo(game)) {
@@ -626,16 +628,15 @@ function createGame(initialState, savedPosition, headless) {
                 }
             } else {
                 // By default, each message is written on a separate line
-                const funcs = [];
                 if (location.name) {
-                    funcs.push(followup => game.printLocation(location.name, "name", 0, followup, !runInQueue));
+                    game.printLocation(location.name, "name", !useTypewriter);
                 }
                 if (location.desc) {
                     const descStr = location.desc instanceof Function ? location.desc(game) : location.desc;
-                    funcs.push(followup => game.printLocation(descStr, "desc", 0, followup, !runInQueue));
+                    game.printLocation(descStr, "desc", !useTypewriter);
                 }
                 if (location.exits && location.exits.length > 0) {
-                    funcs.push(followup => game.printLocation(game.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "), "exits", 0, followup, !runInQueue));
+                    game.printLocation(game.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "), "exits", !useTypewriter);
                 }
                 let itemsStr = "";
                 if (location.items && location.items.length > 0) {
@@ -643,13 +644,8 @@ function createGame(initialState, savedPosition, headless) {
                 } else if (game.messages.noLocationItems) {
                     itemsStr = game.messages.noLocationItems;
                 }
-                funcs.push(followup => game.printLocation(itemsStr, "items", 0, followup, !runInQueue));
-                funcs.push(followup => game.printLocation("-".repeat(itemsStr.length), "dashes", 0, followup, !runInQueue));
-                if (runInQueue) {
-                    queue(0, funcs);
-                } else {
-                    funcs.forEach(func => func());
-                }
+                game.printLocation(itemsStr, "items", !useTypewriter);
+                game.printLocation("-".repeat(itemsStr.length), "dashes", !useTypewriter);
             }
         }
     };
@@ -664,52 +660,35 @@ function createGame(initialState, savedPosition, headless) {
         }
     };
 
-    game.printLocation = function(text, cssClass, delay, followup, skipTypewriter) {
+    game.printLocation = function(text, cssClass, skipTypewriter) {
         if (headless) {
             console.log(text);
             return;
         }
         const line = document.createElement("div");
-        if (cssClass) {
+        const before = cssClass ? function() {
             line.className = cssClass;
-        }
-        if (delay) {
-            setTimeout(function() {
-                locationDiv.appendChild(line);
-                if (skipTypewriter) {
-                    line.textContent = text;
-                } else {
-                    typewriter(line, text, 0, followup);
-                }
-            }, delay);
+        } : null;
+        locationDiv.appendChild(line);
+        if (skipTypewriter) {
+            line.textContent = text;
+            followup();
         } else {
-            locationDiv.appendChild(line);
-            if (skipTypewriter) {
-                line.textContent = text;
-            } else {
-                typewriter(line, text, 0, followup);
-            }
+            queueOutput(line, text, before);
         }
     };
 
-    game.print = function(text, cssClass, delay) {
+    game.print = function(text, cssClass) {
         if (headless) {
             console.log(text);
             return;
         }
         const line = document.createElement("div");
-        if (cssClass) {
+        const before = cssClass ? function() {
             line.className = cssClass;
-        }
-        if (delay) {
-            setTimeout(function() {
-                outputDiv.insertBefore(line, null);
-                typewriter(line, text);
-            }, delay);
-        } else {
-            outputDiv.insertBefore(line, null)
-            typewriter(line, text);
-        }
+        } : null;
+        outputDiv.insertBefore(line, null)
+        queueOutput(line, text, before);
     };
 
     game.printInputHelp = function(str, cssClass) {
@@ -993,6 +972,7 @@ function outro(index, outroFuns) {
     }
 }
 
+// TODO remove
 function queue(index, funcs) {
     if (funcs.length > (index + 1)) {
         funcs[index](function() {
@@ -1001,6 +981,46 @@ function queue(index, funcs) {
     } else {
         funcs[index](null);
     }
+}
+
+// TODO add some impl notes
+const outputQueue = [];
+let currentOutput = null;
+const typewriterDelay = 20;
+
+function queueOutput(element, text, before, after) {
+    if (!text) {
+        console.log("Not enqueued - no text specified");
+        return;
+    }
+    const item = new Object();
+    item.element = element;
+    item.text = text;
+    item.before = before;
+    item.after = after;
+    outputQueue.push(item);
+    // console.log("Queued: " + item.text);
+}
+
+function initOutputQueue() {
+    setInterval(function() {
+        if (!currentOutput) {
+            const next = outputQueue.shift();
+            if (next) {
+                currentOutput = next;
+                if (next.before) {
+                    next.before();
+                }
+                // console.log("Process message: " + next.text);
+                typewriter(next.element, next.text, 0, function() {
+                    currentOutput = null;
+                    if (next.after) {
+                        next.after();
+                    }
+                });
+            }
+        }
+    }, 100);
 }
 
 function typewriter(element, text, idx, followup) {

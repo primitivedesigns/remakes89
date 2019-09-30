@@ -282,8 +282,8 @@ const locations = [{
     readInit: function(obj) {
         obj.onEnter = function(game) {
             if (!game.getInventoryItem("legitimaci")) {
-                game.print("Když od tebe odbíhali na nějakou ženu s kočárkem, jednomu z nich vypadla z pouzdra mačeta. Doplazil ses pro ni a spáchals' HARAKIRI.", "end", 1000);
-                game.end("killed");
+                game.print("Když od tebe odbíhali na nějakou ženu s kočárkem, jednomu z nich vypadla z pouzdra mačeta. Doplazil ses pro ni a spáchals' HARAKIRI.", "end");
+                game.end("killed", false);
             }
         };
         obj.desc = function(game) {
@@ -311,7 +311,7 @@ const locations = [{
     desc: "O.K. Stojíš u prodejny Supraphon. Než ses však stačil rozhlédnout, pokropila tě sprška vodního děla.",
     readInit: function(obj) {
         obj.onEnter = function(game) {
-            game.print("Spadl jsi na zem a rozbil sis hlavu.", "end", 1000);
+            game.print("Spadl jsi na zem a rozbil sis hlavu.", "end");
             game.end("killed");
         }
     }
@@ -351,7 +351,7 @@ const locations = [{
     readInit: function(obj) {
         obj.onEnter = function(game) {
             if (this.shouldFail) {
-                game.print("Vidíš policajta. Na tváři, která se k tobě víc a více přibližuje, je vidět, že je to maniak. Už mu neunikneš.", "end", 1000);
+                game.print("Vidíš policajta. Na tváři, která se k tobě víc a více přibližuje, je vidět, že je to maniak. Už mu neunikneš.", "end");
                 game.end("killed", false);
             } else if (game.location.items.length == 0) {
                 game.location.items.push("mrtvolu policajta");
@@ -415,7 +415,7 @@ const locations = [{
         };
         obj.onEnter = function(game) {
             if (this.exploded) {
-                game.print("Neudržels' však rovnováhu a padáš dolů.", "end", 1000);
+                game.print("Neudržels' však rovnováhu a padáš dolů.", "end");
                 game.end("killed", false);
             } else {
                 this.countDownTime = game.time;
@@ -439,7 +439,7 @@ const locations = [{
             obj.actionTaken = false;
             if (!game.location.explored) {
                 if (game.getInventoryItem("pistoli")) {
-                    game.print("Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistolí,odprásknul tě.", "end", 1000);
+                    game.print("Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistolí,odprásknul tě.", "end");
                     game.end("kill", false);
                 } else {
                     game.print("Najednou se na tebe vrhnul chlupatej,a když u tebe nic nenašel, zklamaně odešel.");
@@ -463,7 +463,7 @@ const locations = [{
             if (!game.location.explored) {
                 const uniform = game.getInventoryItem("uniformu");
                 if (!uniform || !uniform.dressed) {
-                    game.print("Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali sis tebou hrát.", "end", 1000);
+                    game.print("Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali sis tebou hrát.", "end");
                     game.end("killed", false);
                 }
             }
@@ -492,7 +492,7 @@ const locations = [{
     desc: "O.K. Jsi před grandhotelem EVROPA. Zahlédl jsi však videokameru zamířenou přímo na tebe.",
     readInit: function(obj) {
         obj.onEnter = function(game) {
-            game.print("Uznal jsi, že veškerý odpor je marný a spáchal jsi sebevraždu.", "end", 1000);
+            game.print("Uznal jsi, že veškerý odpor je marný a spáchal jsi sebevraždu.", "end");
             game.end("killed", false);
         }
     }
@@ -534,7 +534,7 @@ const locations = [{
         obj.onEnter = function(game) {
             const uniform = game.getInventoryItem("uniformu");
             if (uniform && uniform.dressed) {
-                game.print("Vrhnul se na tebe civilní občan pod dojmem, že jsi člen VB. Máš totiž ještě oblečenou uniformu.", "end", 1000);
+                game.print("Vrhnul se na tebe civilní občan pod dojmem, že jsi člen VB. Máš totiž ještě oblečenou uniformu.", "end");
                 game.end("killed", false);
             }
         };
@@ -573,7 +573,7 @@ const locations = [{
         };
         obj.onEnter = function(game) {
             if (obj.explored && !game.getLocationItem("mrtvolu milicionáře")) {
-                game.print("Když se vypovídal, vrhnul se na tebe.", "end", 1000);
+                game.print("Když se vypovídal, vrhnul se na tebe.", "end");
                 game.end("killed", false);
             }
         }
@@ -601,7 +601,7 @@ const locations = [{
     desc: "O.K. Dostal ses do metra. Všude je tu rozšířen slzný plyn.",
     readInit: function(obj) {
         obj.onEnter = function(game) {
-            game.print("Je ho tu tolik,že ses udusil.", "end", 1000);
+            game.print("Je ho tu tolik,že ses udusil.", "end");
             game.end("killed");
         }
     }
@@ -804,11 +804,11 @@ function initState() {
                 const bombTime = game.time - m9.countDownTime;
                 if (bombTime > 2) {
                     if (game.location.id === "m9") {
-                        game.print("Zahlédl jsi záblesk, po kterém následuje ohromný výbuch. Než tě zasáhla střepina, došlo ti,co znamenal ten tikot.", "end", 1000);
+                        game.print("Zahlédl jsi záblesk, po kterém následuje ohromný výbuch. Než tě zasáhla střepina, došlo ti,co znamenal ten tikot.", "end");
                         game.end("killed", false);
                     } else {
                         m9.exploded = true;
-                        game.print("Místo, ze kterého jsi právě vyšel, vyletělo do povětří. Tys měl ale štěstí.", null, 1000);
+                        game.print("Místo, ze kterého jsi právě vyšel, vyletělo do povětří. Tys měl ale štěstí.");
                     }
                 }
             }
@@ -822,8 +822,8 @@ function initState() {
         },
         onEnd: function(endState) {
             if (endState === "killed") {
-                this.print("INDIANA JONES JE MRTEV!", null, 2000);
-                this.print("ZPRÁVA Z AMERICKÉHO TISKU : Československa vláda oznámila, že náš drahý hrdina - INDIANA JONES - zemřel nešťastnou náhodou při autonehodě. Pokrač. na str. 54.", null, 4000);
+                this.print("INDIANA JONES JE MRTEV!");
+                this.print("ZPRÁVA Z AMERICKÉHO TISKU: Československa vláda oznámila, že náš drahý hrdina - INDIANA JONES - zemřel nešťastnou náhodou při autonehodě. Pokrač. na str. 54.");
                 this.removeInputContainer();
             }
         },
@@ -852,35 +852,35 @@ function initState() {
 
                 if (game.location.id === "m1") {
                     if (game.location.actionTaken && game.getLocationItem("fízla")) {
-                        game.print("Fízl se na tebe krvežíznivě vrhnul a začal tě mlátit. A mlátil a mlátil...", "end", 1000);
+                        game.print("Fízl se na tebe krvežíznivě vrhnul a začal tě mlátit. A mlátil a mlátil...", "end");
                         game.end("killed", false);
                     } else {
                         game.location.actionTaken = true;
                     }
                 } else if (game.location.id === "m5") {
                     if (game.location.actionTaken && !game.location.shieldUsed) {
-                        game.print("Kámen se přibližuje víc a víc. Pořád se zvětšuje a zvětšuje a zvětšuje a zvětšu-", "end", 1000);
+                        game.print("Kámen se přibližuje víc a víc. Pořád se zvětšuje a zvětšuje a zvětšuje a zvětšu-", "end");
                         game.end("killed", false);
                     } else {
                         game.location.actionTaken = true;
                     }
                 } else if (game.location.id === "m8") {
                     if (game.location.actionTaken && game.getLocationItem("poldu")) {
-                        game.print("Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku.", "end", 1000);
+                        game.print("Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku.", "end");
                         game.end("killed", false);
                     } else {
                         game.location.actionTaken = true;
                     }
                 } else if (game.location.id === "m10") {
                     if (game.location.actionTaken && game.getLocationItem("chlupatýho")) {
-                        game.print("Policajta naštvalo, že u tebe nenašel co hledal a vrhnul se na tebe.", "end", 1000);
+                        game.print("Policajta naštvalo, že u tebe nenašel co hledal a vrhnul se na tebe.", "end");
                         game.end("killed", false);
                     } else {
                         game.location.actionTaken = true;
                     }
                 } else if (game.location.id === "m14") {
                     if (game.location.actionTaken && game.location.cops) {
-                        game.print("Řada policajtů se přiblížila až k tobě. Než jsi stačil vstát, pustili se do tebe obušky.", "end", 1000);
+                        game.print("Řada policajtů se přiblížila až k tobě. Než jsi stačil vstát, pustili se do tebe obušky.", "end");
                         game.end("killed", false);
                     } else {
                         game.location.actionTaken = true;
@@ -890,7 +890,7 @@ function initState() {
                         if (game.getLocationItem("diamanty")) {
                             game.print("Příslušník správně pochopil a diskrétně odešel.");
                         } else {
-                            game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end", 1000);
+                            game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end");
                             game.end("killed", false);
                         }
                     } else {

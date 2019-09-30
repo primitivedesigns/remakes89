@@ -33,7 +33,7 @@ const items = [{
     readInit: function(obj) {
         obj.onExamine = function(game) {
             if (!obj.examined) {
-                game.print("Něco jsi našel!", undefined, 300);
+                game.print("Něco jsi našel!");
                 game.location.items.push("košík");
                 game.printLocationInfo();
             }
@@ -48,7 +48,7 @@ const items = [{
         obj.onExamine = function(game) {
             if (!this.examined) {
                 this.examined = true;
-                game.print("Něco jsi našel!", undefined, 300);
+                game.print("Něco jsi našel!");
                 game.location.items.push("krabici");
                 game.printLocationInfo();
             }
@@ -63,7 +63,7 @@ const items = [{
         obj.onExamine = function(game) {
             if (!this.examined) {
                 this.examined = true;
-                game.print("Něco jsi našel!", undefined, 300);
+                game.print("Něco jsi našel!");
                 game.location.items.push("klíč");
                 game.printLocationInfo();
             }
@@ -745,7 +745,7 @@ function initState() {
                     // Exploded!
                     if ((dynamiteLocation && dynamiteLocation.id === game.location.id) || dynamiteLocation == null) {
                         // GAME OVER
-                        game.print("Obrovská exploze otřásla městem, což jsi však jako její přímý účastník neslyšel.", "end", 1000);
+                        game.print("Obrovská exploze otřásla městem, což jsi však jako její přímý účastník neslyšel.", "end");
                         game.end(false);
                         return;
                     }
