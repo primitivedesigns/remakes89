@@ -685,6 +685,9 @@ function initState() {
                     } else {
                         openSide();
                     }
+                } else if (event.key === "Enter" && isOutputQueueProcessed()) {
+                    skipOutputEffects();
+                    return;
                 }
                 // Play beep sound
                 if (beepOn) {

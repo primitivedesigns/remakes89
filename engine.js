@@ -107,6 +107,9 @@ function createEngine(headless) {
 
         let action = null;
         const actionName = parts[0];
+        if (actionName.length === 0) {
+            return;
+        }
         const actions = game.getActions().filter(action => game.aliasObjectMatchesName(action, actionName));
         // Add built-in actions
         engine.actions.filter(action => engine.game.aliasObjectMatchesName(action, actionName)).forEach(action => actions.push(action));
@@ -672,7 +675,6 @@ function createGame(initialState, savedPosition, headless) {
         locationDiv.appendChild(line);
         if (skipTypewriter) {
             line.textContent = text;
-            followup();
         } else {
             queueOutput(line, text, before);
         }
@@ -986,6 +988,7 @@ function queue(index, funcs) {
 // TODO add some impl notes
 const outputQueue = [];
 let currentOutput = null;
+let skipOutputQueue = false;
 const typewriterDelay = 20;
 
 function queueOutput(element, text, before, after) {
@@ -999,28 +1002,57 @@ function queueOutput(element, text, before, after) {
     item.before = before;
     item.after = after;
     outputQueue.push(item);
-    // console.log("Queued: " + item.text);
+    // console.log("Output queued [" + outputQueue.length + "]: " + text);
 }
 
 function initOutputQueue() {
     setInterval(function() {
-        if (!currentOutput) {
-            const next = outputQueue.shift();
-            if (next) {
-                currentOutput = next;
-                if (next.before) {
-                    next.before();
+        // console.log("Process queue [" + outputQueue.length + "]");
+        if (currentOutput) {
+            return;
+        }
+        const next = outputQueue.shift();
+        if (next) {
+            currentOutput = next;
+            if (next.before) {
+                next.before();
+            }
+            if (skipOutputQueue) {
+                // console.log("Skip typewriter [" + outputQueue.length + "]");
+                next.element.textContent = next.text;
+                if (next.after) {
+                    next.after();
                 }
-                // console.log("Process message: " + next.text);
+                resetOutputQueueStatus();
+            } else {
+                // console.log("Typewriter [" + outputQueue.length + "]");
                 typewriter(next.element, next.text, 0, function() {
-                    currentOutput = null;
                     if (next.after) {
                         next.after();
                     }
+                    resetOutputQueueStatus();
                 });
             }
+        } else {
+            resetOutputQueueStatus();
         }
-    }, 100);
+    }, 300);
+}
+
+function resetOutputQueueStatus() {
+    currentOutput = null;
+    if (outputQueue.length === 0) {
+        skipOutputQueue = false;
+    }
+}
+
+function isOutputQueueProcessed() {
+    return currentOutput;
+}
+
+function skipOutputEffects() {
+    // console.log("Skip output queue");
+    skipOutputQueue = true;
 }
 
 function typewriter(element, text, idx, followup) {
@@ -1028,10 +1060,15 @@ function typewriter(element, text, idx, followup) {
     const textVal = text.slice(0, ++indexVal);
     element.textContent = textVal;
     if (text.length > indexVal) {
-        const next = function() {
-            typewriter(element, text, indexVal, followup);
+        if (skipOutputQueue) {
+            element.textContent = text;
+            followup();
+        } else {
+            const next = function() {
+                typewriter(element, text, indexVal, followup);
+            }
+            setTimeout(next, 10);
         }
-        setTimeout(next, 10);
     } else {
         if (followup) {
             followup();
