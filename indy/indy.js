@@ -371,7 +371,7 @@ const locations = [{
     }]
 }, {
     id: "m7",
-    desc: "O.K. Stojíš před prodejnou knihy. Není nic slyšet, protože veliký dav tu skanduje heslo 'AŤ ŽIJE KAREL!' Vidíš nápis na zdi. Vlevo je zatarasený vchod do Opletalky.",
+    desc: "O.K. Stojíš před prodejnou knihy. Není nic slyšet, protože veliký dav tu skanduje heslo 'AŤ ŽIJE KAREL!' Vlevo je zatarasený vchod do Opletalky.",
     items: ["nápis na zdi", "pistoli"],
     exits: [{
         name: "nahoru",
