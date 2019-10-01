@@ -439,10 +439,10 @@ const locations = [{
             obj.actionTaken = false;
             if (!game.location.explored) {
                 if (game.getInventoryItem("pistoli")) {
-                    game.print("Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistolí,odprásknul tě.", "end");
+                    game.print("Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistolí, odprásknul tě.", "end");
                     game.end("kill", false);
                 } else {
-                    game.print("Najednou se na tebe vrhnul chlupatej,a když u tebe nic nenašel, zklamaně odešel.");
+                    game.print("Najednou se na tebe vrhnul chlupatej, a když u tebe nic nenašel, zklamaně odešel.");
                 }
             }
         }
