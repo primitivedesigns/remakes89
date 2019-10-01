@@ -226,7 +226,7 @@ const items = [{
 }, {
     name: "mrtvolu milicionáře",
     aliases: ["mrtvolu milicionare"],
-    desc: "Někdo po něm mrštil tyči. Hádám tak dle toho,že ji má zaraženou v hlavě.",
+    desc: "Někdo po něm mrštil tyči. Hádám tak dle toho, že ji má zaraženou v hlavě.",
     takeable: false,
 }, {
     name: "špenát",
@@ -439,7 +439,7 @@ const locations = [{
             obj.actionTaken = false;
             if (!game.location.explored) {
                 if (game.getInventoryItem("pistoli")) {
-                    game.print("Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistolí, odprásknul tě.", "end");
+                    game.print("Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistoli, odprásknul tě.", "end");
                     game.end("kill", false);
                 } else {
                     game.print("Najednou se na tebe vrhnul chlupatej, a když u tebe nic nenašel, zklamaně odešel.");
@@ -562,12 +562,12 @@ const locations = [{
     readInit: function(obj) {
         obj.desc = function(game) {
             if (!obj.explored) {
-                return "O.K. Sedíš v květináči mezi kytičkami a nadává ti milicionář. Cituji : 'Jestli tě tu uvidím ještě jednou, tak uvidíš.'";
+                return "O.K. Sedíš v květináči mezi kytičkami a nadává ti milicionář. Cituji: 'Jestli tě tu uvidím ještě jednou, tak uvidíš.'";
             } else {
                 if (game.getLocationItem("mrtvolu milicionáře")) {
                     return "O.K. Sedíš v květináči mezi kytičkami.";
                 } else {
-                    return "O.K. Sedíš v květináči mezi kytičkami a nadává ti milicionář. Cituji : 'Já tě upozorňoval,ty hajzle.'";
+                    return "O.K. Sedíš v květináči mezi kytičkami a nadává ti milicionář. Cituji: 'Já tě upozorňoval, ty hajzle.'";
                 }
             }
         };
@@ -876,7 +876,7 @@ function initState() {
                     }
                 } else if (game.location.id === "m10") {
                     if (game.location.actionTaken && game.getLocationItem("chlupatýho")) {
-                        game.print("Policajta naštvalo, že u tebe nenašel co hledal a vrhnul se na tebe.", "end");
+                        game.print("Policajta naštvalo, že u tebe nenašel, co hledal, a vrhnul se na tebe.", "end");
                         game.end("killed", false);
                     } else {
                         game.location.actionTaken = true;
