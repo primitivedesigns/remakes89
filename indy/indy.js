@@ -463,7 +463,7 @@ const locations = [{
             if (!game.location.explored) {
                 const uniform = game.getInventoryItem("uniformu");
                 if (!uniform || !uniform.dressed) {
-                    game.print("Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali sis tebou hrát.", "end");
+                    game.print("Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali si s tebou hrát.", "end");
                     game.end("killed", false);
                 }
             }
