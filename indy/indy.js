@@ -122,14 +122,14 @@ const items = [{
     readInit: function(obj) {
         obj.onUse = function(game) {
             if (game.location.id === "m8" && game.getLocationItem("poldu")) {
-                game.print("O.K. Vypáčil jsi poklop kanálu. Poklop spadnul do šachty. Polda se na tebe z řevem vrhnul,ale v okamžiku, kdy tě chtěl udeřit, zahučel přímo před tebou do kanálu.");
+                game.print("O.K. Vypáčil jsi poklop kanálu. Poklop spadnul do šachty. Polda se na tebe s řevem vrhnul, ale v okamžiku, kdy tě chtěl udeřit, zahučel přímo před tebou do kanálu.");
                 game.removeLocationItem("poldu");
             } else if (game.location.id === "m10" && game.getLocationItem("chlupatýho")) {
                 game.print("O.K. Praštil jsi chlupatýho tyčí přes hlavu.");
                 game.removeLocationItem("chlupatýho");
                 game.location.items.push("mrtvolu chlupatýho");
             } else if (game.location.id === "m18" && obj.throwable) {
-                game.print("O.K. Mrštil jsi tyčí nalevo a uslyšel jsi zasténání. Cha,cha,cha,cha.");
+                game.print("O.K. Mrštil jsi tyčí nalevo a uslyšel jsi zasténání. Cha, cha, cha, cha.");
                 game.removeItem(obj.name);
                 game.addLocationItem("m17", "mrtvolu milicionáře");
             }
