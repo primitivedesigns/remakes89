@@ -64,7 +64,7 @@ const items = [{
         obj.onUse = function(game) {
             const cop = game.getLocationItem("fízla");
             if (cop) {
-                game.print("O.K. Zasekl jsi mu sekeru do hlavy tak hluboko,že nejde vytáhnout. Vidíš mrtvolu fízla.");
+                game.print("O.K. Zasekl jsi mu sekeru do hlavy tak hluboko, že nejde vytáhnout. Vidíš mrtvolu fízla.");
                 game.location.items.splice(game.location.items.findIndex(item => item.name === cop.name), 1);
                 game.location.items.push("mrtvolu fízla");
             } else {
