@@ -527,14 +527,14 @@ function createGame(initialState, savedPosition, headless) {
         }
     }
 
-    game.addLocationItem = function(itemName, locationId) {
+    game.addLocationItem = function(itemName, locationId, skipNotification) {
         const location = locationId ? game.getLocation(locationId) : game.location;
         if (location) {
             if (!location.items) {
                 location.items = [];
             }
             location.items.push(itemName);
-            if (game.onLocationItemAdded) {
+            if (!skipNotification && game.onLocationItemAdded) {
                 game.onLocationItemAdded(game, itemName);
             }
         } else {

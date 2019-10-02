@@ -1,3 +1,12 @@
+const fullPathCommands = ["PROZKOUMEJ OCAS", "SEBER SEKERU", "L", "POUZIJ SEKERU", "PROZKOUMEJ MRTVOLU FIZLA", "SEBER STIT", "P", "D",
+        "POUZIJ STIT", "POLOZ STIT", "POUZIJ KAMEN", "P", "D", "SEBER TYC", "N", "L", "D", "POUZIJ TYC", "L", "D", "POUZIJ TYC",
+        "POLOZ TYC", "PROZKOUMEJ MRTVOLU CHLUPATYHO", "SEBER UNIFORMU", "POUZIJ UNIFORMU", "P", "P", "POLOZ UNIFORMU", "D", "POLOZ DIAMANTY", "N",
+        "SEBER UNIFORMU", "POUZIJ UNIFORMU", "L", "L", "SEBER TYC", "P", "P", "POLOZ UNIFORMU", "D", "SEBER DIAMANTY", "L", "P", "L", "D", "P", "POLOZ DIAMANTY",
+        "SEBER SPENAT", "POUZIJ SPENAT", "POUZIJ TYC", "SEBER DIAMANTY", "L", "L", "POLOZ DIAMANTY", "PROZKOUMEJ MRTVOLU CIVILA",
+        "SEBER LEGITIMACI", "P", "N", "P", "N", "SEBER UNIFORMU", "POUZIJ UNIFORMU", "L", "L", "N", "P", "N", "N", "P", "DOVNITR"
+    ];
+
+
 function runTests(engine, initState) {
     testFullPath(engine);
     restart(engine);
@@ -28,15 +37,8 @@ function testInventoryLimit(engine) {
 
 function testFullPath(engine) {
     info("---- Full Path Test ----");
-    const commands = ["PROZKOUMEJ OCAS", "SEBER SEKERU", "L", "POUZIJ SEKERU", "PROZKOUMEJ MRTVOLU FIZLA", "SEBER STIT", "P", "D",
-        "POUZIJ STIT", "POLOZ STIT", "POUZIJ KAMEN", "P", "D", "SEBER TYC", "N", "L", "D", "POUZIJ TYC", "L", "D", "POUZIJ TYC",
-        "POLOZ TYC", "PROZKOUMEJ MRTVOLU CHLUPATYHO", "SEBER UNIFORMU", "POUZIJ UNIFORMU", "P", "P", "POLOZ UNIFORMU", "D", "POLOZ DIAMANTY", "N",
-        "SEBER UNIFORMU", "POUZIJ UNIFORMU", "L", "L", "SEBER TYC", "P", "P", "POLOZ UNIFORMU", "D", "SEBER DIAMANTY", "L", "P", "L", "D", "P", "POLOZ DIAMANTY",
-        "SEBER SPENAT", "POUZIJ SPENAT", "POUZIJ TYC", "SEBER DIAMANTY", "L", "L", "POLOZ DIAMANTY", "PROZKOUMEJ MRTVOLU CIVILA",
-        "SEBER LEGITIMACI", "P", "N", "P", "N", "SEBER UNIFORMU", "POUZIJ UNIFORMU", "L", "L", "N", "P", "N", "N", "P", "DOVNITR"
-    ];
-
-    commands.forEach(command => {
+    
+    fullPathCommands.forEach(command => {
         if (engine.game.endState) {
             return;
         }

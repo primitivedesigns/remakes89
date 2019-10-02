@@ -85,6 +85,7 @@ const items = [{
                 // Set m6 property
                 game.getLocation("m6").shouldFail = false;
                 game.removeItem(obj.name);
+                game.addLocationItem("mrtvolu policajta", "m6", true);
             }
         }
     }
@@ -354,8 +355,6 @@ const locations = [{
             if (this.shouldFail) {
                 game.print("Vidíš policajta. Na tváři, která se k tobě víc a více přibližuje, je vidět, že je to maniak. Už mu neunikneš.", "end");
                 game.end("killed", false);
-            } else if (game.location.items.length == 0) {
-                game.location.items.push("mrtvolu policajta");
             }
         }
     },
