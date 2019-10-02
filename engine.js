@@ -328,6 +328,7 @@ function createGame(initialState, savedPosition, headless) {
     game.onMissingAction = initialState.onMissingAction;
     game.onActionPerformed = initialState.onActionPerformed;
     game.buildLocationMessage = initialState.buildLocationMessage;
+    game.onLocationItemAdded = initialState.onLocationItemAdded;
 
     if (savedPosition) {
         game.locations = savedPosition.locations;
@@ -533,6 +534,9 @@ function createGame(initialState, savedPosition, headless) {
                 location.items = [];
             }
             location.items.push(itemName);
+            if (game.onLocationItemAdded) {
+                game.onLocationItemAdded(game, itemName);
+            }
         } else {
             console.log("Location [" + locationId + "] not found");
         }

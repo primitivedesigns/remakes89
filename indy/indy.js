@@ -18,7 +18,7 @@ const items = [{
     desc: "Má hluboko v hlavě zaseklou sekeru (dobrá práce)! Našels' u něj štít.",
     readInit: function(obj) {
         obj.onExamine = function(game) {
-            game.location.items.push("štít");
+            game.addLocationItem("štít");
         }
     },
     takeable: false
@@ -44,8 +44,7 @@ const items = [{
     readInit: function(obj) {
         obj.onExamine = function(game) {
             if (!this.examined) {
-                this.examined = true;
-                game.location.items.push("sekeru");
+                game.addLocationItem("sekeru")
             }
         };
         obj.desc = function() {
@@ -64,7 +63,7 @@ const items = [{
         obj.onUse = function(game) {
             const cop = game.getLocationItem("fízla");
             if (cop) {
-                game.print("O.K. Zasekl jsi mu sekeru do hlavy tak hluboko, že nejde vytáhnout. Vidíš mrtvolu fízla.");
+                game.print("O.K. Zasekl jsi mu sekeru do hlavy tak hluboko, že nejde vytáhnout.");
                 game.removeItem("sekeru");
                 game.removeLocationItem(cop.name);
                 game.addLocationItem("mrtvolu fízla");
@@ -128,7 +127,7 @@ const items = [{
             } else if (game.location.id === "m10" && game.getLocationItem("chlupatýho")) {
                 game.print("O.K. Praštil jsi chlupatýho tyčí přes hlavu.");
                 game.removeLocationItem("chlupatýho");
-                game.location.items.push("mrtvolu chlupatýho");
+                game.addLocationItem("mrtvolu chlupatýho");
             } else if (game.location.id === "m18" && obj.throwable) {
                 game.print("O.K. Mrštil jsi tyčí nalevo a uslyšel jsi zasténání. Cha, cha, cha, cha.");
                 game.removeItem(obj.name);
@@ -147,7 +146,7 @@ const items = [{
     desc: "Někdo mu rozrazil tyči lebku (kdo asi?). Má na sobě uniformu.",
     readInit: function(obj) {
         obj.onExamine = function(game) {
-            game.location.items.push("uniformu");
+            game.addLocationItem("uniformu");
         };
     },
     takeable: false,
@@ -218,7 +217,7 @@ const items = [{
     takeable: false,
     readInit: function(obj) {
         obj.onExamine = function(game) {
-            game.location.items.push("legitimaci");
+            game.addLocationItem("legitimaci");
         };
     }
 }, {
@@ -333,13 +332,14 @@ const locations = [{
         name: "dolů",
         location: "m8"
     }],
+    actionTaken: false,
     readInit: function(obj) {
-        obj.onEnter = function(game) {
-            obj.actionTaken = false;
-        };
-        obj.decorateItemName = function(itemName) {
-            if (itemName === "kámen" && !this.actionTaken) {
-                return "kámen, který padá na tebe";
+        obj.decorateItemName = function(itemName, game) {
+            if (itemName === "kámen") {
+                const boulder = game.getLocationItem("kámen");
+                if (boulder && boulder.unusable) {
+                    return "kámen, který padá na tebe";
+                }
             }
             return itemName;
         };
@@ -843,7 +843,7 @@ function initState() {
             }
             if (location.items && location.items.length > 0) {
                 message += game.messages.locationItems + " " + location.items.map(
-                        i => location.decorateItemName ? location.decorateItemName(game.mapItem(i).name) : game.mapItem(i).name)
+                        i => location.decorateItemName ? location.decorateItemName(game.mapItem(i).name, game) : game.mapItem(i).name)
                     .join(", ") + ".";
             } else if (game.messages.noLocationItems) {
                 message += game.messages.noLocationItems;
@@ -901,6 +901,14 @@ function initState() {
                         game.location.actionTaken = true;
                     }
                 }
+            }
+        },
+        onLocationItemAdded: function(game) {
+            const location = game.location;
+            if (location.items && location.items.length > 0) {
+                game.print(game.messages.locationItems + " " + location.items.map(
+                        i => location.decorateItemName ? location.decorateItemName(game.mapItem(i).name) : game.mapItem(i).name)
+                    .join(", ") + ".");
             }
         },
         isInputCaseSensitive: false,
