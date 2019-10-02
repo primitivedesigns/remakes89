@@ -344,7 +344,6 @@ const locations = [{
         name: "dolů",
         location: "m8"
     }],
-    actionTaken: false,
     readInit: function(obj) {
         obj.decorateItemName = function(itemName, game) {
             if (itemName === "kámen") {
@@ -356,12 +355,18 @@ const locations = [{
             return itemName;
         };
         obj.onAction = function(game, action, params) {
-            if (obj.actionTaken && !obj.shieldUsed) {
-                game.print("Kámen se přibližuje víc a víc. Pořád se zvětšuje a zvětšuje a zvětšuje a zvětšu-", "end");
-                game.end("killed", false);
-            } else {
-                obj.actionTaken = true;
+            if (obj.shieldUsed) {
+                return false;
             }
+            if (action.name === "použij" && params && params.length > 0) {
+                const item = game.getItem(game.getUsableItems(), params[0]);
+                if (item && game.matchName(item.name, "štít")) {
+                    return false;
+                }
+            }
+            game.print("Kámen se přibližuje víc a víc. Pořád se zvětšuje a zvětšuje a zvětšuje a zvětšu-", "end");
+            game.end("killed", false);
+            return true;
         };
     }
 }, {
