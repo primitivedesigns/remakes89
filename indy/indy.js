@@ -250,8 +250,19 @@ const locations = [{
     desc: "O.K. Stojíš před domem potravin. Vchod do metra je naštěstí volný. Z balkónu v domě se pobaveně dívá nepříjemný člověk (zřejmě komunista) na poctivě odváděnou práci členů VB.",
     items: ["fízla"],
     readInit: function(obj) {
-        obj.onEnter = function(game) {
-            obj.actionTaken = false;
+        obj.onAction = function(game, action, params) {
+            if (!game.getLocationItem("fízla")) {
+                return false;
+            }
+            if (action.name === "použij" && params && params.length > 0) {
+                const item = game.getItem(game.getUsableItems(), params[0]);
+                if (item && game.matchName(item.name, "sekeru")) {
+                    return false;
+                }
+            }
+            game.print("Fízl se na tebe krvežíznivě vrhnul a začal tě mlátit. A mlátil a mlátil...", "end");
+            game.end("killed", false);
+            return true;
         }
     },
     exits: [{
@@ -344,6 +355,14 @@ const locations = [{
             }
             return itemName;
         };
+        obj.onAction = function(game, action, params) {
+            if (obj.actionTaken && !obj.shieldUsed) {
+                game.print("Kámen se přibližuje víc a víc. Pořád se zvětšuje a zvětšuje a zvětšuje a zvětšu-", "end");
+                game.end("killed", false);
+            } else {
+                obj.actionTaken = true;
+            }
+        };
     }
 }, {
     id: "m6",
@@ -400,7 +419,15 @@ const locations = [{
     readInit: function(obj) {
         obj.onEnter = function(game) {
             obj.actionTaken = false;
-        }
+        };
+        obj.onAction = function(game, action, params) {
+            if (obj.actionTaken && game.getLocationItem("poldu")) {
+                game.print("Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku.", "end");
+                game.end("killed", false);
+            } else {
+                obj.actionTaken = true;
+            }
+        };
     }
 }, {
     id: "m9",
@@ -445,7 +472,15 @@ const locations = [{
                     game.print("Najednou se na tebe vrhnul chlupatej, a když u tebe nic nenašel, zklamaně odešel.");
                 }
             }
-        }
+        };
+        obj.onAction = function(game, action, params) {
+            if (obj.actionTaken && game.getLocationItem("chlupatýho")) {
+                game.print("Policajta naštvalo, že u tebe nenašel, co hledal, a vrhnul se na tebe.", "end");
+                game.end("killed", false);
+            } else {
+                obj.actionTaken = true;
+            }
+        };
     },
     exits: [{
         name: "nahoru",
@@ -514,7 +549,15 @@ const locations = [{
         };
         obj.onLeave = function() {
             obj.cops = false;
-        }
+        };
+        obj.onAction = function(game, action, params) {
+            if (obj.actionTaken && obj.cops) {
+                game.print("Řada policajtů se přiblížila až k tobě. Než jsi stačil vstát, pustili se do tebe obušky.", "end");
+                game.end("killed", false);
+            } else {
+                obj.actionTaken = true;
+            }
+        };
     },
     exits: [{
         name: "doleva",
@@ -557,6 +600,20 @@ const locations = [{
         name: "nahoru",
         location: "m13"
     }],
+    readInit: function(obj) {
+        obj.onAction = function(game, action, params) {
+            if (obj.actionTaken && game.getLocationItem("příslušníka")) {
+                if (game.getLocationItem("diamanty")) {
+                    game.print("Příslušník správně pochopil a diskrétně odešel.");
+                } else {
+                    game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end");
+                    game.end("killed", false);
+                }
+            } else {
+                obj.actionTaken = true;
+            }
+        };
+    }
 }, {
     id: "m17",
     readInit: function(obj) {
@@ -852,54 +909,6 @@ function initState() {
         onActionPerformed: function(game, action, params) {
             if (!action.builtin) {
                 game.shiftTime(1);
-
-                if (game.location.id === "m1") {
-                    if (game.location.actionTaken && game.getLocationItem("fízla")) {
-                        game.print("Fízl se na tebe krvežíznivě vrhnul a začal tě mlátit. A mlátil a mlátil...", "end");
-                        game.end("killed", false);
-                    } else {
-                        game.location.actionTaken = true;
-                    }
-                } else if (game.location.id === "m5") {
-                    if (game.location.actionTaken && !game.location.shieldUsed) {
-                        game.print("Kámen se přibližuje víc a víc. Pořád se zvětšuje a zvětšuje a zvětšuje a zvětšu-", "end");
-                        game.end("killed", false);
-                    } else {
-                        game.location.actionTaken = true;
-                    }
-                } else if (game.location.id === "m8") {
-                    if (game.location.actionTaken && game.getLocationItem("poldu")) {
-                        game.print("Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku.", "end");
-                        game.end("killed", false);
-                    } else {
-                        game.location.actionTaken = true;
-                    }
-                } else if (game.location.id === "m10") {
-                    if (game.location.actionTaken && game.getLocationItem("chlupatýho")) {
-                        game.print("Policajta naštvalo, že u tebe nenašel, co hledal, a vrhnul se na tebe.", "end");
-                        game.end("killed", false);
-                    } else {
-                        game.location.actionTaken = true;
-                    }
-                } else if (game.location.id === "m14") {
-                    if (game.location.actionTaken && game.location.cops) {
-                        game.print("Řada policajtů se přiblížila až k tobě. Než jsi stačil vstát, pustili se do tebe obušky.", "end");
-                        game.end("killed", false);
-                    } else {
-                        game.location.actionTaken = true;
-                    }
-                } else if (game.location.id === "m16") {
-                    if (game.location.actionTaken && game.getLocationItem("příslušníka")) {
-                        if (game.getLocationItem("diamanty")) {
-                            game.print("Příslušník správně pochopil a diskrétně odešel.");
-                        } else {
-                            game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end");
-                            game.end("killed", false);
-                        }
-                    } else {
-                        game.location.actionTaken = true;
-                    }
-                }
             }
         },
         onLocationItemAdded: function(game) {

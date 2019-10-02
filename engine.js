@@ -137,9 +137,17 @@ function createEngine(headless) {
         }
 
         if (action) {
-            action.perform(game, params);
-            if (game.onActionPerformed) {
-                game.onActionPerformed(game, action, params);
+            // First invoke location callback
+            let skipAction = false;
+            if (game.location.onAction) {
+                skipAction = game.location.onAction(game, action, params);
+            }
+            if (!skipAction) {
+                action.perform(game, params);
+                // Global callback
+                if (game.onActionPerformed) {
+                    game.onActionPerformed(game, action, params);
+                }
             }
         }
     }
