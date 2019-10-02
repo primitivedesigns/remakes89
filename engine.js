@@ -526,8 +526,8 @@ function createGame(initialState, savedPosition, headless) {
         }
     }
 
-    game.addLocationItem = function(locationId, itemName) {
-        const location = game.getLocation(locationId);
+    game.addLocationItem = function(itemName, locationId) {
+        const location = locationId ? game.getLocation(locationId) : game.location;
         if (location) {
             if (!location.items) {
                 location.items = [];

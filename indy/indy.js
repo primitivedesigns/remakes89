@@ -65,8 +65,9 @@ const items = [{
             const cop = game.getLocationItem("fízla");
             if (cop) {
                 game.print("O.K. Zasekl jsi mu sekeru do hlavy tak hluboko, že nejde vytáhnout. Vidíš mrtvolu fízla.");
-                game.location.items.splice(game.location.items.findIndex(item => item.name === cop.name), 1);
-                game.location.items.push("mrtvolu fízla");
+                game.removeItem("sekeru");
+                game.removeLocationItem(cop.name);
+                game.addLocationItem("mrtvolu fízla");
             } else {
                 game.print(game.messages.unknownAction);
             }
@@ -131,7 +132,7 @@ const items = [{
             } else if (game.location.id === "m18" && obj.throwable) {
                 game.print("O.K. Mrštil jsi tyčí nalevo a uslyšel jsi zasténání. Cha, cha, cha, cha.");
                 game.removeItem(obj.name);
-                game.addLocationItem("m17", "mrtvolu milicionáře");
+                game.addLocationItem("mrtvolu milicionáře", "m17");
             }
         }
     }
