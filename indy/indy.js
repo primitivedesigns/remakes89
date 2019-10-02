@@ -772,7 +772,7 @@ const initControls = function(gameContainer) {
 function initState() {
 
     const game = {
-        //title: gameTitle,
+        savedPositionPrefix: "indy",
         messages: {
             locationItems: "Vidíš",
             noLocationItems: "",

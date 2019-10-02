@@ -284,23 +284,31 @@ function createEngine(headless) {
 
     engine.save = function(params) {
         const position = {};
-        const positionName = params.length === 0 ? "save" : params[0];
         position.locations = this.game.locations;
         position.items = this.game.items;
         position.time = this.game.time;
         position.location = this.game.location.id;
         position.inventory = this.game.inventory;
+        const positionName = getPositionName(params);
         localStorage.setItem(positionName, JSON.stringify(position));
         console.log("Game saved: " + positionName);
         return positionName;
     }
 
     engine.load = function(params) {
-        const positionName = params.length === 0 ? "save" : params[0];
+        const positionName = getPositionName(params);
         this.initGame(JSON.parse(localStorage.getItem(positionName)));
         this.start();
         console.log("Game loaded: " + positionName);
         return positionName;
+    }
+
+    function getPositionName(params) {
+        const savePrefix = engine.game.savedPositionPrefix;
+        if (!savePrefix) {
+            console.log("Game does not specify a 'saved position prefix' - SAVE/LOAD may not work correctly");
+        }
+        return (savePrefix ? savePrefix : "unknown") + "_" + (params.length === 0 ? "save" : params[0]);
     }
 
     return engine;

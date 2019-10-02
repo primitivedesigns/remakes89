@@ -561,6 +561,7 @@ function initState() {
 
     const game = {
         title: gameTitle,
+        savedPositionPrefix: "prestavba",
         messages: {
             locationItems: "Vidíš",
             noLocationItems: "Nevidíš nic",
