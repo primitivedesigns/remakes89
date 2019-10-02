@@ -894,13 +894,11 @@ function initState() {
                 message += " ";
             }
             if (location.exits && location.exits.length > 0) {
-                message += game.messages.locationExits + " " + location.exits.map(e => e.name).join(", ") + ".";
+                message += buildExitsMessage(game, location);
                 message += " ";
             }
             if (location.items && location.items.length > 0) {
-                message += game.messages.locationItems + " " + location.items.map(
-                        i => location.decorateItemName ? location.decorateItemName(game.mapItem(i).name, game) : game.mapItem(i).name)
-                    .join(", ") + ".";
+                message += buildItemsMessage(game, location);
             } else if (game.messages.noLocationItems) {
                 message += game.messages.noLocationItems;
             }
@@ -914,9 +912,7 @@ function initState() {
         onLocationItemAdded: function(game) {
             const location = game.location;
             if (location.items && location.items.length > 0) {
-                game.print(game.messages.locationItems + " " + location.items.map(
-                        i => location.decorateItemName ? location.decorateItemName(game.mapItem(i).name) : game.mapItem(i).name)
-                    .join(", ") + ".");
+                game.print(buildItemsMessage(game, location));
             }
         },
         isInputCaseSensitive: false,
@@ -929,6 +925,39 @@ function initState() {
         actions: actions
     }
     return game;
+}
+
+function buildExitsMessage(game, location) {
+    let message = game.messages.locationExits + " ";
+    const exitNames = location.exits.map(e => e.name);
+    for (let idx = 0; idx < exitNames.length; idx++) {
+        if (exitNames.length > 1 && idx === (exitNames.length - 1)) {
+            message += " a ";
+        }
+        message += exitNames[idx];
+        if (exitNames.length > 2 && idx < (exitNames.length - 2)) {
+            message += ", ";
+        }
+    }
+    message += ".";
+    return message;
+}
+
+function buildItemsMessage(game, location) {
+    let message = game.messages.locationItems + " ";
+    const itemNames = location.items.map(
+        i => location.decorateItemName ? location.decorateItemName(game.mapItem(i).name, game) : game.mapItem(i).name);
+    for (let idx = 0; idx < itemNames.length; idx++) {
+        if (itemNames.length > 1 && idx === (itemNames.length - 1)) {
+            message += " a ";
+        }
+        message += itemNames[idx];
+        if (itemNames.length > 2 && idx < (itemNames.length - 2)) {
+            message += ", ";
+        }
+    }
+    message += ".";
+    return message;
 }
 
 function openSide() {
