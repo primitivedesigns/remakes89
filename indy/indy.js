@@ -349,7 +349,7 @@ const locations = [{
             if (itemName === "kámen") {
                 const boulder = game.getLocationItem("kámen");
                 if (boulder && boulder.unusable) {
-                    return "kámen, který padá na tebe";
+                    return "kámen, který padá na tebe,";
                 }
             }
             return itemName;
