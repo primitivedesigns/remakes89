@@ -533,6 +533,7 @@ function createGame(initialState, savedPosition, headless) {
         const itemRet = game.findItem(name);
         if (itemRet.location) {
             game.removeLocationItem(name, itemRet.location);
+            return itemRet.location;
         } else {
             game.removeInventoryItem(name);
         }
@@ -1002,16 +1003,12 @@ function outro(index, outroFuns) {
 }
 
 // TODO add some impl notes
-let outputBlackHole = false;
 const outputQueue = [];
-let currentOutput = null;
+let current = null;
 let skipOutputQueue = false;
 const typewriterDelay = 20;
 
 function queueOutput(element, text, before, after) {
-    if (outputBlackHole) {
-        return;
-    }
     if (!text) {
         console.log("Not enqueued - no text specified");
         return;

@@ -252,9 +252,17 @@ const items = [{
             if (rodRet.item) {
                 rodRet.item.throwable = true;
             }
-            game.removeItem(obj.name);
+            const location = game.removeItem(obj.name);
+            if (location) {
+                location.items.push("plechovku");
+            } else {
+                game.inventory.push("plechovku");
+            }
         }
     }
+}, {
+    name: "plechovku",
+    desc: "Je to dočista vylízaná plechovka od špenátu."
 }];
 
 const locations = [{
@@ -514,12 +522,10 @@ const locations = [{
     items: ["člena VB"],
     readInit: function(obj) {
         obj.onEnter = function(game) {
-            if (!obj.explored) {
-                const uniform = game.getInventoryItem("uniformu");
-                if (!uniform || !uniform.dressed) {
-                    game.print("Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali si s tebou hrát.", "end");
-                    game.end("killed", false);
-                }
+            const uniform = game.getInventoryItem("uniformu");
+            if (!uniform || !uniform.dressed) {
+                game.print("Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali si s tebou hrát.", "end");
+                game.end("killed", false);
             }
         }
     },
