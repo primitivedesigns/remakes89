@@ -663,8 +663,8 @@ const locations = [{
     desc: "O.K. Dostal ses do metra. Všude je tu rozšířen slzný plyn.",
     readInit: function(obj) {
         obj.onEnter = function(game) {
-            game.print("Je ho tu tolik,že ses udusil.", "end");
-            game.end("killed");
+            game.print("Je ho tu tolik, že ses udusil.", "end");
+            game.end("killed", false);
         }
     }
 }, {

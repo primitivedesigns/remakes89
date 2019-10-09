@@ -998,17 +998,6 @@ function outro(index, outroFuns) {
     }
 }
 
-// TODO remove
-function queue(index, funcs) {
-    if (funcs.length > (index + 1)) {
-        funcs[index](function() {
-            queue(index + 1, funcs);
-        });
-    } else {
-        funcs[index](null);
-    }
-}
-
 // TODO add some impl notes
 const outputQueue = [];
 let currentOutput = null;
