@@ -165,14 +165,14 @@ const items = [{
     readInit: function(obj) {
         const dressAction = {
             name: "obleč",
-            aliases: ["oblec"],
+            aliases: ["oblec", "oblekni", "oblékni"],
             perform: function(game, params) {
                 if (params.join(" ") === "uniformu") {
                     let uniform = game.getInventoryItem("uniformu");
                     if (!uniform) {
                         uniform = game.takeItem("uniformu", false);
                     }
-                    if (uniform) {
+                    if (uniform && !uniform.dressed) {
                         obj.dressed = true;
                         game.print("O.K. Oblékl sis uniformu člena Veřejné bezpečnosti.");
                     }
@@ -181,9 +181,9 @@ const items = [{
         };
         const undressAction = {
             name: "svleč",
-            aliases: ["svlec"],
+            aliases: ["svlec", "svlekni", "svlékni"],
             perform: function(game, params) {
-                if (params.join(" ") === "uniformu") {
+                if (obj.dressed && params.join(" ") === "uniformu") {
                     obj.dressed = false;
                     game.print("Svlékl sis uniformu.");
                 }
