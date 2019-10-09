@@ -181,6 +181,100 @@ const testM14InstantDeath = function(engine) {
     success("Test passed");
 }
 
+const testM16InstantDeath = function(engine) {
+    info("---- M16 Instant Death Test ----");
+
+    const commands = [
+        // m2
+        "PROZKOUMEJ OCAS", "SEBER SEKERU", "L",
+        // m1
+        "POUZIJ SEKERU", "PROZKOUMEJ MRTVOLU FIZLA", "SEBER STIT", "P", "D",
+        // m5
+        "POUZIJ STIT", "POLOZ STIT", "POUZIJ KAMEN", "P", "D",
+        // m9
+        "SEBER TYC", "N", "L", "D",
+        // m8
+        "POUZIJ TYC", "L", "D",
+        // m10
+        "POUZIJ TYC", "POLOZ TYC", "PROZKOUMEJ MRTVOLU CHLUPATYHO", "SEBER UNIFORMU", "POUZIJ UNIFORMU", "P", "P",
+        // m12
+        "POLOZ UNIFORMU", "D",
+        // m15
+        "POLOZ DIAMANTY", "N",
+        // m12
+        "SEBER UNIFORMU", "POUZIJ UNIFORMU", "L", "L",
+        // m10
+        "SEBER TYC", "P", "P",
+        // m12
+        "POLOZ UNIFORMU", "D",
+        // m15
+        "SEBER DIAMANTY", "L", "D", "P",
+        // m18
+        "POLOZ DIAMANTY", "SEBER SPENAT", "POUZIJ SPENAT", "POLOZ PLECHOVKU", "POUZIJ TYC", "SEBER DIAMANTY", "L", "L",
+        // m16 -> instant death
+        "VECI"
+    ]
+
+    commands.forEach(command => {
+        if (engine.game.endState) {
+            return;
+        }
+        engine.processCommand(command);
+    });
+
+    if (assertTrue(engine.game.endState === 'killed', "Ocekavana smrt: " + JSON.stringify(engine.game.location))) {
+        return;
+    }
+    success("Test passed");
+}
+
+const testM16 = function(engine) {
+    info("---- M16 Test ----");
+
+    const commands = [
+        // m2
+        "PROZKOUMEJ OCAS", "SEBER SEKERU", "L",
+        // m1
+        "POUZIJ SEKERU", "PROZKOUMEJ MRTVOLU FIZLA", "SEBER STIT", "P", "D",
+        // m5
+        "POUZIJ STIT", "POLOZ STIT", "POUZIJ KAMEN", "P", "D",
+        // m9
+        "SEBER TYC", "N", "L", "D",
+        // m8
+        "POUZIJ TYC", "L", "D",
+        // m10
+        "POUZIJ TYC", "POLOZ TYC", "PROZKOUMEJ MRTVOLU CHLUPATYHO", "SEBER UNIFORMU", "POUZIJ UNIFORMU", "P", "P",
+        // m12
+        "POLOZ UNIFORMU", "D",
+        // m15
+        "POLOZ DIAMANTY", "N",
+        // m12
+        "SEBER UNIFORMU", "POUZIJ UNIFORMU", "L", "L",
+        // m10
+        "SEBER TYC", "P", "P",
+        // m12
+        "POLOZ UNIFORMU", "D",
+        // m15
+        "SEBER DIAMANTY", "L", "D", "P",
+        // m18
+        "POLOZ DIAMANTY", "SEBER SPENAT", "POUZIJ SPENAT", "POLOZ PLECHOVKU", "POUZIJ TYC", "SEBER DIAMANTY", "L", "L",
+        // m16 -> instant death
+        "POLOZ DIAMANTY"
+    ]
+
+    commands.forEach(command => {
+        if (engine.game.endState) {
+            return;
+        }
+        engine.processCommand(command);
+    });
+
+    if (assertTrue(!engine.game.getLocationItem("příslušník") && !engine.game.getInventoryItem("diamanty") && engine.game.endState === undefined, "Prislusnik a diamanty maji zmizet.")) {
+        return;
+    }
+    success("Test passed");
+}
+
 const testFullPath = function(engine) {
     info("---- Full Path Test ----");
 
@@ -199,7 +293,7 @@ const testFullPath = function(engine) {
 }
 
 const testSuite = [
-    testFullPath, testInventoryLimit, testUniform, testM15InstantDeath, testM14InstantDeath
+    testFullPath, testInventoryLimit, testUniform, testM15InstantDeath, testM14InstantDeath, testM16InstantDeath, testM16,
 ]
 
 

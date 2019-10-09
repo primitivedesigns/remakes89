@@ -621,17 +621,21 @@ const locations = [{
     }],
     readInit: function(obj) {
         obj.onAction = function(game, action, params) {
-            if (obj.actionTaken && game.getLocationItem("příslušníka")) {
-                if (game.getLocationItem("diamanty")) {
+            if (!game.getLocationItem("příslušníka")) {
+                return false;
+            }
+            if (action.name === "polož" && params && params.length > 0) {
+                const item = game.getItem(game.getInventoryItems(), params.join(" "));
+                if (item && game.matchName(item.name, "diamanty")) {
                     game.print("Příslušník správně pochopil a diskrétně odešel.");
-                } else {
-                    game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end");
-                    game.end("killed", false);
+                    game.removeLocationItem("příslušníka");
+                    game.removeItem("diamanty");
                     return true;
                 }
-            } else {
-                obj.actionTaken = true;
             }
+            game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end");
+            game.end("killed", false);
+            return true;
         };
     }
 }, {

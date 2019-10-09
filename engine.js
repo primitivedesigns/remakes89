@@ -512,6 +512,10 @@ function createGame(initialState, savedPosition, headless) {
         return game.inventory ? game.getItem(game.inventory.map(item => game.mapItem(item)), name) : undefined;
     };
 
+    game.getInventoryItems = function() {
+        return game.inventory ? game.inventory.map(item => game.mapItem(item)) : undefined;
+    };
+
     // Remove an inventory item of the specified name if present
     game.removeInventoryItem = function(name) {
         const idx = game.inventory.findIndex(item => item === name);
