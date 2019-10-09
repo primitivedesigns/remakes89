@@ -806,7 +806,10 @@ function createGame(initialState, savedPosition, headless) {
                 location.items = [];
             }
             location.items.push(item.name);
-            this.inventory.splice(this.inventory.findIndex(it => it === item.name), 1);
+            game.removeInventoryItem(item.name);
+            if (item.onDrop) {
+                item.onDrop(game);
+            }
             if (updateLocationInfo) {
                 this.printLocationInfo(false);
             }

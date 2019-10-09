@@ -6,7 +6,15 @@ const beep = new Audio("snd/beep.wav");
 
 const items = [{
     name: "diamanty",
-    desc: "Jsou to čtyři nádherné drahokamy."
+    desc: "Jsou to čtyři nádherné drahokamy.",
+    readInit: function(obj) {
+        obj.onDrop = function(game) {
+            if (game.location.id === "m12") {
+                game.print("Jakmile jsi je položil, někdo je z oltáře ukradl.");
+                game.removeItem("diamanty");
+            }
+        }
+    }
 }, {
     name: "fízla",
     aliases: ["fizla"],
@@ -155,40 +163,44 @@ const items = [{
     name: "uniformu",
     desc: "Je to uniforma člena Veřejné bezpečnosti.",
     readInit: function(obj) {
-            const dressAction = {
-                name: "obleč",
-                aliases: ["oblec"],
-                perform: function(game, params) {
-                    if (params.join(" ") === "uniformu") {
-                        let uniform = game.getInventoryItem("uniformu");
-                        if (!uniform) {
-                            uniform = game.takeItem("uniformu", false);
-                        }
-                        if (uniform) {
-                            obj.dressed = true;
-                            game.print("O.K. Oblékl sis uniformu člena Veřejné bezpečnosti.");
-                        }
+        const dressAction = {
+            name: "obleč",
+            aliases: ["oblec"],
+            perform: function(game, params) {
+                if (params.join(" ") === "uniformu") {
+                    let uniform = game.getInventoryItem("uniformu");
+                    if (!uniform) {
+                        uniform = game.takeItem("uniformu", false);
+                    }
+                    if (uniform) {
+                        obj.dressed = true;
+                        game.print("O.K. Oblékl sis uniformu člena Veřejné bezpečnosti.");
                     }
                 }
             }
-            obj.onUse = function(game) {
-                dressAction.perform(game, ["uniformu"]);
-            };
-            obj.actions = [{
-                name: "svleč",
-                aliases: ["svlec"],
-                perform: function(game, params) {
-                    if (params.join(" ") === "uniformu") {
-                        obj.dressed = false;
-                        game.print("Svlékl sis uniformu.");
-                    }
+        };
+        const undressAction = {
+            name: "svleč",
+            aliases: ["svlec"],
+            perform: function(game, params) {
+                if (params.join(" ") === "uniformu") {
+                    obj.dressed = false;
+                    game.print("Svlékl sis uniformu.");
                 }
-            }, dressAction];
-        }
-        // V původní hře nejde uniformu prozkoumat, což podle mě zjevně chyba, tak jsem text dofabuloval
-        // Pokud použiješ uniformu, tak si ji oblékneš: "O.K. Oblékl sis uniformu člena Veřejné bezpečnosti." Mohl by být i synonymum Obleč uniformu
-        // V původní hře ji svlékneš tím, že ji položíš. "Svlékl sis uniformu." To je podle mě matoucí a můžeme to udělat jinak.
-        // Pokud máš uniformu, mění se události v některých místnostech
+            }
+        };
+        obj.onUse = function(game) {
+            if (obj.dressed) {
+                undressAction.perform(game, ["uniformu"]);
+            } else {
+                dressAction.perform(game, ["uniformu"]);
+            }
+        };
+        obj.actions = [undressAction, dressAction];
+        obj.onDrop = function(game) {
+            obj.dressed = false;
+        };
+    }
 }, {
     name: "člena VB",
     aliases: ["clena VB"],
@@ -736,10 +748,6 @@ const actions = [{
         const item = game.dropItem(params.join(" "), false);
         if (item) {
             game.print("Položil jsi " + item.name + ".");
-            if (item.name === "diamanty" && game.location.id === "m12") {
-                game.print("Jakmile jsi je položil, někdo je z oltáře ukradl.");
-                game.inventory.splice(game.inventory.findIndex(it => it === "diamanty"), 1);
-            }
         } else {
             game.print("Tohle nejde položit.");
         }
