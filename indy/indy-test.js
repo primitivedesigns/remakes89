@@ -36,10 +36,15 @@ const fullPathCommands = [
 
 function runTests(engine, initState) {
     testFullPath(engine);
+    
     restart(engine);
     testInventoryLimit(engine);
+
     restart(engine);
     testUniform(engine);
+
+    restart(engine);
+    testM15InstantDeath(engine);
 }
 
 function testInventoryLimit(engine) {
@@ -108,6 +113,37 @@ function testUniform(engine) {
     engine.processCommand("pouzij uniformu");
     engine.processCommand("poloz uniformu");
     if (assertTrue(!uniform.dressed && !engine.game.getInventoryItem("uniformu"), "Uniforma nema byt oblecena:" + JSON.stringify(uniform))) {
+        return;
+    }
+    success("Test passed");
+}
+
+function testM15InstantDeath(engine) {
+    info("---- M15 Instant Death Test ----");
+
+    const commands = [    // m2
+        "PROZKOUMEJ OCAS", "SEBER SEKERU", "L",
+        // m1
+        "POUZIJ SEKERU", "PROZKOUMEJ MRTVOLU FIZLA", "SEBER STIT", "P", "D",
+        // m5
+        "POUZIJ STIT", "POLOZ STIT", "POUZIJ KAMEN", "P", "D",
+        // m9
+        "SEBER TYC", "N", "L", "D",
+        // m8
+        "POUZIJ TYC", "L", "D",
+        // m10
+        "POUZIJ TYC", "POLOZ TYC", "PROZKOUMEJ MRTVOLU CHLUPATYHO", "SEBER UNIFORMU", "POUZIJ UNIFORMU", "P", "P", "D",
+        // m15 -> death
+        ]
+
+    commands.forEach(command => {
+        if (engine.game.endState) {
+            return;
+        }
+        engine.processCommand(command);
+    });
+
+    if (assertTrue(engine.game.endState === 'killed', "Ocekavana smrt: " + engine.game.endState)) {
         return;
     }
     success("Test passed");
