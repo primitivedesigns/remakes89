@@ -45,9 +45,11 @@ function createEngine(headless) {
         builtin: true,
         perform: function(game, params) {
             const positionName = engine.save(params);
-            game.clearOutput();
             if (game.messages.gameSaved) {
                 game.print(game.messages.gameSaved + " [" + positionName + "]");
+            }
+            if (game.onSave) {
+                game.onSave(game);
             }
         }
     }, {
@@ -56,12 +58,14 @@ function createEngine(headless) {
         builtin: true,
         perform: function(game, params) {
             const positionName = engine.load(params);
-            game.clearOutput();
             // NOTE: we cannot use the "game" param because a new game was
             // loaded already
             if (engine.game.messages.gameLoaded) {
                 engine.game.print(engine.game.messages.gameLoaded + " [" + positionName +
                     "]");
+            }
+            if (game.onLoad) {
+                game.onLoad(game);
             }
         },
         autocomplete: function(game, str) {
