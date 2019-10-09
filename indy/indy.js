@@ -441,6 +441,7 @@ const locations = [{
             if (obj.actionTaken && game.getLocationItem("poldu")) {
                 game.print("Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku.", "end");
                 game.end("killed", false);
+                return true;
             } else {
                 obj.actionTaken = true;
             }
@@ -494,6 +495,7 @@ const locations = [{
             if (obj.actionTaken && game.getLocationItem("chlupatýho")) {
                 game.print("Policajta naštvalo, že u tebe nenašel, co hledal, a vrhnul se na tebe.", "end");
                 game.end("killed", false);
+                return true;
             } else {
                 obj.actionTaken = true;
             }
@@ -512,7 +514,7 @@ const locations = [{
     items: ["člena VB"],
     readInit: function(obj) {
         obj.onEnter = function(game) {
-            if (!game.location.explored) {
+            if (!obj.explored) {
                 const uniform = game.getInventoryItem("uniformu");
                 if (!uniform || !uniform.dressed) {
                     game.print("Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali si s tebou hrát.", "end");
@@ -550,7 +552,7 @@ const locations = [{
     }
 }, {
     id: "m14",
-    cops: false,
+    cops: true,
     readInit: function(obj) {
         obj.desc = function(game) {
             let ret = "O.K. Sedíš na lavičce. (Už nemůžeš, co?) Kolem ucha ti hvízdla kulka. Nahoře jsou zátarasy.";
@@ -559,20 +561,14 @@ const locations = [{
             }
             return ret;
         };
-        obj.onEnter = function() {
-            if (!obj.explored) {
-                obj.cops = true;
-            }
-        };
         obj.onLeave = function() {
             obj.cops = false;
         };
         obj.onAction = function(game, action, params) {
-            if (obj.actionTaken && obj.cops) {
+            if (action.name != "doleva" && action.name != "doprava" && action.name != "dolů") {
                 game.print("Řada policajtů se přiblížila až k tobě. Než jsi stačil vstát, pustili se do tebe obušky.", "end");
                 game.end("killed", false);
-            } else {
-                obj.actionTaken = true;
+                return true;
             }
         };
     },
@@ -625,6 +621,7 @@ const locations = [{
                 } else {
                     game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end");
                     game.end("killed", false);
+                    return true;
                 }
             } else {
                 obj.actionTaken = true;

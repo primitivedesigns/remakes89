@@ -33,21 +33,7 @@ const fullPathCommands = [
     "DOVNITR"
 ];
 
-
-function runTests(engine, initState) {
-    testFullPath(engine);
-    
-    restart(engine);
-    testInventoryLimit(engine);
-
-    restart(engine);
-    testUniform(engine);
-
-    restart(engine);
-    testM15InstantDeath(engine);
-}
-
-function testInventoryLimit(engine) {
+const testInventoryLimit = function(engine) {
     info("---- Inventory Limit Test ----");
     let failed = false;
     engine.processCommand("prozkoumej ocas");
@@ -69,7 +55,7 @@ function testInventoryLimit(engine) {
     success("Test passed");
 }
 
-function testUniform(engine) {
+const testUniform = function(engine) {
     info("---- Uniform Switch Test ----");
 
     const commands = [
@@ -84,7 +70,8 @@ function testUniform(engine) {
         // m8
         "POUZIJ TYC", "L", "D",
         // m10
-        "POUZIJ TYC", "POLOZ TYC", "PROZKOUMEJ MRTVOLU CHLUPATYHO"];
+        "POUZIJ TYC", "POLOZ TYC", "PROZKOUMEJ MRTVOLU CHLUPATYHO"
+    ];
 
     commands.forEach(command => {
         if (engine.game.endState) {
@@ -118,10 +105,10 @@ function testUniform(engine) {
     success("Test passed");
 }
 
-function testM15InstantDeath(engine) {
+const testM15InstantDeath = function(engine) {
     info("---- M15 Instant Death Test ----");
 
-    const commands = [    // m2
+    const commands = [ // m2
         "PROZKOUMEJ OCAS", "SEBER SEKERU", "L",
         // m1
         "POUZIJ SEKERU", "PROZKOUMEJ MRTVOLU FIZLA", "SEBER STIT", "P", "D",
@@ -134,7 +121,7 @@ function testM15InstantDeath(engine) {
         // m10
         "POUZIJ TYC", "POLOZ TYC", "PROZKOUMEJ MRTVOLU CHLUPATYHO", "SEBER UNIFORMU", "POUZIJ UNIFORMU", "P", "P", "D",
         // m15 -> death
-        ]
+    ]
 
     commands.forEach(command => {
         if (engine.game.endState) {
@@ -149,7 +136,52 @@ function testM15InstantDeath(engine) {
     success("Test passed");
 }
 
-function testFullPath(engine) {
+const testM14InstantDeath = function(engine) {
+    info("---- M14 Instant Death Test ----");
+
+    const commands = [
+        // m2
+        "PROZKOUMEJ OCAS", "SEBER SEKERU", "L",
+        // m1
+        "POUZIJ SEKERU", "PROZKOUMEJ MRTVOLU FIZLA", "SEBER STIT", "P", "D",
+        // m5
+        "POUZIJ STIT", "POLOZ STIT", "POUZIJ KAMEN", "P", "D",
+        // m9
+        "SEBER TYC", "N", "L", "D",
+        // m8
+        "POUZIJ TYC", "L", "D",
+        // m10
+        "POUZIJ TYC", "POLOZ TYC", "PROZKOUMEJ MRTVOLU CHLUPATYHO", "SEBER UNIFORMU", "POUZIJ UNIFORMU", "P", "P",
+        // m12
+        "POLOZ UNIFORMU", "D",
+        // m15
+        "POLOZ DIAMANTY", "N",
+        // m12
+        "SEBER UNIFORMU", "POUZIJ UNIFORMU", "L", "L",
+        // m10
+        "SEBER TYC", "P", "P",
+        // m12
+        "POLOZ UNIFORMU", "D",
+        // m15
+        "SEBER DIAMANTY", "L",
+        // m14 - instant deatch after one turn
+        "VECI"
+    ]
+
+    commands.forEach(command => {
+        if (engine.game.endState) {
+            return;
+        }
+        engine.processCommand(command);
+    });
+
+    if (assertTrue(engine.game.endState === 'killed', "Ocekavana smrt: " + JSON.stringify(engine.game.location))) {
+        return;
+    }
+    success("Test passed");
+}
+
+const testFullPath = function(engine) {
     info("---- Full Path Test ----");
 
     fullPathCommands.forEach(command => {
@@ -163,5 +195,20 @@ function testFullPath(engine) {
         error("Test failed with end state [" + engine.game.endState + "]");
     } else {
         success("Test passed with end state [" + engine.game.endState + "]");
+    }
+}
+
+const testSuite = [
+    testFullPath, testInventoryLimit, testUniform, testM15InstantDeath, testM14InstantDeath
+]
+
+
+function runTests(engine, initState) {
+
+    for (let index = 0; index < testSuite.length; index++) {
+        testSuite[index](engine);
+        if (index < (testSuite.length - 1)) {
+            restart(engine);
+        }
     }
 }

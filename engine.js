@@ -1002,12 +1002,16 @@ function outro(index, outroFuns) {
 }
 
 // TODO add some impl notes
+let outputBlackHole = false;
 const outputQueue = [];
 let currentOutput = null;
 let skipOutputQueue = false;
 const typewriterDelay = 20;
 
 function queueOutput(element, text, before, after) {
+    if (outputBlackHole) {
+        return;
+    }
     if (!text) {
         console.log("Not enqueued - no text specified");
         return;
