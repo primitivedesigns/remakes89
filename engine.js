@@ -1008,7 +1008,7 @@ function outro(index, outroFuns) {
 
 // TODO add some impl notes
 const outputQueue = [];
-let current = null;
+let currentOutput = null;
 let skipOutputQueue = false;
 const typewriterDelay = 20;
 
