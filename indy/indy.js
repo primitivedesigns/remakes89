@@ -903,7 +903,7 @@ function initState() {
         onEnd: function(endState) {
             if (endState === "killed") {
                 this.print("INDIANA JONES JE MRTEV!");
-                this.print("ZPRÁVA Z AMERICKÉHO TISKU: Československa vláda oznámila, že náš drahý hrdina - INDIANA JONES - zemřel nešťastnou náhodou při autonehodě. Pokrač. na str. 54.");
+                this.print("ZPRÁVA Z AMERICKÉHO TISKU: Československá vláda oznámila, že náš drahý hrdina - INDIANA JONES - zemřel nešťastnou náhodou při autonehodě. Pokrač. na str. 54.");
                 this.removeInputContainer();
             }
         },
