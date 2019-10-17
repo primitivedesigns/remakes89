@@ -35,6 +35,7 @@ h1#game-title span:nth-child(even) {
 
 #game-output-container {
 	min-height: 10em;
+	padding-right: 2em;
 }
 
 #game-output {
@@ -238,9 +239,4 @@ div#game-sidebar ul {
 	overflow: hidden;
 	white-space: nowrap;
 	animation: typing 2s steps(40, end), blink-caret .75s step-end infinite;
-}
-
-@keyframes typing {
-	from { width: 0 }
-	to { width: 100% }
 }

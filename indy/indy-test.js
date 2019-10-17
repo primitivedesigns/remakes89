@@ -85,7 +85,7 @@ const testUniform = function(engine) {
     if (assertTrue(uniform && uniform.dressed, "Ma mit oblecenou uniformu: " + JSON.stringify(uniform))) {
         return;
     }
-    engine.processCommand("svlec uniformu");
+    engine.processCommand("svl uni");
     if (assertTrue(!uniform.dressed, "Uniforma nema byt oblecena: " + JSON.stringify(uniform))) {
         return;
     }

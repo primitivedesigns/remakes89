@@ -778,10 +778,12 @@ function createGame(initialState, savedPosition, headless) {
     };
 
     game.takeItem = function(name, updateLocationInfo = true) {
+        const ret = {};
         if (game.inventoryLimit && game.inventory.length >= game.inventoryLimit) {
             if (game.messages.inventoryFull) {
                 game.print(game.messages.inventoryFull);
             }
+            ret.full = true;
         } else {
             const item = this.getLocationItem(name);
             if (item && (item.takeable === undefined || item.takeable)) {
@@ -797,10 +799,10 @@ function createGame(initialState, savedPosition, headless) {
                 if (item.onTake) {
                     item.onTake(this);
                 }
-                return item;
+                ret.item = item;
             }
         }
-        return null;
+        return ret;
     };
 
     game.dropItem = function(name, updateLocationInfo = true) {
@@ -1012,7 +1014,7 @@ let currentOutput = null;
 let skipOutputQueue = false;
 const typewriterDelay = 20;
 
-function queueOutput(element, text, before, after) {
+function queueOutput(element, text, before, after, htmlContent) {
     if (!text) {
         console.log("Not enqueued - no text specified");
         return;
@@ -1022,6 +1024,7 @@ function queueOutput(element, text, before, after) {
     item.text = text;
     item.before = before;
     item.after = after;
+    item.htmlContent = htmlContent;
     outputQueue.push(item);
     // console.log("Output queued [" + outputQueue.length + "]: " + text);
 }
@@ -1038,15 +1041,17 @@ function initOutputQueue() {
             if (next.before) {
                 next.before();
             }
-            if (skipOutputQueue) {
-                // console.log("Skip typewriter [" + outputQueue.length + "]");
-                next.element.textContent = next.text;
+            if (skipOutputQueue || next.htmlContent) {
+                if (next.htmlContent) {
+                    next.element.innerHTML = next.text;
+                } else {
+                    next.element.textContent = next.text;
+                }
                 if (next.after) {
                     next.after();
                 }
                 resetOutputQueueStatus();
             } else {
-                // console.log("Typewriter [" + outputQueue.length + "]");
                 typewriter(next.element, next.text, 0, function() {
                     if (next.after) {
                         next.after();

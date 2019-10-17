@@ -607,23 +607,19 @@ function initState() {
                 gameContainer.appendChild(text3);
 
                 const text5 = document.createElement("div");
-                text5.className = "intro-text5";
                 gameContainer.appendChild(text5);
 
                 const text4 = document.createElement("div");
                 text4.className = "intro-text4";
                 gameContainer.appendChild(text4);
 
-                funcs.push(followup => typewriter(text1, "ÚV Software si u příležitosti 20. výročí osvobození Československa spojeneckými armádami dovoluje nabídnout vám logickou konverzační hru:", 0, followup));
-                funcs.push(followup => {
-                    titleToHtml(gameTitle, text2);
-                    typewriter(text3, "Program Revoluční Experimentální Socialisticky Tvořivé Avantgardní Voloviny Básníků a Analfabetů", 0, followup);
-                });
-                funcs.push(followup => {
-                    text5.innerHTML = '<span class="enter-cmd">&#9166;</span> Stiskni klávesu ENTER...';
-                    text4.innerHTML = "&copy; 1988 ÚV Software<br>Námět &copy; 1968 Život";
-                });
-                queue(0, funcs);
+                queueOutput(text1, "ÚV Software si u příležitosti 20. výročí osvobození Československa spojeneckými armádami dovoluje nabídnout vám logickou konverzační hru:");
+                titleToHtml(gameTitle, text2);
+                queueOutput(text3, "Program Revoluční Experimentální Socialisticky Tvořivé Avantgardní Voloviny Básníků a Analfabetů");
+                queueOutput(text5, '<span class="enter-cmd">&#9166;</span> Stiskni klávesu ENTER...', undefined, function() {
+                    text5.className = "intro-text5";
+                }, true);
+                queueOutput(text4, "&copy; 1988 ÚV Software<br>Námět &copy; 1968 Život", undefined, undefined, true);
             }
         ],
         outro: [function(gameContainer) {
@@ -726,17 +722,13 @@ function initState() {
             // The book should disappear after 12 time units
             const bookRet = game.findItem(bookItemName);
             const book = bookRet.item;
-            const bookLocation = bookRet.location;
             if (book && book.burning) {
                 const burningTime = game.time - book.burning;
                 if (burningTime === (bookBurningTime - 1)) {
                     game.print("Marxova kniha dohořívá!!!");
                 } else if (burningTime >= bookBurningTime) {
-                    if (bookLocation) {
-                        bookLocation.items.splice(bookLocation.items.findIndex(item => item.name === bookItemName), 1);
-                    } else {
-                        game.inventory.splice(game.inventory.findIndex(item => item.name === bookItemName), 1);
-                    }
+                    // TODO hint: "Bohužel už ti shořela kniha, a proto budeš muset začít znovu od začátku pomocí hesla RESTART."
+                    game.removeItem(book.name);
                 }
             }
 
@@ -857,10 +849,10 @@ function initState() {
             aliases: ["seber", "vzít", "vzit"],
             perform: function(game, params) {
                 game.clearOutput();
-                const item = game.takeItem(params[0]);
-                if (item) {
-                    game.print("Vzal jsi " + item.name + ".");
-                } else {
+                const ret = game.takeItem(params.join(" "), false);
+                if (ret.item) {
+                    game.print("Vzal jsi " + ret.item.name + ".");
+                } else if (!ret.full) {
                     game.print("Tohle nejde vzít.");
                 }
             },

@@ -44,6 +44,7 @@ const items = [{
                     boulder.unusable = false;
                 }
                 game.print("O.K. Odrazil jsi kámen štítem.");
+                game.onLocationItemAdded(game, boulder.name);
             }
         }
     }
@@ -165,9 +166,10 @@ const items = [{
     readInit: function(obj) {
         const dressAction = {
             name: "obleč",
-            aliases: ["oblec", "oblekni", "oblékni"],
+            aliases: ["oblec", "oblekni", "oblékni", "obleknout", "obléknout"],
             perform: function(game, params) {
-                if (params.join(" ") === "uniformu") {
+                const uniform = game.findItem("uniformu").item;
+                if (uniform && game.aliasObjectNameStartsWith(uniform, params.join(" "))) {
                     let uniform = game.getInventoryItem("uniformu");
                     if (!uniform) {
                         uniform = game.takeItem("uniformu", false);
@@ -183,7 +185,8 @@ const items = [{
             name: "svleč",
             aliases: ["svlec", "svlekni", "svlékni"],
             perform: function(game, params) {
-                if (obj.dressed && params.join(" ") === "uniformu") {
+                const uniform = game.findItem("uniformu").item;
+                if (obj.dressed && uniform && game.aliasObjectNameStartsWith(uniform, params.join(" "))) {
                     obj.dressed = false;
                     game.print("Svlékl sis uniformu.");
                 }
@@ -767,10 +770,10 @@ const actions = [{
     name: "vezmi",
     aliases: ["seber", "vzít", "vzit"],
     perform: function(game, params) {
-        const item = game.takeItem(params.join(" "), false);
-        if (item) {
-            game.print("Vzal jsi " + item.name + ".");
-        } else {
+        const ret = game.takeItem(params.join(" "), false);
+        if (ret.item) {
+            game.print("Vzal jsi " + ret.item.name + ".");
+        } else if (!ret.full) {
             game.print("Tohle nejde vzít.");
         }
     },
@@ -782,9 +785,9 @@ const actions = [{
     aliases: ["věci", "veci", "i"],
     perform: function(game) {
         if (game.inventory && game.inventory.length > 0) {
-            game.print("Máš u sebe: " + game.inventory.join(", "));
+            game.print("Máš u sebe " + game.inventory.join(", ") + " a víc už ani >p<.");
         } else {
-            game.print("Nemáš u sebe nic.");
+            game.print("Máš u sebe hovno.");
         }
     }
 }, {
@@ -860,7 +863,7 @@ function initState() {
             inputHelpPrefix: "Pokračuj: ",
             gameSaved: "Hra uložena.",
             gameLoaded: "Uložená pozice nahrána.",
-            inventoryFull: "Inventář je plný!",
+            inventoryFull: "Víc už toho neuneseš!",
         },
         intro: [function(gameContainer) {
             const title = document.createElement("div");
