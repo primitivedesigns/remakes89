@@ -445,17 +445,20 @@ const locations = [{
         location: "m5"
     }],
     readInit: function(obj) {
-        obj.onEnter = function(game) {
-            obj.actionTaken = false;
-        };
         obj.onAction = function(game, action, params) {
-            if (obj.actionTaken && game.getLocationItem("poldu")) {
-                game.print("Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku.", "end");
-                game.end("killed", false);
-                return true;
-            } else {
-                obj.actionTaken = true;
+            if (!game.getLocationItem("poldu")) {
+                // Cop is dead...
+                return false;
             }
+            if (action.name === "použij" && params && params.length > 0) {
+                const item = game.getItem(game.getUsableItems(), params[0]);
+                if (item && game.matchName(item.name, "tyč")) {
+                    return false;
+                }
+            }
+            game.print("Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku.", "end");
+            game.end("killed", false);
+            return true;
         };
     }
 }, {
