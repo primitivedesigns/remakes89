@@ -809,7 +809,7 @@ const actions = [{
     }
 }];
 
-const initControls = function(gameContainer) {
+const initControls = function(gameContainer, game) {
     // Input tips
     const inputTips = document.querySelector("#game-input-tip");
     const tip1 = document.createElement("span");
@@ -832,24 +832,6 @@ const initControls = function(gameContainer) {
     tip5.title = "Příkaz - nahraj hru";
     tip5.innerHTML = "&nbsp;LOAD&nbsp;";
     inputTips.appendChild(tip5);
-
-    document.addEventListener("keydown", function(event) {
-        if (event.key === "F1") {
-            event.preventDefault();
-            if (sideOpen) {
-                closeSide();
-            } else {
-                openSide();
-            }
-        } else if (event.key === "Enter" && isOutputQueueProcessed()) {
-            skipOutputEffects();
-            return;
-        }
-        // Play beep sound
-        if (beepOn) {
-            beep.play();
-        }
-    });
 }
 
 function initState() {
@@ -900,6 +882,27 @@ function initState() {
             }
         },
         onStart: function() {
+            const gameThis = this;
+            document.addEventListener("keydown", function(event) {
+                if (event.key === "F1") {
+                    event.preventDefault();
+                    if (sideOpen) {
+                        closeSide();
+                    } else {
+                        openSide();
+                    }
+                } else if (event.key === "Enter" && isOutputQueueProcessed()) {
+                    skipOutputEffects();
+                    return;
+                } else if (event.key === "r" && gameThis.endState) {
+                    // Restart game
+                    location.reload();
+                }
+                // Play beep sound
+                if (beepOn) {
+                    beep.play();
+                }
+            });
             const sidebarOpen = document.querySelector("#game-sidebar-open");
             if (sidebarOpen) {
                 sidebarOpen.style.display = "block";
@@ -910,6 +913,7 @@ function initState() {
             if (endState === "killed") {
                 this.print("INDIANA JONES JE MRTEV!");
                 this.print("ZPRÁVA Z AMERICKÉHO TISKU: Československá vláda oznámila, že náš drahý hrdina - INDIANA JONES - zemřel nešťastnou náhodou při autonehodě. Pokrač. na str. 54.");
+                this.print("Stiskni R pro RESTART", "intro-text5");
                 this.removeInputContainer();
             }
         },
