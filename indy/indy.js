@@ -188,7 +188,7 @@ const items = [{
                 const uniform = game.findItem("uniformu").item;
                 if (obj.dressed && uniform && game.aliasObjectNameStartsWith(uniform, params.join(" "))) {
                     obj.dressed = false;
-                    game.print("Svlékl sis uniformu.");
+                    game.print("O.K. Svlékl sis uniformu.");
                 }
             }
         };
