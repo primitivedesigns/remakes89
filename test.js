@@ -1,7 +1,7 @@
 function restart(engine) {
-    console.log("---------------------------");
-    console.log("---- Restarting engine ----");
-    console.log("---------------------------");
+    console.log("===========================");
+    console.log("==== Restarting engine ====");
+    console.log("===========================");
     engine.initGame();
     engine.start();
 }

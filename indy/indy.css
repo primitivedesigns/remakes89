@@ -63,8 +63,15 @@ div#slogan {
 	color: gray;
 }
 
-#game-output div.end {
+#game-output div.end-lose {
 	background-color: red;
+	color: white;
+	padding: 0.2em;
+	border-radius: 10px;
+}
+
+#game-output div.end-win {
+	background-color: green;
 	color: white;
 	padding: 0.2em;
 	border-radius: 10px;

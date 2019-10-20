@@ -283,7 +283,7 @@ const locations = [{
                     return false;
                 }
             }
-            game.print("Fízl se na tebe krvežíznivě vrhnul a začal tě mlátit. A mlátil a mlátil...", "end");
+            game.print("Fízl se na tebe krvežíznivě vrhnul a začal tě mlátit. A mlátil a mlátil...", "end-lose");
             game.end("killed", false);
             return true;
         }
@@ -317,7 +317,7 @@ const locations = [{
     readInit: function(obj) {
         obj.onEnter = function(game) {
             if (!game.getInventoryItem("legitimaci")) {
-                game.print("Když od tebe odbíhali na nějakou ženu s kočárkem, jednomu z nich vypadla z pouzdra mačeta. Doplazil ses pro ni a spáchals' HARAKIRI.", "end");
+                game.print("Když od tebe odbíhali na nějakou ženu s kočárkem, jednomu z nich vypadla z pouzdra mačeta. Doplazil ses pro ni a spáchals' HARAKIRI.", "end-lose");
                 game.end("killed", false);
             }
         };
@@ -346,7 +346,7 @@ const locations = [{
     desc: "O.K. Stojíš u prodejny Supraphon. Než ses však stačil rozhlédnout, pokropila tě sprška vodního děla.",
     readInit: function(obj) {
         obj.onEnter = function(game) {
-            game.print("Spadl jsi na zem a rozbil sis hlavu.", "end");
+            game.print("Spadl jsi na zem a rozbil sis hlavu.", "end-lose");
             game.end("killed");
         }
     }
@@ -387,7 +387,7 @@ const locations = [{
                     return false;
                 }
             }
-            game.print("Kámen se přibližuje víc a víc. Pořád se zvětšuje a zvětšuje a zvětšuje a zvětšu-", "end");
+            game.print("Kámen se přibližuje víc a víc. Pořád se zvětšuje a zvětšuje a zvětšuje a zvětšu-", "end-lose");
             game.end("killed", false);
             return true;
         };
@@ -400,7 +400,7 @@ const locations = [{
     readInit: function(obj) {
         obj.onEnter = function(game) {
             if (this.shouldFail) {
-                game.print("Vidíš policajta. Na tváři, která se k tobě víc a více přibližuje, je vidět, že je to maniak. Už mu neunikneš.", "end");
+                game.print("Vidíš policajta. Na tváři, která se k tobě víc a více přibližuje, je vidět, že je to maniak. Už mu neunikneš.", "end-lose");
                 game.end("killed", false);
             }
         }
@@ -456,7 +456,7 @@ const locations = [{
                     return false;
                 }
             }
-            game.print("Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku.", "end");
+            game.print("Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku.", "end-lose");
             game.end("killed", false);
             return true;
         };
@@ -474,7 +474,7 @@ const locations = [{
         };
         obj.onEnter = function(game) {
             if (this.exploded) {
-                game.print("Neudržels' však rovnováhu a padáš dolů.", "end");
+                game.print("Neudržels' však rovnováhu a padáš dolů.", "end-lose");
                 game.end("killed", false);
             } else {
                 this.countDownTime = game.time;
@@ -498,7 +498,7 @@ const locations = [{
             obj.actionTaken = false;
             if (!game.location.explored) {
                 if (game.getInventoryItem("pistoli")) {
-                    game.print("Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistoli, odprásknul tě.", "end");
+                    game.print("Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistoli, odprásknul tě.", "end-lose");
                     game.end("kill", false);
                 } else {
                     game.print("Najednou se na tebe vrhnul chlupatej, a když u tebe nic nenašel, zklamaně odešel.");
@@ -507,7 +507,7 @@ const locations = [{
         };
         obj.onAction = function(game, action, params) {
             if (obj.actionTaken && game.getLocationItem("chlupatýho")) {
-                game.print("Policajta naštvalo, že u tebe nenašel, co hledal, a vrhnul se na tebe.", "end");
+                game.print("Policajta naštvalo, že u tebe nenašel, co hledal, a vrhnul se na tebe.", "end-lose");
                 game.end("killed", false);
                 return true;
             } else {
@@ -530,7 +530,7 @@ const locations = [{
         obj.onEnter = function(game) {
             const uniform = game.getInventoryItem("uniformu");
             if (!uniform || !uniform.dressed) {
-                game.print("Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali si s tebou hrát.", "end");
+                game.print("Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali si s tebou hrát.", "end-lose");
                 game.end("killed", false);
             }
         }
@@ -558,7 +558,7 @@ const locations = [{
     desc: "O.K. Jsi před grandhotelem EVROPA. Zahlédl jsi však videokameru zamířenou přímo na tebe.",
     readInit: function(obj) {
         obj.onEnter = function(game) {
-            game.print("Uznal jsi, že veškerý odpor je marný a spáchal jsi sebevraždu.", "end");
+            game.print("Uznal jsi, že veškerý odpor je marný a spáchal jsi sebevraždu.", "end-lose");
             game.end("killed", false);
         }
     }
@@ -578,7 +578,7 @@ const locations = [{
         };
         obj.onAction = function(game, action, params) {
             if (action.name != "doleva" && action.name != "doprava" && action.name != "dolů") {
-                game.print("Řada policajtů se přiblížila až k tobě. Než jsi stačil vstát, pustili se do tebe obušky.", "end");
+                game.print("Řada policajtů se přiblížila až k tobě. Než jsi stačil vstát, pustili se do tebe obušky.", "end-lose");
                 game.end("killed", false);
                 return true;
             }
@@ -602,7 +602,7 @@ const locations = [{
         obj.onEnter = function(game) {
             const uniform = game.getInventoryItem("uniformu");
             if (uniform && uniform.dressed) {
-                game.print("Vrhnul se na tebe civilní občan pod dojmem, že jsi člen VB. Máš totiž ještě oblečenou uniformu.", "end");
+                game.print("Vrhnul se na tebe civilní občan pod dojmem, že jsi člen VB. Máš totiž ještě oblečenou uniformu.", "end-lose");
                 game.end("killed", false);
             }
         };
@@ -639,7 +639,7 @@ const locations = [{
                     return true;
                 }
             }
-            game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end");
+            game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end-lose");
             game.end("killed", false);
             return true;
         };
@@ -660,7 +660,7 @@ const locations = [{
         };
         obj.onEnter = function(game) {
             if (obj.explored && !game.getLocationItem("mrtvolu milicionáře")) {
-                game.print("Když se vypovídal, vrhnul se na tebe.", "end");
+                game.print("Když se vypovídal, vrhnul se na tebe.", "end-lose");
                 game.end("killed", false);
             }
         }
@@ -688,13 +688,13 @@ const locations = [{
     desc: "O.K. Dostal ses do metra. Všude je tu rozšířen slzný plyn.",
     readInit: function(obj) {
         obj.onEnter = function(game) {
-            game.print("Je ho tu tolik, že ses udusil.", "end");
+            game.print("Je ho tu tolik, že ses udusil.", "end-lose");
             game.end("killed", false);
         }
     }
 }, {
     id: "m20",
-    desc: "O.K. OBELSTIL JSI I TU NEJVĚTŠÍ FÍZLOVSKOU SVINI. ŠTASTNĚ JSI SE DOSTAL NA LETIŠTĚ A ODLETĚL DOMŮ. GRATULUJI K VÍTĚZSTVÍ!!!!!!!!!!",
+    desc: "",
     readInit: function(obj) {
         obj.onEnter = function(game) {
             game.end("win");
@@ -877,7 +877,7 @@ function initState() {
                 const bombTime = game.time - m9.countDownTime;
                 if (bombTime > 2) {
                     if (game.location.id === "m9") {
-                        game.print("Zahlédl jsi záblesk, po kterém následuje ohromný výbuch. Než tě zasáhla střepina, došlo ti,co znamenal ten tikot.", "end");
+                        game.print("Zahlédl jsi záblesk, po kterém následuje ohromný výbuch. Než tě zasáhla střepina, došlo ti,co znamenal ten tikot.", "end-lose");
                         game.end("killed", false);
                     } else {
                         m9.exploded = true;
@@ -920,6 +920,10 @@ function initState() {
                 this.print("ZPRÁVA Z AMERICKÉHO TISKU: Československá vláda oznámila, že náš drahý hrdina - INDIANA JONES - zemřel nešťastnou náhodou při autonehodě. Pokrač. na str. 54.");
                 this.print("Stiskni R pro RESTART", "intro-text5");
                 this.removeInputContainer();
+            } else if(endState === "win") {
+                this.print("O.K. OBELSTIL JSI I TU NEJVĚTŠÍ FÍZLOVSKOU SVINI. ŠTASTNĚ JSI SE DOSTAL NA LETIŠTĚ A ODLETĚL DOMŮ. GRATULUJI K VÍTĚZSTVÍ!!!!!!!!!!", "end-win");
+                this.removeInputContainer();
+                this.print("Stiskni R pro RESTART", "intro-text5");
             }
         },
         buildLocationMessage: function(location, game) {
