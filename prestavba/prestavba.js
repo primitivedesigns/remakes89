@@ -117,7 +117,7 @@ const items = [{
                         game.print("Zapálil jsi doutnák...");
                         dynamite.ignited = game.time;
                     } else {
-                        game.print(game.messages.unknownAction);
+                        game.print(game.messages.unknownCommand);
                     }
                 } else {
                     game.print("Zapalovač vynechal...");
@@ -274,7 +274,7 @@ const locations = [{
                         game.print("Nechce se ti makat.");
                     }
                 } else {
-                    game.print(game.messages.unknownAction);
+                    game.print(game.messages.unknownCommand);
                 }
             }
         }]
@@ -330,7 +330,7 @@ const locations = [{
                     door.locked = false;
                     game.print("Zámek klapnul!");
                 } else {
-                    game.print(game.messages.unknownAction);
+                    game.print(game.messages.unknownCommand);
                 }
             }
         }, {
@@ -352,7 +352,7 @@ const locations = [{
                         game.printLocationInfo();
                     }
                 } else {
-                    game.print(game.messages.unknownAction);
+                    game.print(game.messages.unknownCommand);
                 }
             },
             autocomplete: function(game, str) {
@@ -407,7 +407,7 @@ const locations = [{
                         game.print("Nemáš klíč!");
                     }
                 } else {
-                    game.print(game.messages.unknownAction);
+                    game.print(game.messages.unknownCommand);
                 }
             },
             autocomplete: function(game, str) {
@@ -566,7 +566,7 @@ function initState() {
             locationItems: "Vidíš",
             noLocationItems: "Nevidíš nic",
             locationExits: "Východy",
-            unknownAction: "Bohužel... ale nezoufej, to je dialektika dějin!",
+            unknownCommand: "Bohužel... ale nezoufej, to je dialektika dějin!",
             multipleActionsMatch: "Vstupu odpovídá více příkazů: ",
             inputHelpTip: "\xa0",
             inputHelpPrefix: "Pokračuj: ",
@@ -757,11 +757,11 @@ function initState() {
                 }
             }
         },
-        onMissingAction: function(game, name) {
+        onUknownCommand: function(game, name) {
             game.clearOutput();
             if (!game.examineItem(name)) {
                 // No action found and no item matches the name
-                game.print(game.messages.unknownAction);
+                game.print(game.messages.unknownCommand);
             }
             game.shiftTime(1);
             printRandomSlogan();
@@ -786,7 +786,7 @@ function initState() {
             perform: function(game, params) {
                 game.clearOutput();
                 if (!game.examineItem(params.join(" "))) {
-                    game.print(game.messages.unknownAction);
+                    game.print(game.messages.unknownCommand);
                 }
             },
             autocomplete: function(game, str) {

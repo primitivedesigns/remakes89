@@ -77,7 +77,7 @@ const items = [{
                 game.removeLocationItem(cop.name);
                 game.addLocationItem("mrtvolu fízla");
             } else {
-                game.print(game.messages.unknownAction);
+                game.print(game.messages.unknownCommand);
             }
         }
     }
@@ -707,7 +707,7 @@ const actions = [{
     aliases: ["prozkoumat"],
     perform: function(game, params) {
         if (!game.examineItem(params.join(" "))) {
-            game.print(game.messages.unknownAction);
+            game.print(game.messages.unknownCommand);
         }
     },
     autocomplete: function(game, str) {
@@ -718,7 +718,7 @@ const actions = [{
     aliases: ["pouzij"],
     perform: function(game, params) {
         if (!game.useItem(params.join(" "))) {
-            game.print(game.messages.unknownAction);
+            game.print(game.messages.unknownCommand);
         }
     },
     autocomplete: function(game, str) {
@@ -807,6 +807,11 @@ const actions = [{
             game.print(game.location.hint);
         }
     }
+}, {
+    name: "unknownCommand",
+    perform: function(game) {
+        game.print(game.messages.unknownCommand);
+    }
 }];
 
 const initControls = function(gameContainer, game) {
@@ -842,7 +847,7 @@ function initState() {
             locationItems: "Vidíš",
             noLocationItems: "",
             locationExits: "Můžeš jít",
-            unknownAction: "To bohužel nejde!!!",
+            unknownCommand: "To bohužel nejde!!!",
             multipleActionsMatch: "Vstupu odpovídá více příkazů: ",
             inputHelpTip: "\xa0",
             inputHelpPrefix: "Pokračuj: ",

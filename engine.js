@@ -119,10 +119,14 @@ function createEngine(headless) {
         engine.actions.filter(action => engine.game.aliasObjectMatchesName(action, actionName)).forEach(action => actions.push(action));
 
         if (actions.length === 0) {
-            if (game.onMissingAction) {
-                game.onMissingAction(game, parts[0]);
-            } else if (game.messages && game.messages.unknownAction) {
-                game.print(game.messages.unknownAction);
+            // Uknown command
+            const unknownCommandAction = game.getAction("unknownCommand");
+            if (unknownCommandAction) {
+                action = unknownCommandAction;
+            } else if (game.onUknownCommand) {
+                game.onUknownCommand(game, parts[0]);
+            } else if (game.messages && game.messages.unknownCommand) {
+                game.print(game.messages.unknownCommand);
             }
         } else if (actions.length === 1) {
             if (game.printCommand) {
