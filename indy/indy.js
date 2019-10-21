@@ -298,6 +298,7 @@ const locations = [{
         name: "dovnitř",
         location: "m19"
     }],
+    hint: "Bude třeba se nějak prosekat dál."
 }, {
     id: "m2",
     desc: "O.K. Jsi pod sochou svatého Václava. Vidíš zatarasený vchod do metra. Nahoře je muzeum, ale přístup k němu je zatarasený.",
@@ -311,7 +312,8 @@ const locations = [{
     }, {
         name: "dolů",
         location: "m5"
-    }]
+    }],
+    hint: "Pořádně se rozhlédni kolem sebe."
 }, {
     id: "m3",
     readInit: function(obj) {
@@ -340,7 +342,8 @@ const locations = [{
     }, {
         name: "dolů",
         location: "m6"
-    }]
+    }],
+    hint: "Nic už ti nebrání vydat se na cestu."
 }, {
     id: "m4",
     desc: "O.K. Stojíš u prodejny Supraphon. Než ses však stačil rozhlédnout, pokropila tě sprška vodního děla.",
@@ -353,6 +356,7 @@ const locations = [{
 }, {
     id: "m5",
     desc: "O.K. Ulevuješ si mezi kytičky ve velkém květináči.",
+    hint: "Jeden z policajtů jistě bude mít něco, čím jde kámen odrazit.",
     items: ["kámen", "slovník"],
     exits: [{
         name: "doleva",
