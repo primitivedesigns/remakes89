@@ -804,11 +804,12 @@ const actions = [{
     aliases: ["help"],
     perform: function(game) {
         if (game.location && game.location.hint) {
-            game.print(game.location.hint);
+            game.print(game.location.hint, "hint");
         }
     }
 }, {
     name: "unknownCommand",
+    system: true,
     perform: function(game) {
         game.print(game.messages.unknownCommand);
     }
@@ -920,7 +921,7 @@ function initState() {
                 this.print("ZPRÁVA Z AMERICKÉHO TISKU: Československá vláda oznámila, že náš drahý hrdina - INDIANA JONES - zemřel nešťastnou náhodou při autonehodě. Pokrač. na str. 54.");
                 this.print("Stiskni R pro RESTART", "intro-text5");
                 this.removeInputContainer();
-            } else if(endState === "win") {
+            } else if (endState === "win") {
                 this.print("O.K. OBELSTIL JSI I TU NEJVĚTŠÍ FÍZLOVSKOU SVINI. ŠTASTNĚ JSI SE DOSTAL NA LETIŠTĚ A ODLETĚL DOMŮ. GRATULUJI K VÍTĚZSTVÍ!!!!!!!!!!", "end-win");
                 this.removeInputContainer();
                 this.print("Stiskni R pro RESTART", "intro-text5");

@@ -349,7 +349,7 @@ function createGame(initialState, savedPosition, headless) {
     game.onEnd = initialState.onEnd;
     game.onLocationInfo = initialState.onLocationInfo;
     game.onShiftTime = initialState.onShiftTime;
-    game.onMissingAction = initialState.onMissingAction;
+    game.onUknownCommand = initialState.onUknownCommand;
     game.onActionPerformed = initialState.onActionPerformed;
     game.buildLocationMessage = initialState.buildLocationMessage;
     game.onLocationItemAdded = initialState.onLocationItemAdded;
@@ -442,10 +442,14 @@ function createGame(initialState, savedPosition, headless) {
 
     // Get all available actions: global + location + inventory and location
     // items actions
-    game.getActions = function() {
+    game.getActions = function(includeSystem) {
         const actions = [];
         // First global actions
-        game.actions.forEach(action => actions.push(action));
+        game.actions.forEach(action => {
+            if (includeSystem || !action.system) {
+                actions.push(action)
+            }
+        });
         // Location actions
         const location = game.location;
         if (location.actions) {
@@ -461,8 +465,8 @@ function createGame(initialState, savedPosition, headless) {
     };
 
     // Returns an action whose name or alias matches the specified name
-    game.getAction = function(name) {
-        let action = this.getActions().find(action => this.aliasObjectMatchesName(action, name));
+    game.getAction = function(name, includeSystem) {
+        let action = this.getActions(includeSystem).find(action => this.aliasObjectMatchesName(action, name));
         if (!action) {
             console.log("No action found for: " + name);
         }
@@ -763,8 +767,10 @@ function createGame(initialState, savedPosition, headless) {
         const exit = location.exits.find(exit => exit.name === exitName);
         if (!exit) {
             console.log("No exit found: " + exitName);
+            return false;
         } else {
             this.enterLocation(this.getLocation(exit.location));
+            return true;
         }
     };
 
@@ -990,6 +996,12 @@ function intro(index, introFuns, startFun) {
     document.onkeydown = function(e) {
         if (e.key === "Enter") {
             document.onkeydown = null;
+            
+            // Skip output queue
+            skipOutputEffects();
+            outputQueue.splice(0, outputQueue.length);
+            resetOutputQueueStatus();
+
             if (introFuns.length > (index + 1)) {
                 intro(index + 1, introFuns, startFun);
             } else {
@@ -1005,6 +1017,12 @@ function outro(index, outroFuns) {
     document.onkeydown = function(e) {
         if (e.key === "Enter") {
             document.onkeydown = null;
+
+            // Skip output queue
+            skipOutputEffects();
+            outputQueue.splice(0, outputQueue.length);
+            resetOutputQueueStatus();
+
             if (outroFuns.length > (index + 1)) {
                 intro(index + 1, outroFuns);
             }
@@ -1081,7 +1099,7 @@ function isOutputQueueProcessed() {
 }
 
 function skipOutputEffects() {
-    // console.log("Skip output queue");
+    console.log("Skip output queue");
     skipOutputQueue = true;
 }
 

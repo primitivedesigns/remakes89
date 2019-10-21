@@ -247,3 +247,7 @@ div#game-sidebar ul {
 	white-space: nowrap;
 	animation: typing 2s steps(40, end), blink-caret .75s step-end infinite;
 }
+
+div.hint {
+	color: #d6d3ff;
+}

@@ -727,7 +727,7 @@ function initState() {
                 if (burningTime === (bookBurningTime - 1)) {
                     game.print("Marxova kniha dohořívá!!!");
                 } else if (burningTime >= bookBurningTime) {
-                    // TODO hint: "Bohužel už ti shořela kniha, a proto budeš muset začít znovu od začátku pomocí hesla RESTART."
+                    game.print("Bohužel už ti shořela kniha, a proto budeš muset začít znovu od začátku pomocí hesla RESTART.", "hint");
                     game.removeItem(book.name);
                 }
             }
@@ -796,37 +796,49 @@ function initState() {
             name: "S",
             aliases: ["sever"],
             perform: function(game, params) {
-                game.goToLocation("S");
+                if (!game.goToLocation("S")) {
+                    game.print(game.messages.unknownCommand);
+                }
             }
         }, {
             name: "V",
             aliases: ["vychod", "východ"],
             perform: function(game, params) {
-                game.goToLocation("V");
+                if (!game.goToLocation("V")) {
+                    game.print(game.messages.unknownCommand);
+                }
             }
         }, {
             name: "J",
             aliases: ["jih"],
             perform: function(game, params) {
-                game.goToLocation("J");
+                if (!game.goToLocation("J")) {
+                    game.print(game.messages.unknownCommand);
+                }
             }
         }, {
             name: "Z",
             aliases: ["zapad", "západ"],
             perform: function(game, params) {
-                game.goToLocation("Z");
+                if (!game.goToLocation("Z")) {
+                    game.print(game.messages.unknownCommand);
+                }
             }
         }, {
             name: "N",
             aliases: ["nahoru"],
             perform: function(game, params) {
-                game.goToLocation("N");
+                if (!game.goToLocation("N")) {
+                    game.print(game.messages.unknownCommand);
+                }
             }
         }, {
             name: "D",
             aliases: ["dolu"],
             perform: function(game, params) {
-                game.goToLocation("D");
+                if (!game.goToLocation("D")) {
+                    game.print(game.messages.unknownCommand);
+                }
             }
         }, {
             name: "polož",
@@ -883,7 +895,7 @@ function initState() {
             perform: function(game) {
                 game.clearOutput();
                 if (game.location && game.location.hint) {
-                    game.print(game.location.hint);
+                    game.print(game.location.hint, "hint");
                 }
             }
         }]
