@@ -25,38 +25,47 @@
             jednoduché příkazy skládající se ze slovesa a předmětu, jako
             například:</p>
         <div class="command">PROZKOUMEJ POKLOP</div>
-        <div class="command">VEZMI KLÍČ</div>
+        <div class="command">SEBER KLÍČ</div>
         <p>Naše verze textovek dovolují psát příkazy s diakritikou i
             bez, a dokonce i zkracovat příkazy na tři první písmena.
             Výše uvedené příkazy tedy můžete napsat i jako:</p>
         <div class="command">PRO POK</div>
-        <div class="command">VEZ KLI</div>
+        <div class="command">SEB KLI</div>
         <p>Mezi místnostmi se pohybujete pomocí slov nebo písmen
             označujících směr, kterým se chcete vydat, jako například:</p>
-        <div class="command">SEVER (nebo S)</div>
-        <div class="command">DOLŮ (nebo D)</div>
+        <div class="command">DOLEVA (nebo L)</div>
+        <div class="command">DOPRAVA (nebo P)</div>
         <p>Seznam všech dovolených sloves můžete vypsat příkazem
             "SLOVNÍK". Pokud si nevíte rady, příkaz "POMOC" zobrazí
             nápovědu k dané místnosti. V originálních verzích her však
             tato nápověda nebyla, přidali jsme ji až do naší konverze.</p>
         <p>Pozici ve hře lze uložit a nahrát pomocí příkazů "SAVE" a "LOAD",
             případně také "ULOŽ" a "NAHRAJ". Za příkaz je třeba napsat název pozice, například:</p>
-            <div class="command">SAVE ZACHOD</div>
-            <div class="command">LOAD ZACHOD</div>
+            <div class="command">SAVE METRO</div>
+            <div class="command">LOAD METRO</div>
         <p>Pokud nepoužijete název, uloží se pozice s názvem "SAVE". Pozice se ukládají
             na pevný disk vašeho počítače do lokálního úložiště webového prohlížeče.
             Zůstanou vám tedy i poté, co hru vypnete, avšak smažou se ve chvíli, kdy budete
             mazat soubory prohlížeče.</p>
 
-        <h2>O hře Dobrodružství Indiana Jonese na Václavském náměstí v Praze dne 16. 1. 1989</h2>
+        <h2>O hře Indiana Jones na Václavském náměstí</h2>
 
-        <p>.</p>
+        <p>Díky neoficiálním textovkám Františka Fuky a dalších autorů se Indiana Jones stal
+            jedním z nejpopulárnějších hrdinů československých her. 
+            V tomto anonymně vydaném titulu z roku 1989 se americký archeolog překvapivě ocitá na Václavském náměstí v Praze
+            během Palachova týdne – série protirežimních demonstrací, jež byly brutálně potlačeny příslušníky 
+            Veřejné bezpečnosti a Lidových milicí. Indiana Jones se musí probít skrz náměstí a odjet na letiště,
+            což není vůbec snadné, protože na každém kroku čekají krvežízniví policisté a milicionáři.
+            Tato mimořádně násilná hra umožňuje hráči prožít trauma Palachova týdne z pohledu akčního hrdiny,
+            který se na rozdíl od skutečných demonstrantů mohl bránit. Autora či autorku skrývající se pod 
+            pseudonymem "Zuzan Znovuzrozený" neznáme, ale mimořádně vyhrocený tón i geograficky věrné zpracování 
+            napovídají, že se možná demonstrace zúčastnil/a.</p>
 
         <h2>Jak jsme hru rekonstruovali</h2>
-        <p>Pomocí reverse engineeringu jsme analyzovali  lokace a hádanky ve hře 
-            a extrahovali jsme veškeré texty z dochovaného binárního kódu hry.
-            Poté jsme hru od základů přepsali pro webové technologie (JavaScript, HTML a CSS). Veškeré texty jsou
-            původní, pouze s přidanou diakritikou a případnou opravou
+        <p>Pomocí reverse engineeringu v emulátoru ZX Spectra jsme analyzovali lokace a hádanky a 
+            z dochovaného binárního kódu hry jsme extrahovali veškeré texty.
+            Poté jsme hru přepsali pro webové technologie (JavaScript, HTML a CSS) za použití vlastního na míru naprogramovaného
+            enginu. Texty jsou původní, pouze s přidanou diakritikou a případnou opravou
             překlepů. Hádanky a jednotlivé herní mechaniky jsme se
             snažili co nejvěrněji reprodukovat. Oproti původní verzi
             jsou však v naší konverzi i následující změny:</p>
@@ -64,8 +73,8 @@
             <li>Úvodní obrázek byl nakreslen pro potřeby remaku v rozlišení a
                 paletě odpovídajícím grafickým možnostem původní platformy (ZX Spectrum).
                 Původní verze žádný obrázek neměla.</li>
-            <li>Konverze umožňuje použití některých synonym (SEBER
-                místo VEZMI apod.)</li>
+            <li>Konverze umožňuje použití některých synonym (VEZMI
+                místo SEBER apod.)</li>
             <li>Konverze obsahuje nápovědy (přes příkaz POMOC), které nebyly v
                 původní hře přítomny.</li>
             <li>Konverze umožňuje uložit a nahrát pozici ve hře (SAVE
