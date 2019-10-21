@@ -149,16 +149,6 @@ img.intro-img {
 	width: 100%;
 }
 
-div.intro-text5 {
-	float: right;
-	font-size: 1em;
-	background-color: white;
-	color: black;
-	text-align: right;
-	padding: 0.2em;
-	border-radius: 5px;
-}
-
 div#game-sidebar {
 	font-family: 'Times New Roman', serif;
 	height: 100%;
@@ -232,4 +222,15 @@ div#game-sidebar ul {
 
 div.hint {
 	color: #d6d3ff;
+}
+
+div.intro-enter {
+	float: right;
+	font-size: 1em;
+	background-color: white;
+	color: black;
+	text-align: right;
+	padding: 0.2em;
+	border-radius: 0px 0px 5px 5px;
+	clear: both;
 }

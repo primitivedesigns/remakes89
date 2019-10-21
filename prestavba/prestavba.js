@@ -574,6 +574,7 @@ function initState() {
             gameLoaded: "Uložená pozice nahrána.",
         },
         intro: [function(gameContainer) {
+                // Image
                 const title = document.createElement("div");
                 gameContainer.appendChild(title);
                 title.className = "intro-title";
@@ -583,10 +584,12 @@ function initState() {
                 img.className = "intro-img";
                 title.appendChild(img);
 
-                const text5 = document.createElement("div");
-                title.appendChild(text5);
-                text5.className = "intro-text4";
-                typewriter(text5, "Stiskni klávesu ENTER...");
+                const textEnter = document.createElement("div");
+                title.appendChild(textEnter);
+
+                queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
+                    textEnter.className = "intro-enter";
+                });
             },
             function(gameContainer) {
 
@@ -605,8 +608,8 @@ function initState() {
                 text3.className = "intro-text3";
                 gameContainer.appendChild(text3);
 
-                const text5 = document.createElement("div");
-                gameContainer.appendChild(text5);
+                const textEnter = document.createElement("div");
+                gameContainer.appendChild(textEnter);
 
                 const text4 = document.createElement("div");
                 text4.className = "intro-text4";
@@ -615,9 +618,9 @@ function initState() {
                 queueOutput(text1, "ÚV Software si u příležitosti 20. výročí osvobození Československa spojeneckými armádami dovoluje nabídnout vám logickou konverzační hru:");
                 titleToHtml(gameTitle, text2);
                 queueOutput(text3, "Program Revoluční Experimentální Socialisticky Tvořivé Avantgardní Voloviny Básníků a Analfabetů");
-                queueOutput(text5, '<span class="enter-cmd">&#9166;</span> Stiskni klávesu ENTER...', undefined, function() {
-                    text5.className = "intro-text5";
-                }, true);
+                queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
+                    textEnter.className = "intro-enter";
+                });
                 queueOutput(text4, "&copy; 1988 ÚV Software<br>Námět &copy; 1968 Život", undefined, undefined, true);
             }
         ],

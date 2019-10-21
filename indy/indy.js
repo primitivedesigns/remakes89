@@ -870,7 +870,7 @@ function initState() {
             const textEnter = document.createElement("div");
             title.appendChild(textEnter);
 
-            queueOutput(textEnter, "Stiskni klávesu ENTER...", function() {
+            queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
                 textEnter.className = "intro-enter";
             });
 
@@ -906,7 +906,7 @@ function initState() {
 
             queueOutput(text2, "&copy; 1989", undefined, undefined, true);
 
-            queueOutput(textEnter, "Stiskni klávesu ENTER...", function() {
+            queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
                 textEnter.className = "intro-enter";
             });
             
@@ -963,7 +963,7 @@ function initState() {
             queueOutput(textPhone, "Telefon: 16 1 1989");
             queueOutput(textMilos, "BIJTE MILOŠE !!!");
 
-            queueOutput(textEnter, "Stiskni klávesu ENTER...", function() {
+            queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
                 textEnter.className = "intro-enter";
             });
         }],
@@ -1015,12 +1015,12 @@ function initState() {
             if (endState === "killed") {
                 this.print("INDIANA JONES JE MRTEV!");
                 this.print("ZPRÁVA Z AMERICKÉHO TISKU: Československá vláda oznámila, že náš drahý hrdina - INDIANA JONES - zemřel nešťastnou náhodou při autonehodě. Pokrač. na str. 54.");
-                this.print("Stiskni R pro RESTART", "intro-text5");
+                this.print("Stiskni R pro RESTART", "intro-enter");
                 this.removeInputContainer();
             } else if (endState === "win") {
                 this.print("O.K. OBELSTIL JSI I TU NEJVĚTŠÍ FÍZLOVSKOU SVINI. ŠTASTNĚ JSI SE DOSTAL NA LETIŠTĚ A ODLETĚL DOMŮ. GRATULUJI K VÍTĚZSTVÍ!!!!!!!!!!", "end-win");
                 this.removeInputContainer();
-                this.print("Stiskni R pro RESTART", "intro-text5");
+                this.print("Stiskni R pro RESTART", "intro-enter");
             }
         },
         buildLocationMessage: function(location, game) {
