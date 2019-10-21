@@ -112,44 +112,24 @@ div#slogan {
 	color: white;
 	bottom: 0;
 	border-radius: 15px;
+	outline: none;
 }
 
-div.intro-text2 span:nth-child(odd) {
-	background-color: white;
-	color: black;
-	padding: 0 0.2em 0 0.2em;
+div.intro-text1_a {
+	margin-top: 2em;
 }
 
-div.intro-text2 span:nth-child(even) {
-	background-color: black;
+div.intro-text1, div.intro-text1_a {
+	font-size: 2em;
+	text-align: center;
 	color: white;
 }
 
 div.intro-text2 {
+	float: right;
 	font-size: 2em;
+	clear: both;
 	margin-bottom: 1em;
-}
-
-div.intro-text1, div.intro-text3, div.intro-text4 {
-	margin-bottom: 1em;
-	font-size: 1.5em;
-}
-
-div.intro-text2, div.intro-text3 {
-	text-align: center;
-}
-
-div.intro-text3 {
-	text-transform: none;
-}
-
-div.intro-text1, div.intro-text4 {
-	color: silver;
-	text-align: left;
-}
-
-div.intro-text4 {
-	font-size: 1em;
 }
 
 div.intro-title {
@@ -167,14 +147,15 @@ img.intro-img {
 	width: 100%;
 }
 
-div.intro-text5 {
+div.intro-enter {
 	float: right;
 	font-size: 1em;
 	background-color: white;
 	color: black;
 	text-align: right;
 	padding: 0.2em;
-	border-radius: 5px;
+	border-radius: 0px 0px 5px 5px;
+	clear: both;
 }
 
 div#game-sidebar {
@@ -250,4 +231,33 @@ div#game-sidebar ul {
 
 div.hint {
 	color: #d6d3ff;
+}
+
+div.intro-story1, div.intro-story2, div.intro-add, div.intro-phone {
+	text-indent: 1em;
+}
+
+div.intro-story1 {
+	margin: 2em 3em 0em 3em;
+}
+
+div.intro-story2 {
+	margin: 0em 3em 1em 3em;
+}
+
+div.intro-add, div.intro-add-next, div.intro-phone {
+	margin: 0em 3em 0em 3em;
+}
+
+div.intro-add-next {
+	text-indent: 3.9em;
+}
+
+div.intro-phone {
+	margin-top: 1em;
+}
+
+div.intro-milos {
+	margin-top: 2em;
+	text-align: center;
 }

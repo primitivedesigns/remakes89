@@ -120,7 +120,7 @@ function createEngine(headless) {
 
         if (actions.length === 0) {
             // Uknown command
-            const unknownCommandAction = game.getAction("unknownCommand");
+            const unknownCommandAction = game.getAction("unknownCommand", true);
             if (unknownCommandAction) {
                 action = unknownCommandAction;
             } else if (game.onUknownCommand) {

@@ -593,7 +593,6 @@ function initState() {
                 while (gameContainer.firstChild) {
                     gameContainer.removeChild(gameContainer.firstChild);
                 }
-                const funcs = [];
                 const text1 = document.createElement("div");
                 text1.className = "intro-text1";
                 gameContainer.appendChild(text1);

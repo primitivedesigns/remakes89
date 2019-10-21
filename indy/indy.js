@@ -857,6 +857,7 @@ function initState() {
             inventoryFull: "Víc už toho neuneseš!",
         },
         intro: [function(gameContainer) {
+            // Image
             const title = document.createElement("div");
             gameContainer.appendChild(title);
             title.className = "intro-title";
@@ -866,10 +867,105 @@ function initState() {
             img.className = "intro-img";
             title.appendChild(img);
 
-            const text5 = document.createElement("div");
-            title.appendChild(text5);
-            text5.className = "intro-text4";
-            typewriter(text5, "Stiskni klávesu ENTER...");
+            const textEnter = document.createElement("div");
+            title.appendChild(textEnter);
+
+            queueOutput(textEnter, "Stiskni klávesu ENTER...", function() {
+                textEnter.className = "intro-enter";
+            });
+
+        }, function(gameContainer) {
+            // Title
+            while (gameContainer.firstChild) {
+                gameContainer.removeChild(gameContainer.firstChild);
+            }
+            const text1_a = document.createElement("div");
+            text1_a.className = "intro-text1_a";
+            gameContainer.appendChild(text1_a);
+            const text1_b = document.createElement("div");
+            text1_b.className = "intro-text1";
+            gameContainer.appendChild(text1_b);
+            const text1_c = document.createElement("div");
+            text1_c.className = "intro-text1";
+            gameContainer.appendChild(text1_c);
+            const text1_d = document.createElement("div");
+            text1_d.className = "intro-text1";
+            gameContainer.appendChild(text1_d);
+
+            const text2 = document.createElement("div");
+            text2.className = "intro-text2";
+            gameContainer.appendChild(text2);
+
+            const textEnter = document.createElement("div");
+            gameContainer.appendChild(textEnter);
+
+            queueOutput(text1_a, "DOBRODRUŽSTVÍ INDIANA JONESE");
+            queueOutput(text1_b, "NA VÁCLAVSKÉM NÁMĚSTÍ");
+            queueOutput(text1_c, "V PRAZE");
+            queueOutput(text1_d, "DNE 16.1. 1989");
+
+            queueOutput(text2, "&copy; 1989", undefined, undefined, true);
+
+            queueOutput(textEnter, "Stiskni klávesu ENTER...", function() {
+                textEnter.className = "intro-enter";
+            });
+            
+        }, function(gameContainer) {
+            // Story
+            while (gameContainer.firstChild) {
+                gameContainer.removeChild(gameContainer.firstChild);
+            }
+
+            const text1 = document.createElement("div");
+            text1.className = "intro-story1";
+            gameContainer.appendChild(text1);
+            const text2 = document.createElement("div");
+            text2.className = "intro-story2";
+            gameContainer.appendChild(text2);
+
+            const textAdd = document.createElement("div");
+            textAdd.className = "intro-add";
+            gameContainer.appendChild(textAdd);
+
+            const textAdd1 = document.createElement("div");
+            textAdd1.className = "intro-add-next";
+            gameContainer.appendChild(textAdd1);
+            const textAdd2 = document.createElement("div");
+            textAdd2.className = "intro-add-next";
+            gameContainer.appendChild(textAdd2);
+            const textAdd3 = document.createElement("div");
+            textAdd3.className = "intro-add-next";
+            gameContainer.appendChild(textAdd3);
+            const textAdd4 = document.createElement("div");
+            textAdd4.className = "intro-add-next";
+            gameContainer.appendChild(textAdd4);
+
+            const textPhone = document.createElement("div");
+            textPhone.className = "intro-phone";
+            gameContainer.appendChild(textPhone);
+
+            const textMilos = document.createElement("div");
+            textMilos.className = "intro-milos";
+            gameContainer.appendChild(textMilos);
+
+            const textEnter = document.createElement("div");
+            gameContainer.appendChild(textEnter);
+
+            queueOutput(text1, "Jste Indiana Jones a vaším úkolem je dostat se do vaší rodné země, do Ameriky. Jste totiž na Václavském náměstí pod sochou svatého Václava. Je 16. 1. 1989.");
+            queueOutput(text2, "Tato hra je určena pro pokročilejší hráče textových her.");
+
+            queueOutput(textAdd, "S úctou");
+            queueOutput(textAdd1, "Zuzan Znovuzrozený");
+            queueOutput(textAdd2, "Ztracená bez čísla");
+            queueOutput(textAdd3, "Zapadákov City");
+            queueOutput(textAdd4, "TRAMTÁRIE");
+
+            queueOutput(textPhone, "Telefon: 16 1 1989");
+            queueOutput(textMilos, "BIJTE MILOŠE !!!");
+
+            queueOutput(textEnter, "Stiskni klávesu ENTER...", function() {
+                textEnter.className = "intro-enter";
+            });
         }],
         onInitControls: initControls,
         onShiftTime: function(game) {
