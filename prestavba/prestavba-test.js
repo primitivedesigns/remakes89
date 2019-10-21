@@ -17,6 +17,7 @@ function testFullPath(engine) {
     // zapal knihu
     let burning = false, limit = 20, attempt = 0;
     while(!burning) {
+        console.log("Pokus " + attempt + ": ");
         engine.processCommand("zapal knihu");
         if (engine.game.getInventoryItem("knihu").burning || attempt > limit) {
             burning = true;
@@ -31,6 +32,7 @@ function testFullPath(engine) {
     limit = 20; 
     attempt = 0;
     while(!burning) {
+        console.log("Pokus " + attempt + ": ");
         engine.processCommand("zapal dynamit");
         if (engine.game.getInventoryItem("dynamit").ignited || attempt > limit) {
             burning = true;

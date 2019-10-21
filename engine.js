@@ -147,14 +147,18 @@ function createEngine(headless) {
         if (action) {
             // First invoke location callback
             let skipAction = false;
-            if (game.location.onAction) {
-                skipAction = game.location.onAction(game, action, params);
+            if (game.location.beforeAction) {
+                skipAction = game.location.beforeAction(game, action, params);
             }
             if (!skipAction) {
                 action.perform(game, params);
+                // Location callback
+                if (game.location.afterAction) {
+                    game.location.afterAction(game, action, params);
+                }
                 // Global callback
-                if (game.onActionPerformed) {
-                    game.onActionPerformed(game, action, params);
+                if (game.afterAction) {
+                    game.afterAction(game, action, params);
                 }
             }
         }
@@ -313,9 +317,14 @@ function createEngine(headless) {
 
     engine.load = function(params) {
         const positionName = getPositionName(params);
-        this.initGame(JSON.parse(localStorage.getItem(positionName)));
-        this.start();
-        console.log("Game loaded: " + positionName);
+        const position = localStorage.getItem(positionName);
+        if (position) {
+            this.initGame(JSON.parse(position));
+            this.start();
+            console.log("Game loaded: " + positionName);
+        } else {
+            console.log("Game position does not exist: " + positionName);
+        }
         return positionName;
     }
 
@@ -350,7 +359,7 @@ function createGame(initialState, savedPosition, headless) {
     game.onLocationInfo = initialState.onLocationInfo;
     game.onShiftTime = initialState.onShiftTime;
     game.onUknownCommand = initialState.onUknownCommand;
-    game.onActionPerformed = initialState.onActionPerformed;
+    game.afterAction = initialState.afterAction;
     game.buildLocationMessage = initialState.buildLocationMessage;
     game.onLocationItemAdded = initialState.onLocationItemAdded;
 

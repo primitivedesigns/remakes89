@@ -108,12 +108,12 @@ const items = [{
                 if (getRandomInt(3) === 0) {
                     const book = game.getInventoryItem(bookItemName);
                     const dynamite = game.getItem(game.getItems(), dynamiteItemName);
-                    if (book && game.aliasObjectMatchesName(book, params[0])) {
+                    if (book && game.aliasObjectMatchesName(book, params.join(" "))) {
                         game.print("Zapálil jsi Kapitál. Kéž osvítí tvoji cestu!");
                         book.burning = game.time;
                         // Show info in a dark location
                         game.printLocationInfo();
-                    } else if (dynamite && game.aliasObjectMatchesName(dynamite, params[0])) {
+                    } else if (dynamite && game.aliasObjectMatchesName(dynamite, params.join(" "))) {
                         game.print("Zapálil jsi doutnák...");
                         dynamite.ignited = game.time;
                     } else {
@@ -768,7 +768,7 @@ function initState() {
             game.shiftTime(1);
             printRandomSlogan();
         },
-        onActionPerformed: function(game, action) {
+        afterAction: function(game, action) {
             if (!action.builtin) {
                 game.shiftTime(1);
                 printRandomSlogan();
