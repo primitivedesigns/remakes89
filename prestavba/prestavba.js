@@ -454,9 +454,6 @@ const locations = [{
     id: "m13",
     desc: "Bloudíš městem.",
     exits: [{
-        name: "S",
-        location: "m9"
-    }, {
         name: "V",
         location: "m14"
     }, {
