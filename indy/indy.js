@@ -273,19 +273,25 @@ const locations = [{
     desc: "O.K. Stojíš před domem potravin. Vchod do metra je naštěstí volný. Z balkónu v domě se pobaveně dívá nepříjemný člověk (zřejmě komunista) na poctivě odváděnou práci členů VB.",
     items: ["fízla"],
     readInit: function(obj) {
-        obj.afterAction = function(game, action, params) {
-            if (!game.getLocationItem("fízla") || isMovement(action)) {
-                return;
-            }
-            if (action.name === "použij" && params && params.length > 0) {
-                const item = game.getItem(game.getUsableItems(), params[0]);
-                if (item && game.matchName(item.name, "sekeru")) {
-                    return;
-                }
-            }
+        obj.killHero = function(game) {
             game.print("Fízl se na tebe krvežíznivě vrhnul a začal tě mlátit. A mlátil a mlátil...", "end-lose");
             game.end("killed", false);
-        }
+        };
+        obj.beforeAction = function(game, action, params) {
+            if (game.getLocationItem("fízla") && isMovement(action)) {
+                // Trying to escape...
+                obj.killHero(game);
+                return true;
+            }
+            return false;
+        };
+        obj.afterAction = function(game, action, params) {
+            if (!game.getLocationItem("fízla") || isMovement(action) || game.actionMatches(action, params, "použij", "sekeru")) {
+                // Cop is dead, after-enter action or action matches
+                return;
+            }
+            obj.killHero(game);
+        };
     },
     exits: [{
         name: "dolů",
@@ -349,7 +355,7 @@ const locations = [{
     readInit: function(obj) {
         obj.onEnter = function(game) {
             game.print("Spadl jsi na zem a rozbil sis hlavu.", "end-lose");
-            game.end("killed");
+            game.end("killed", false);
         }
     }
 }, {
@@ -380,18 +386,24 @@ const locations = [{
             }
             return itemName;
         };
-        obj.afterAction = function(game, action, params) {
-            if (obj.shieldUsed || isMovement(action)) {
-                return;
-            }
-            if (action.name === "použij" && params && params.length > 0) {
-                const item = game.getItem(game.getUsableItems(), params[0]);
-                if (item && game.matchName(item.name, "štít")) {
-                    return;
-                }
-            }
+        obj.killHero = function(game) {
             game.print("Kámen se přibližuje víc a víc. Pořád se zvětšuje a zvětšuje a zvětšuje a zvětšu-", "end-lose");
             game.end("killed", false);
+        };
+        obj.beforeAction = function(game, action, params) {
+            if (!obj.shieldUsed && isMovement(action)) {
+                // Trying to escape...
+                obj.killHero(game);
+                return true;
+            }
+            return false;
+        };
+        obj.afterAction = function(game, action, params) {
+            if (obj.shieldUsed || isMovement(action) || game.actionMatches(action, params, "použij", "štít")) {
+                // Shield was used, after-enter action or action matches
+                return;
+            }
+            obj.killHero(game);
         };
     }
 }, {
@@ -447,18 +459,24 @@ const locations = [{
         location: "m5"
     }],
     readInit: function(obj) {
-        obj.afterAction = function(game, action, params) {
-            if (!game.getLocationItem("poldu") || isMovement(action)) {
-                return;
-            }
-            if (action.name === "použij" && params && params.length > 0) {
-                const item = game.getItem(game.getUsableItems(), params[0]);
-                if (item && game.matchName(item.name, "tyč")) {
-                    return;
-                }
-            }
+        obj.killHero = function(game) {
             game.print("Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku.", "end-lose");
             game.end("killed", false);
+        };
+        obj.beforeAction = function(game, action, params) {
+            if (game.getLocationItem("poldu") && isMovement(action)) {
+                // Trying to escape...
+                obj.killHero(game);
+                return true;
+            }
+            return false;
+        };
+        obj.afterAction = function(game, action, params) {
+            if (!game.getLocationItem("poldu") || isMovement(action) || game.actionMatches(action, params, "použij", "tyč")) {
+                // Cop is dead, after-enter action or action matches
+                return;
+            }
+            obj.killHero(game);
         };
     }
 }, {
@@ -495,7 +513,7 @@ const locations = [{
     items: ["chlupatýho"],
     readInit: function(obj) {
         obj.onEnter = function(game) {
-            if (!game.location.explored) {
+            if (!obj.explored) {
                 if (game.getInventoryItem("pistoli")) {
                     game.print("Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistoli, odprásknul tě.", "end-lose");
                     game.end("kill", false);
@@ -504,12 +522,24 @@ const locations = [{
                 }
             }
         };
-        obj.afterAction = function(game, action, params) {
-            if (!game.getLocationItem("chlupatýho") || isMovement(action)) {
-                return;
-            }
+        obj.killHero = function(game) {
             game.print("Policajta naštvalo, že u tebe nenašel, co hledal, a vrhnul se na tebe.", "end-lose");
             game.end("killed", false);
+        };
+        obj.beforeAction = function(game, action, params) {
+            if (game.getLocationItem("chlupatýho") && isMovement(action)) {
+                // Trying to escape...
+                obj.killHero(game);
+                return true;
+            }
+            return false;
+        };
+        obj.afterAction = function(game, action, params) {
+            if (!game.getLocationItem("chlupatýho") || isMovement(action)) {
+                // Cop is dead or after-enter action
+                return;
+            }
+            obj.killHero(game);
         };
     },
     exits: [{
@@ -574,7 +604,7 @@ const locations = [{
             obj.cops = false;
         };
         obj.afterAction = function(game, action, params) {
-            if (isMovement(action)) {
+            if (!obj.cops || isMovement(action)) {
                 return;
             }
             game.print("Řada policajtů se přiblížila až k tobě. Než jsi stačil vstát, pustili se do tebe obušky.", "end-lose");
@@ -623,8 +653,21 @@ const locations = [{
         location: "m13"
     }],
     readInit: function(obj) {
+        obj.killHero = function(game) {
+            game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end-lose");
+            game.end("killed", false);
+        };
+        obj.beforeAction = function(game, action, params) {
+            if (game.getLocationItem("příslušníka") && isMovement(action)) {
+                // Trying to escape...
+                obj.killHero(game);
+                return true;
+            }
+            return false;
+        };
         obj.afterAction = function(game, action, params) {
             if (!game.getLocationItem("příslušníka") || isMovement(action)) {
+                // Cop is dead or after-enter action
                 return;
             }
             if (game.getLocationItem("diamanty")) {
@@ -633,8 +676,7 @@ const locations = [{
                 game.removeItem("diamanty");
                 return;
             }
-            game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end-lose");
-            game.end("killed", false);
+            obj.killHero(game);
         };
     }
 }, {

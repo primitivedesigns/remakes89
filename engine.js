@@ -482,6 +482,21 @@ function createGame(initialState, savedPosition, headless) {
         return action;
     }
 
+    game.actionMatches = function(action, params, actionName, itemName) {
+        if (action.name === actionName) {
+            if (itemName) {
+                if (params && params.length > 0) {
+                    const item = game.getItem(game.getUsableItems(), params[0]);
+                    return item && game.matchName(item.name, itemName);
+                } else {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    };
+
     // Returns an item for the specified name or undefined
     game.mapItem = function(name) {
         return game.items.find(item => item.name === name);
@@ -1005,7 +1020,7 @@ function intro(index, introFuns, startFun) {
     document.onkeydown = function(e) {
         if (e.key === "Enter") {
             document.onkeydown = null;
-            
+
             // Skip output queue
             skipOutputEffects();
             outputQueue.splice(0, outputQueue.length);
