@@ -771,6 +771,16 @@ function initState() {
                 printRandomSlogan();
             }
         },
+        adaptCommand: function(game, command) {
+            if (command && command.length > 0) {
+                if (command.startsWith("jdi na ") || command.startsWith("jit na ") || command.startsWith("jít na ")) {
+                    return command.substring(7, command.length);
+                } if (command.startsWith("jdi ") || command.startsWith("jit ") || command.startsWith("jít ")) {
+                    return command.substring(4, command.length);
+                }
+            }
+            return command;
+        },
         isInputCaseSensitive: false,
         partialMatchLimit: 2,
         startLocation: "m9",
@@ -825,7 +835,7 @@ function initState() {
             }
         }, {
             name: "N",
-            aliases: ["nahoru"],
+            aliases: ["nahoru","nahorů"],
             perform: function(game, params) {
                 if (!game.goToLocation("N")) {
                     game.print(game.messages.unknownCommand);
@@ -833,7 +843,7 @@ function initState() {
             }
         }, {
             name: "D",
-            aliases: ["dolu"],
+            aliases: ["dolu","dolů"],
             perform: function(game, params) {
                 if (!game.goToLocation("D")) {
                     game.print(game.messages.unknownCommand);
@@ -841,7 +851,7 @@ function initState() {
             }
         }, {
             name: "polož",
-            aliases: ["poloz", "polozit", "položit"],
+            aliases: ["poloz", "polozit", "položit","zahodit", "zahoď"],
             perform: function(game, params) {
                 const item = game.dropItem(params[0]);
                 game.clearOutput();
@@ -857,7 +867,7 @@ function initState() {
             }
         }, {
             name: "vezmi",
-            aliases: ["seber", "vzít", "vzit"],
+            aliases: ["seber", "vzít", "vzit", "vem"],
             perform: function(game, params) {
                 game.clearOutput();
                 const ret = game.takeItem(params.join(" "), false);

@@ -96,7 +96,12 @@ function createEngine(headless) {
             console.log(">> " + command);
         }
         const game = engine.game;
-        const parts = command.split(/\s+/);
+
+        if (game.adaptCommand) {
+            command = game.adaptCommand(game, command);
+        }
+        
+        const parts = command.trim().split(/\s+/);
         if (parts.length === 0) {
             return;
         }
@@ -362,6 +367,7 @@ function createGame(initialState, savedPosition, headless) {
     game.afterAction = initialState.afterAction;
     game.buildLocationMessage = initialState.buildLocationMessage;
     game.onLocationItemAdded = initialState.onLocationItemAdded;
+    game.adaptCommand = initialState.adaptCommand;
 
     if (savedPosition) {
         game.locations = savedPosition.locations;
@@ -793,7 +799,7 @@ function createGame(initialState, savedPosition, headless) {
             console.log("No exit found: " + exitName);
             return false;
         } else {
-            this.enterLocation(this.getLocation(exit.location));
+            game.enterLocation(game.getLocation(exit.location));
             return true;
         }
     };

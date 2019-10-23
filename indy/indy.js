@@ -750,7 +750,7 @@ const actions = [{
     }
 }, {
     name: "použij",
-    aliases: ["pouzij"],
+    aliases: ["pouzij", "pouzit", "použít"],
     perform: function(game, params) {
         if (!game.useItem(params.join(" "))) {
             game.print(game.messages.unknownCommand);
@@ -791,7 +791,7 @@ const actions = [{
     }
 }, {
     name: "polož",
-    aliases: ["poloz", "polozit", "položit"],
+    aliases: ["poloz", "polozit", "položit", "zahodit", "zahoď"],
     perform: function(game, params) {
         const item = game.dropItem(params.join(" "), false);
         if (item) {
@@ -806,7 +806,7 @@ const actions = [{
     }
 }, {
     name: "vezmi",
-    aliases: ["seber", "vzít", "vzit"],
+    aliases: ["seber", "vzít", "vzit", "vem"],
     perform: function(game, params) {
         const ret = game.takeItem(params.join(" "), false);
         if (ret.item) {
@@ -1085,6 +1085,16 @@ function initState() {
             if (location.items && location.items.length > 0) {
                 game.print(buildItemsMessage(game, location));
             }
+        },
+        adaptCommand: function(game, command) {
+            if (command && command.length > 0) {
+                if (command.startsWith("jdi na ") || command.startsWith("jit na ") || command.startsWith("jít na ")) {
+                    return command.substring(7, command.length);
+                } if (command.startsWith("jdi ") || command.startsWith("jit ") || command.startsWith("jít ")) {
+                    return command.substring(4, command.length);
+                }
+            }
+            return command;
         },
         isInputCaseSensitive: false,
         startLocation: "m2",
