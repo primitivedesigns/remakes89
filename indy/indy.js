@@ -1014,6 +1014,9 @@ function initState() {
                     } else {
                         m9.exploded = true;
                         game.print("Místo, ze kterého jsi právě vyšel, vyletělo do povětří. Tys měl ale štěstí.");
+                        if (game.getLocationItem("tyč", m9)) {
+                            game.print("Výbuch zničil předmět, který jsi potřeboval k dohrání hry. Napiš RESTART a začni znovu.", "hint");
+                        }
                     }
                 }
             }

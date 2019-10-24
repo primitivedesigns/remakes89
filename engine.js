@@ -573,9 +573,10 @@ function createGame(initialState, savedPosition, headless) {
     }
 
     // Returns a location item for the specified name or undefined
-    game.getLocationItem = function(name) {
-        if (game.location.items) {
-            return game.getItem(game.location.items.map(item => game.mapItem(item)), name);
+    game.getLocationItem = function(name, location) {
+        const loc = location ? location : game.location;
+        if (loc.items) {
+            return game.getItem(loc.items.map(item => game.mapItem(item)), name);
         }
         return undefined;
     };
