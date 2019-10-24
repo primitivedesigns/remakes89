@@ -73,15 +73,21 @@ function createEngine(headless) {
             for (var i = 0; i < localStorage.length; i++) {
                 positions.push(localStorage.key(i));
             }
-            return (!str || str.length === 0) ? positions.map(function(p) {
-                const ret = {};
-                ret.name = p;
-                return ret;
-            }) : positions.filter(p => p.startsWith(str)).map(function(p) {
-                const ret = {};
-                ret.name = p;
-                return ret;
-            });
+            const prefix = buildPositionPrefix(game);
+            if (!str || str.length === 0) {
+                return positions.map(function(p) {
+                    const ret = {};
+                    ret.name = p.substring(prefix.length, p.length);
+                    return ret;
+                });
+            } else {
+                const name = prefix + str;
+                return positions.filter(p => p.startsWith(name)).map(function(p) {
+                    const ret = {};
+                    ret.name = p.substring(prefix.length, p.length);
+                    return ret;
+                })
+            }
         }
     }];
 
@@ -317,7 +323,7 @@ function createEngine(headless) {
         const positionName = getPositionName(params);
         localStorage.setItem(positionName, JSON.stringify(position));
         console.log("Game saved: " + positionName);
-        return positionName;
+        return params[0];
     }
 
     engine.load = function(params) {
@@ -330,18 +336,22 @@ function createEngine(headless) {
         } else {
             console.log("Game position does not exist: " + positionName);
         }
-        return positionName;
+        return params[0];
     }
 
     function getPositionName(params) {
-        const savePrefix = engine.game.savedPositionPrefix;
-        if (!savePrefix) {
+        return buildPositionPrefix(this.game) + (params.length === 0 ? "save" : params[0]);
+    }
+    
+    return engine;
+}
+
+function buildPositionPrefix(game) {
+    const prefix = engine.game.savedPositionPrefix;
+        if (!prefix) {
             console.log("Game does not specify a 'saved position prefix' - SAVE/LOAD may not work correctly");
         }
-        return (savePrefix ? savePrefix : "unknown") + "_" + (params.length === 0 ? "save" : params[0]);
-    }
-
-    return engine;
+    return (prefix ? prefix : "unknown") + "_";
 }
 
 function createGame(initialState, savedPosition, headless) {
