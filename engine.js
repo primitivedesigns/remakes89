@@ -58,14 +58,25 @@ function createEngine(headless) {
         builtin: true,
         perform: function(game, params) {
             const positionName = engine.load(params);
-            // NOTE: we cannot use the "game" param because a new game was
-            // loaded already
-            if (engine.game.messages.gameLoaded) {
-                engine.game.print(engine.game.messages.gameLoaded + " [" + positionName +
-                    "]");
-            }
-            if (game.onLoad) {
-                game.onLoad(game);
+            if (positionName) {
+                // NOTE: we cannot use the "game" param because a new game was
+                // loaded already
+                if (engine.game.messages.gameLoaded) {
+                    engine.game.print(engine.game.messages.gameLoaded + " [" + positionName +
+                        "]");
+                }
+                if (engine.game.onLoad) {
+                    engine.game.onLoad(game);
+                }
+            } else {
+                // Game position does not exist
+                if (engine.game.messages) {
+                    if (engine.game.messages.gamePositionDoesNotExist) {
+                        engine.game.print(engine.game.messages.gamePositionDoesNotExist + ": " + params.join(" "));
+                    } else if (engine.game.messages.unknownCommand) {
+                        engine.game.print(engine.game.messages.unknownCommand);
+                    }
+                }
             }
         },
         autocomplete: function(game, str) {
@@ -113,7 +124,7 @@ function createEngine(headless) {
         if (game.adaptCommand) {
             command = game.adaptCommand(game, command);
         }
-        
+
         const parts = command.trim().split(/\s+/);
         if (parts.length === 0) {
             return;
@@ -340,24 +351,25 @@ function createEngine(headless) {
             this.initGame(JSON.parse(position));
             this.start();
             console.log("Game loaded: " + positionName);
+            return params && params.length > 0 ? params[0] : "save";
         } else {
             console.log("Game position does not exist: " + positionName);
+            return undefined;
         }
-        return params && params.length > 0 ? params[0] : "save";
     }
 
     function getPositionName(params) {
         return buildPositionPrefix(this.game) + (params.length === 0 ? "save" : params[0]);
     }
-    
+
     return engine;
 }
 
 function buildPositionPrefix(game) {
     const prefix = engine.game.savedPositionPrefix;
-        if (!prefix) {
-            console.log("Game does not specify a 'saved position prefix' - SAVE/LOAD may not work correctly");
-        }
+    if (!prefix) {
+        console.log("Game does not specify a 'saved position prefix' - SAVE/LOAD may not work correctly");
+    }
     return (prefix ? prefix : "unknown") + "_";
 }
 

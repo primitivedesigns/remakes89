@@ -569,6 +569,7 @@ function initState() {
             inputHelpPrefix: "Pokračuj: ",
             gameSaved: "Hra uložena.",
             gameLoaded: "Uložená pozice nahrána.",
+            gamePositionDoesNotExist: "Nelze nahrát pozici: "
         },
         intro: [function(gameContainer) {
                 // Image
