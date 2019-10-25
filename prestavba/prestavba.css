@@ -59,6 +59,9 @@ div#slogan {
 #game-output div.end {
 	background-color: red;
 	color: white;
+	padding: 0.2em;
+	border-radius: 10px;
+	margin-top: 1em;
 }
 
 #game-input-help {

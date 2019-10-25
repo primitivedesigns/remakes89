@@ -741,7 +741,7 @@ function initState() {
                     if ((dynamiteLocation && dynamiteLocation.id === game.location.id) || dynamiteLocation == null) {
                         // GAME OVER
                         game.print("Obrovská exploze otřásla městem, což jsi však jako její přímý účastník neslyšel.", "end");
-                        game.end(false);
+                        game.end(false, false);
                         return;
                     }
                     game.print("Země se otřásla výbuchem.");

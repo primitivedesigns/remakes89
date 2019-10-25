@@ -97,6 +97,13 @@ function createEngine(headless) {
         console.log("Game initialized");
     }
 
+    // For debug only
+    engine.processCommands = function(commands) {
+        commands.forEach(cmd => {
+            engine.processCommand(cmd);
+        });
+    }
+
     engine.processCommand = function(command) {
         if (headless) {
             console.log(">> " + command);
@@ -323,7 +330,7 @@ function createEngine(headless) {
         const positionName = getPositionName(params);
         localStorage.setItem(positionName, JSON.stringify(position));
         console.log("Game saved: " + positionName);
-        return params[0];
+        return params && params.length > 0 ? params[0] : "save";
     }
 
     engine.load = function(params) {
@@ -336,7 +343,7 @@ function createEngine(headless) {
         } else {
             console.log("Game position does not exist: " + positionName);
         }
-        return params[0];
+        return params && params.length > 0 ? params[0] : "save";
     }
 
     function getPositionName(params) {
