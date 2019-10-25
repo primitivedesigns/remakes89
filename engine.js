@@ -766,13 +766,16 @@ function createGame(initialState, savedPosition, headless) {
             return;
         }
         const line = document.createElement("div");
-        const before = cssClass ? function() {
-            line.className = cssClass;
-        } : null;
         locationDiv.appendChild(line);
         if (skipTypewriter) {
             line.textContent = text;
+            if (cssClass) {
+                line.className = cssClass;
+            }
         } else {
+            const before = cssClass ? function() {
+                line.className = cssClass;
+            } : undefined;
             queueOutput(line, text, before);
         }
     };
