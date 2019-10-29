@@ -569,6 +569,7 @@ function initState() {
             inputHelpPrefix: "Pokračuj: ",
             gameSaved: "Hra uložena.",
             gameLoaded: "Uložená pozice nahrána.",
+            gamePositions: "Uložené pozice: ",
             gamePositionDoesNotExist: "Nelze nahrát pozici: "
         },
         intro: [function(gameContainer) {
@@ -674,7 +675,7 @@ function initState() {
             slogan.id = "slogan";
             gameContainer.appendChild(slogan);
 
-            document.addEventListener("keydown", function(event) {
+            document.onkeydown = function(event) {
                 if (event.key === "F1") {
                     event.preventDefault();
                     if (sideOpen) {
@@ -685,12 +686,23 @@ function initState() {
                 } else if (event.key === "Enter" && isOutputQueueProcessed()) {
                     skipOutputEffects();
                     return;
+                } else if (game.endState) {
+                    if (event.key === "r") {
+                        // Restart game
+                        location.reload();
+                    } else if (event.key === "l") {
+                        event.preventDefault();
+                        if (!game.loadLastPosition()) {
+                            // No position to load...
+                            location.reload();
+                        }
+                    }
                 }
                 // Play beep sound
                 if (beepOn) {
                     beep.play();
                 }
-            });
+            };
         },
         onStart: function(game) {
             printRandomSlogan();

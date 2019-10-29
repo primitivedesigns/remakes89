@@ -889,6 +889,7 @@ function initState() {
             inputHelpPrefix: "Pokračuj: ",
             gameSaved: "Hra uložena.",
             gameLoaded: "Uložená pozice nahrána.",
+            gamePositions: "Uložené pozice: ",
             gamePositionDoesNotExist: "Nelze nahrát pozici: ",
             inventoryFull: "Víc už toho neuneseš!",
         },

@@ -53,6 +53,21 @@ function createEngine(headless) {
             }
         }
     }, {
+        name: "games",
+        aliases: ["pozice"],
+        builtin: true,
+        perform: function(game, params) {
+            const positions = [];
+            const prefix = buildPositionPrefix(game);
+            for (var i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                positions.push(key.substring(prefix.length, key.length));
+            }
+            if (game.messages.gamePositions) {
+                game.print(game.messages.gamePositions + positions.join(", "));
+            }
+        }
+    }, {
         name: "load",
         aliases: ["nahrat", "nahraj"],
         builtin: true,
