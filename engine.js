@@ -104,6 +104,10 @@ function createEngine(headless) {
 
     engine.initGame = function(position) {
         engine.game = createGame(this.initState, position, headless);
+        // A game should be able to load the last position
+        engine.game.loadLastPosition = function() {
+            return engine.loadLastPosition();
+        };
         engine.game.clearAll();
         console.log("Game initialized");
     }
@@ -198,7 +202,7 @@ function createEngine(headless) {
         let inputBox, historyLimit, lineLimit, inputs;
 
         if (this.game.onStart) {
-            this.game.onStart();
+            this.game.onStart(this.game);
         }
         if (!this.game.time) {
             this.game.time = 0;
@@ -338,6 +342,7 @@ function createEngine(headless) {
         position.time = this.game.time;
         position.location = this.game.location.id;
         position.inventory = this.game.inventory;
+        position.timestamp = Date.now();
         const positionName = getPositionName(params);
         localStorage.setItem(positionName, JSON.stringify(position));
         console.log("Game saved: " + positionName);
@@ -356,6 +361,37 @@ function createEngine(headless) {
             console.log("Game position does not exist: " + positionName);
             return undefined;
         }
+    }
+
+    engine.loadLastPosition = function() {
+        const positions = [];
+        for (var i = 0; i < localStorage.length; i++) {
+            const pos = [];
+            // [name, data, timestamp]
+            pos.push(localStorage.key(i));
+            pos.push(JSON.parse(localStorage.getItem(pos[0])));
+            pos.push(pos[1].timestamp);
+            positions.push(pos);
+        }
+        if (positions.length === 0) {
+            return false;
+        }
+        positions.sort(function(a, b) {
+            const ts1 = a[2];
+            const ts2 = b[2];
+            if (ts1 && ts2) {
+                return ts2 - ts1;
+            } else if (ts1) {
+                return -1;
+            } else if (ts2) {
+                return 1;
+            }
+            return 0;
+        });
+        this.initGame(positions[0][1]);
+        this.start();
+        console.log("Game loaded: " + positions[0][0]);
+        return true;
     }
 
     function getPositionName(params) {

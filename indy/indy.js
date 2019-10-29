@@ -1022,9 +1022,8 @@ function initState() {
                 }
             }
         },
-        onStart: function() {
-            const gameThis = this;
-            document.addEventListener("keydown", function(event) {
+        onStart: function(game) {
+            document.onkeydown = function(event) {
                 if (event.key === "F1") {
                     event.preventDefault();
                     if (sideOpen) {
@@ -1035,15 +1034,23 @@ function initState() {
                 } else if (event.key === "Enter" && isOutputQueueProcessed()) {
                     skipOutputEffects();
                     return;
-                } else if (event.key === "r" && gameThis.endState) {
-                    // Restart game
-                    location.reload();
+                } else if (game.endState) {
+                    if (event.key === "r") {
+                        // Restart game
+                        location.reload();
+                    } else if (event.key === "l") {
+                        event.preventDefault();
+                        if (!game.loadLastPosition()) {
+                            // No position to load...
+                            location.reload();
+                        }
+                    }
                 }
                 // Play beep sound
                 if (beepOn) {
                     beep.play();
                 }
-            });
+            };
             const sidebarOpen = document.querySelector("#game-sidebar-open");
             if (sidebarOpen) {
                 sidebarOpen.style.display = "block";
@@ -1054,12 +1061,12 @@ function initState() {
             if (endState === "killed") {
                 this.print("INDIANA JONES JE MRTEV!");
                 this.print("ZPRÁVA Z AMERICKÉHO TISKU: Československá vláda oznámila, že náš drahý hrdina - INDIANA JONES - zemřel nešťastnou náhodou při autonehodě. Pokrač. na str. 54.");
-                this.print("Stiskni R pro RESTART", "intro-enter");
+                this.print("Stiskni klávesu R pro RESTART nebo L a nahraje se poslední uložená pozice.", "intro-enter");
                 this.removeInputContainer();
             } else if (endState === "win") {
                 this.print("O.K. OBELSTIL JSI I TU NEJVĚTŠÍ FÍZLOVSKOU SVINI. ŠTASTNĚ JSI SE DOSTAL NA LETIŠTĚ A ODLETĚL DOMŮ. GRATULUJI K VÍTĚZSTVÍ!!!!!!!!!!", "end-win");
                 this.removeInputContainer();
-                this.print("Stiskni R pro RESTART", "intro-enter");
+                this.print("Stiskni klávesu R pro RESTART", "intro-enter");
             }
         },
         buildLocationMessage: function(location, game) {
@@ -1094,7 +1101,8 @@ function initState() {
             if (command && command.length > 0) {
                 if (command.startsWith("jdi na ") || command.startsWith("jit na ") || command.startsWith("jít na ")) {
                     return command.substring(7, command.length);
-                } if (command.startsWith("jdi ") || command.startsWith("jit ") || command.startsWith("jít ")) {
+                }
+                if (command.startsWith("jdi ") || command.startsWith("jit ") || command.startsWith("jít ")) {
                     return command.substring(4, command.length);
                 }
             }

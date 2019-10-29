@@ -692,7 +692,7 @@ function initState() {
                 }
             });
         },
-        onStart: function() {
+        onStart: function(game) {
             printRandomSlogan();
             const sidebarOpen = document.querySelector("#game-sidebar-open");
             if (sidebarOpen) {
