@@ -33,6 +33,18 @@ function createEngine(headless) {
         }
     }
 
+    const printPositions = function(game, params) {
+        const positions = [];
+        const prefix = buildPositionPrefix(game);
+        for (var i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            positions.push(key.substring(prefix.length, key.length));
+        }
+        if (game.messages.gamePositions) {
+            game.print(game.messages.gamePositions + positions.join(", "));
+        }
+    };
+
     engine.actions = [{
         name: "restart",
         builtin: true,
@@ -56,23 +68,18 @@ function createEngine(headless) {
         name: "games",
         aliases: ["pozice"],
         builtin: true,
-        perform: function(game, params) {
-            const positions = [];
-            const prefix = buildPositionPrefix(game);
-            for (var i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                positions.push(key.substring(prefix.length, key.length));
-            }
-            if (game.messages.gamePositions) {
-                game.print(game.messages.gamePositions + positions.join(", "));
-            }
-        }
+        perform: printPositions
     }, {
         name: "load",
         aliases: ["nahrat", "nahraj"],
         builtin: true,
         perform: function(game, params) {
+            // If no param and save does not exist - print positions
             const positionName = engine.load(params);
+            if (!positionName && params.length === 0) {
+                printPositions(game, params);
+                return;
+            }
             if (positionName) {
                 // NOTE: we cannot use the "game" param because a new game was
                 // loaded already
@@ -87,7 +94,7 @@ function createEngine(headless) {
                 // Game position does not exist
                 if (engine.game.messages) {
                     if (engine.game.messages.gamePositionDoesNotExist) {
-                        engine.game.print(engine.game.messages.gamePositionDoesNotExist + ": " + params.join(" "));
+                        engine.game.print(engine.game.messages.gamePositionDoesNotExist + params.join(" "));
                     } else if (engine.game.messages.unknownCommand) {
                         engine.game.print(engine.game.messages.unknownCommand);
                     }
@@ -949,14 +956,15 @@ function createGame(initialState, savedPosition, headless) {
         return null;
     };
 
+
     game.useItem = function(name) {
         const item = this.getItem(this.getItems(), name);
+        var ret = false;
         if (item && !item.unusable && item.onUse) {
-            item.onUse(game);
+            ret = item.onUse(game) ? true : false;
             item.used = true;
-            return true;
         }
-        return false;
+        return ret;
     };
 
     game.examineItem = function(name) {

@@ -1,4 +1,6 @@
-// const gameTitle = "DOBRODRUŽSTVÍ INDIANA JONESE NA VÁCLAVSKÉM NÁMĚSTÍ V PRAZE DNE 16.1.1989";
+/*
+* DOBRODRUŽSTVÍ INDIANA JONESE NA VÁCLAVSKÉM NÁMĚSTÍ V PRAZE DNE 16.1.1989
+*/
 
 let sideOpen = false;
 let beepOn = true;
@@ -45,6 +47,7 @@ const items = [{
                 }
                 game.print("O.K. Odrazil jsi kámen štítem.");
                 game.onLocationItemAdded(game, boulder.name);
+                return true;
             }
         }
     }
@@ -76,8 +79,7 @@ const items = [{
                 game.removeItem("sekeru");
                 game.removeLocationItem(cop.name);
                 game.addLocationItem("mrtvolu fízla");
-            } else {
-                game.print(game.messages.unknownCommand);
+                return true;
             }
         }
     }
@@ -95,6 +97,7 @@ const items = [{
                 game.getLocation("m6").shouldFail = false;
                 game.removeItem(obj.name);
                 game.addLocationItem("mrtvolu policajta", "m6", true);
+                return true;
             }
         }
     }
@@ -106,6 +109,7 @@ const items = [{
         obj.onUse = function(game) {
             if (game.location.id === "m7") {
                 game.print("O.K. Přeložil sis nápis na zdi. Cituji: Jakeš je vůl, KAREL.");
+                return true;
             }
         }
     }
@@ -134,14 +138,17 @@ const items = [{
             if (game.location.id === "m8" && game.getLocationItem("poldu")) {
                 game.print("O.K. Vypáčil jsi poklop kanálu. Poklop spadnul do šachty. Polda se na tebe s řevem vrhnul, ale v okamžiku, kdy tě chtěl udeřit, zahučel přímo před tebou do kanálu.");
                 game.removeLocationItem("poldu");
+                return true;
             } else if (game.location.id === "m10" && game.getLocationItem("chlupatýho")) {
                 game.print("O.K. Praštil jsi chlupatýho tyčí přes hlavu.");
                 game.removeLocationItem("chlupatýho");
                 game.addLocationItem("mrtvolu chlupatýho");
+                return true;
             } else if (game.location.id === "m18" && obj.throwable) {
                 game.print("O.K. Mrštil jsi tyčí nalevo a uslyšel jsi zasténání. Cha, cha, cha, cha.");
                 game.removeItem(obj.name);
                 game.addLocationItem("mrtvolu milicionáře", "m17");
+                return true;
             }
         }
     }
@@ -198,6 +205,7 @@ const items = [{
             } else {
                 dressAction.perform(game, ["uniformu"]);
             }
+            return true;
         };
         obj.actions = [undressAction, dressAction];
         obj.onDrop = function(game) {
@@ -261,6 +269,7 @@ const items = [{
             } else {
                 game.inventory.push("plechovku");
             }
+            return true;
         }
     }
 }, {
