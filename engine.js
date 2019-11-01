@@ -142,11 +142,14 @@ function createEngine(headless) {
     }
 
     engine.processCommand = function(command) {
+        const game = engine.game;
+        if (game.endState) {
+            console.log("Game is over!");
+            return;
+        }
         if (headless) {
             console.log(">> " + command);
         }
-        const game = engine.game;
-
         if (game.adaptCommand) {
             command = game.adaptCommand(game, command);
         }

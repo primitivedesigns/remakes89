@@ -14,13 +14,21 @@ function testFullPath(engine) {
 
     executeCommands(coms1, engine);
 
+    const book = engine.game.getInventoryItem("knihu");
+    if (assertTrue(book, "Kniha neni v inventari")) {
+        return;
+    }
+    if (assertFalse(book.burning, "Kniha jiz hori!")) {
+        return;
+    }
+
     // zapal knihu
-    let burning = false, limit = 20, attempt = 0;
-    while(!burning) {
-        console.log("Pokus " + attempt + ": ");
+    let limit = 20, attempt = 1;
+    while(!book.burning) {
+        console.log("Kniha - pokus " + attempt + ": ");
         engine.processCommand("zapal knihu");
-        if (engine.game.getInventoryItem("knihu").burning || attempt > limit) {
-            burning = true;
+        if (book.burning || attempt > limit) {
+            break;
         }
         attempt++;
     }
@@ -28,20 +36,31 @@ function testFullPath(engine) {
     executeCommands(coms2, engine);
     
     // zapal dynamit
-    burning = false;
+    const dynamite = engine.game.findItem("dynamit").item;
+
+    if (assertTrue(dynamite, "Dynamit nelze najit")) {
+        return;
+    }
+    if (assertFalse(dynamite.ignited, "Dynamit nema byt zapaleny")) {
+        return;
+    }
+
     limit = 20; 
-    attempt = 0;
-    while(!burning) {
-        console.log("Pokus " + attempt + ": ");
+    attempt = 1;
+    while(!dynamite.ignited) {
+        console.log("Dynamic - pokus " + attempt + ": ");
         engine.processCommand("zapal dynamit");
-        if (engine.game.getInventoryItem("dynamit").ignited || attempt > limit) {
-            burning = true;
+        if (dynamite.ignited || attempt > limit) {
+            break;
         }
         attempt++;
     }
 
+    if (assertTrue(dynamite.ignited, "Dynamit musi byt zapaleny")) {
+        return;
+    }
+
     engine.processCommand("poloz dynamit");
-    engine.processCommand("zapal dynamit");
     engine.processCommand("zapad");
     engine.processCommand("veci");
     engine.processCommand("vychod");
