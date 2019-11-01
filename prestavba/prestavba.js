@@ -105,6 +105,7 @@ const items = [{
             perform: function(game, params) {
                 game.clearOutput();
                 if (getRandomInt(3) === 0) {
+                    // Succeeded
                     const book = game.getInventoryItem(bookItemName);
                     const dynamite = game.getItem(game.getItems(), dynamiteItemName);
                     if (book && game.aliasObjectMatchesName(book, params.join(" "))) {
@@ -113,12 +114,23 @@ const items = [{
                         // Show info in a dark location
                         game.printLocationInfo();
                     } else if (dynamite && game.aliasObjectMatchesName(dynamite, params.join(" "))) {
-                        game.print("Zapálil jsi doutnák...");
-                        dynamite.ignited = game.time;
+                        // Dynamite is in the inventory or placed in the current location
+                        if (game.location.id === "m18") {
+                            game.print("Zapálil jsi doutnák...");
+                            if (game.getInventoryItem(dynamiteItemName)) {
+                                game.dropItem(dynamiteItemName);
+                            }
+                            dynamite.ignited = game.time;
+                            dynamite.takeable = false;
+                        } else {
+                            game.print("Nemáš důvod tady zapálit dynamit.");
+                        }
                     } else {
+                        // Invalid params
                         game.print(game.messages.unknownCommand);
                     }
                 } else {
+                    // Failed
                     game.print("Zapalovač vynechal...");
                 }
             },
@@ -201,7 +213,7 @@ const items = [{
     desc: "Je celá ze zlata.",
     readInit: function(obj) {
         obj.onTake = function(game) {
-            game.end(true);
+            game.end("win");
         }
     }
 }, {
@@ -673,7 +685,9 @@ function initState() {
             const slogan = document.createElement("div");
             slogan.id = "slogan";
             gameContainer.appendChild(slogan);
-
+        },
+        onStart: function(game) {
+            printRandomSlogan();
             document.onkeydown = function(event) {
                 if (event.key === "F1") {
                     event.preventDefault();
@@ -702,9 +716,6 @@ function initState() {
                     beep.play();
                 }
             };
-        },
-        onStart: function(game) {
-            printRandomSlogan();
             const sidebarOpen = document.querySelector("#game-sidebar-open");
             if (sidebarOpen) {
                 sidebarOpen.style.display = "block";
@@ -712,9 +723,10 @@ function initState() {
             this.printInputHelp('Zadej příkaz. Například "prozkoumej poklop". Pro automatické doplnění příkazu zkus klávesu TAB.');
         },
         onEnd: function(endState) {
-            if (endState) {
+            if (endState === "win") {
                 this.runOutro();
             } else {
+                this.print("Stiskni klávesu R pro RESTART nebo L a nahraje se poslední uložená pozice.", "intro-enter");
                 this.removeInputContainer();
             }
         },
@@ -761,7 +773,7 @@ function initState() {
                     if ((dynamiteLocation && dynamiteLocation.id === game.location.id) || dynamiteLocation == null) {
                         // GAME OVER
                         game.print("Obrovská exploze otřásla městem, což jsi však jako její přímý účastník neslyšel.", "end");
-                        game.end(false, false);
+                        game.end("kill", false);
                         return;
                     }
                     game.print("Země se otřásla výbuchem.");
@@ -795,7 +807,8 @@ function initState() {
             if (command && command.length > 0) {
                 if (command.startsWith("jdi na ") || command.startsWith("jit na ") || command.startsWith("jít na ")) {
                     return command.substring(7, command.length);
-                } if (command.startsWith("jdi ") || command.startsWith("jit ") || command.startsWith("jít ")) {
+                }
+                if (command.startsWith("jdi ") || command.startsWith("jit ") || command.startsWith("jít ")) {
                     return command.substring(4, command.length);
                 }
             }
@@ -855,7 +868,7 @@ function initState() {
             }
         }, {
             name: "N",
-            aliases: ["nahoru","nahorů"],
+            aliases: ["nahoru", "nahorů"],
             perform: function(game, params) {
                 if (!game.goToLocation("N")) {
                     game.print(game.messages.unknownCommand);
@@ -863,7 +876,7 @@ function initState() {
             }
         }, {
             name: "D",
-            aliases: ["dolu","dolů"],
+            aliases: ["dolu", "dolů"],
             perform: function(game, params) {
                 if (!game.goToLocation("D")) {
                     game.print(game.messages.unknownCommand);
@@ -871,7 +884,7 @@ function initState() {
             }
         }, {
             name: "polož",
-            aliases: ["poloz", "polozit", "položit","zahodit", "zahoď"],
+            aliases: ["poloz", "polozit", "položit", "zahodit", "zahoď"],
             perform: function(game, params) {
                 const item = game.dropItem(params[0]);
                 game.clearOutput();

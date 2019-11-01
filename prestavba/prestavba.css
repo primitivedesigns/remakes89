@@ -32,9 +32,14 @@ h1#game-title span:nth-child(even) {
 	height: auto;
 }
 
+#game-output-container {
+	min-height: 10em;
+	padding-right: 2em;
+}
+
 #game-output {
 	margin-top: 0.2em;
-	height: 4em;
+	height: auto;
 	overflow: auto;
 }
 
