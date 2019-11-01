@@ -635,20 +635,28 @@ function initState() {
             }
         ],
         outro: [function(gameContainer) {
+
             const text1 = document.createElement("div");
-            text1.className = "outro-text1";
-            text1.textContent = "Gratuluji vítězi!";
             gameContainer.appendChild(text1);
+            queueOutput(text1, "Gratuluji vítězi!", function() {
+                text1.className = "outro-text end-win";
+            });
 
             const text2 = document.createElement("div");
-            text2.className = "outro-text2";
-            text1.textContent = "Je vidět, že socialistický člověk si poradí v každé situaci...";
+            text2.className = "outro-text";
             gameContainer.appendChild(text2);
+            queueOutput(text2, "Je vidět, že socialistický člověk si poradí v každé situaci...");
 
             const text3 = document.createElement("div");
-            text3.className = "outro-text3";
-            text3.textContent = "Ještě jednou gratuluji. Sejdeme se všichni 21. srpna na Staroměstkém náměstí... (nebo jinde)";
+            text3.className = "outro-text";
             gameContainer.appendChild(text3);
+            queueOutput(text3, "Ještě jednou gratuluji. Sejdeme se všichni 21. srpna na Staroměstkém náměstí... (nebo jinde)");
+
+            const text4 = document.createElement("div");
+            gameContainer.appendChild(text4);
+            queueOutput(text4, "Stiskni klávesu R pro RESTART.", function() {
+                text4.className = "intro-enter";
+            });
         }],
         onInitControls: function(gameContainer) {
             // Custom title
@@ -772,7 +780,7 @@ function initState() {
                     // Exploded!
                     if ((dynamiteLocation && dynamiteLocation.id === game.location.id) || dynamiteLocation == null) {
                         // GAME OVER
-                        game.print("Obrovská exploze otřásla městem, což jsi však jako její přímý účastník neslyšel.", "end");
+                        game.print("Obrovská exploze otřásla městem, což jsi však jako její přímý účastník neslyšel.", "end-lose");
                         game.end("kill", false);
                         return;
                     }

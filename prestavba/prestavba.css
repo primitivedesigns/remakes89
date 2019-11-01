@@ -61,12 +61,19 @@ div#slogan {
 	color: gray;
 }
 
-#game-output div.end {
+div.end-lose {
 	background-color: red;
 	color: white;
 	padding: 0.2em;
 	border-radius: 10px;
 	margin-top: 1em;
+}
+
+div.end-win {
+	background-color: green;
+	color: white;
+	padding: 0.2em;
+	border-radius: 10px;
 }
 
 #game-input-help {
@@ -241,4 +248,10 @@ div.intro-enter {
 	padding: 0.2em;
 	border-radius: 0px 0px 5px 5px;
 	clear: both;
+}
+
+div.outro-text {
+	font-size: 1.8em;
+	margin-top: 1em;
+	text-transform: uppercase;
 }

@@ -1143,13 +1143,21 @@ function outro(index, outroFuns) {
         if (e.key === "Enter") {
             document.onkeydown = null;
 
+            // TODO does not work for some reason 
             // Skip output queue
-            skipOutputEffects();
-            outputQueue.splice(0, outputQueue.length);
-            resetOutputQueueStatus();
+            // skipOutputEffects();
+            // outputQueue.splice(0, outputQueue.length);
+            // resetOutputQueueStatus();
 
             if (outroFuns.length > (index + 1)) {
                 intro(index + 1, outroFuns);
+            } else {
+                document.onkeydown = function(e) {
+                    if (event.key === "r") {
+                        // Restart game
+                        location.reload();
+                    }
+                }
             }
         }
     }
