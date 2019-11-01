@@ -34,14 +34,24 @@ function createEngine(headless) {
     }
 
     const printPositions = function(game, params) {
-        const positions = [];
-        const prefix = buildPositionPrefix(game);
-        for (var i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            positions.push(key.substring(prefix.length, key.length));
+        const prefix = buildPositionPrefix(game),
+            limit = 20;
+        let positions = engine.getPositions();
+        let shortened = false;
+        if (positions.length > limit) {
+            shortened = true;
+            positions = positions.slice(0, limit);
         }
-        if (game.messages.gamePositions) {
-            game.print(game.messages.gamePositions + positions.join(", "));
+        if (positions.length === 0) {
+            if (game.messages.gamePositionsEmpty) {
+                game.print(game.messages.gamePositionsEmpty, "hint");
+            }
+        } else if (game.messages.gamePositions) {
+            let msg = game.messages.gamePositions + positions.map(p => p[0].substring(prefix.length, p[0].length)).join(", ");
+            if (shortened) {
+                msg += ", ...";
+            }
+            game.print(msg, "hint");
         }
     };
 
@@ -58,7 +68,7 @@ function createEngine(headless) {
         perform: function(game, params) {
             const positionName = engine.save(params);
             if (game.messages.gameSaved) {
-                game.print(game.messages.gameSaved + " [" + positionName + "]");
+                game.print(game.messages.gameSaved + " [" + positionName + "]", "hint");
             }
             if (game.onSave) {
                 game.onSave(game);
@@ -85,7 +95,7 @@ function createEngine(headless) {
                 // loaded already
                 if (engine.game.messages.gameLoaded) {
                     engine.game.print(engine.game.messages.gameLoaded + " [" + positionName +
-                        "]");
+                        "]", "hint");
                 }
                 if (engine.game.onLoad) {
                     engine.game.onLoad(game);
@@ -94,7 +104,7 @@ function createEngine(headless) {
                 // Game position does not exist
                 if (engine.game.messages) {
                     if (engine.game.messages.gamePositionDoesNotExist) {
-                        engine.game.print(engine.game.messages.gamePositionDoesNotExist + params.join(" "));
+                        engine.game.print(engine.game.messages.gamePositionDoesNotExist + params.join(" "), "hint");
                     } else if (engine.game.messages.unknownCommand) {
                         engine.game.print(engine.game.messages.unknownCommand);
                     }
@@ -102,22 +112,28 @@ function createEngine(headless) {
             }
         },
         autocomplete: function(game, str) {
-            const positions = [];
-            for (var i = 0; i < localStorage.length; i++) {
-                positions.push(localStorage.key(i));
+            const prefix = buildPositionPrefix(game),
+                limit = 10;
+            let positions = engine.getPositions();
+            if (positions.length === 0) {
+                return positions;
             }
-            const prefix = buildPositionPrefix(game);
+            let shortened = false;
+            if (positions.length > limit) {
+                shortened = true;
+                positions = positions.slice(0, limit);
+            }
             if (!str || str.length === 0) {
                 return positions.map(function(p) {
                     const ret = {};
-                    ret.name = p.substring(prefix.length, p.length);
+                    ret.name = p[0].substring(prefix.length, p[0].length);
                     return ret;
                 });
             } else {
                 const name = prefix + str;
-                return positions.filter(p => p.startsWith(name)).map(function(p) {
+                return positions.filter(p => p[0].startsWith(name)).map(function(p) {
                     const ret = {};
-                    ret.name = p.substring(prefix.length, p.length);
+                    ret.name = p[0].substring(prefix.length, p[0].length);
                     return ret;
                 })
             }
@@ -388,31 +404,39 @@ function createEngine(headless) {
         }
     }
 
-    engine.loadLastPosition = function() {
+    // Returns positions - [name, data, timestamp] - sorted by timestamp (lifo)
+    // Position name contains prefix
+    engine.getPositions = function() {
         const positions = [];
         for (var i = 0; i < localStorage.length; i++) {
             const pos = [];
-            // [name, data, timestamp]
             pos.push(localStorage.key(i));
             pos.push(JSON.parse(localStorage.getItem(pos[0])));
             pos.push(pos[1].timestamp);
             positions.push(pos);
         }
+        if (positions.length != 0) {
+            positions.sort(function(a, b) {
+                const ts1 = a[2];
+                const ts2 = b[2];
+                if (ts1 && ts2) {
+                    return ts2 - ts1;
+                } else if (ts1) {
+                    return -1;
+                } else if (ts2) {
+                    return 1;
+                }
+                return 0;
+            });
+        }
+        return positions;
+    }
+
+    engine.loadLastPosition = function() {
+        const positions = engine.getPositions();
         if (positions.length === 0) {
             return false;
         }
-        positions.sort(function(a, b) {
-            const ts1 = a[2];
-            const ts2 = b[2];
-            if (ts1 && ts2) {
-                return ts2 - ts1;
-            } else if (ts1) {
-                return -1;
-            } else if (ts2) {
-                return 1;
-            }
-            return 0;
-        });
         this.initGame(positions[0][1]);
         this.start();
         console.log("Game loaded: " + positions[0][0]);

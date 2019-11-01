@@ -581,6 +581,7 @@ function initState() {
             gameSaved: "Hra uložena.",
             gameLoaded: "Uložená pozice nahrána.",
             gamePositions: "Uložené pozice: ",
+            gamePositionsEmpty: "Nemáš žádnou uloženou pozici.",
             gamePositionDoesNotExist: "Nelze nahrát pozici: "
         },
         intro: [function(gameContainer) {
