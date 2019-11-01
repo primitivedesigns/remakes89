@@ -82,6 +82,14 @@ const items = [{
             name: "přečti",
             aliases: ["čti", "cti", "precti", "cist", "číst"],
             perform: function(game) {
+                if (darkLocations.find(id => id === game.location.id)) {
+                    const book = game.getInventoryItem(bookItemName);
+                    if (!book || !book.burning) {
+                        game.clearLocation();
+                        game.printLocation("Je tu tma.");
+                        return;
+                    }
+                }
                 const newspaper = game.findItem("úvodník").item;
                 if (newspaper) {
                     newspaper.read = true;
