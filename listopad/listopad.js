@@ -6,7 +6,152 @@ let sideOpen = false;
 
 const items = [{
     name: "klíč",
-    desc: "Je to trochu větší kónický klíč. Má tři zuby a zdobenou rukojeť. Asi bude od nějakých vrat."
+    desc: "Je to trochu větší kónický klíč. Má tři zuby a zdobenou rukojeť. Asi bude od nějakých vrat.",
+    readInit: function(obj) {
+        obj.onUse = function(game) {
+            if (game.location.id === "m5") {
+                const door = game.getLocationItem("dveře");
+                if (!door.open) {
+                    game.removeItem("klíč");
+                    door.open = true;
+                    game.location.exits.push({
+                        name: "Jih",
+                        location: "m7"
+                    });
+                    return true;
+                }
+            }
+        };
+    }
+}, {
+    name: "dveře",
+    open: false,
+    takeable: false,
+    readInit: function(obj) {
+        obj.desc = function() {
+            return obj.open ? "Jsou odemčená. V dírce je ještě klíč." : "Obrovská dřevěná zamčená vrata, která ti brání ve vstupu do domu. Asi ve výši tvých očí se na tebe směje prázdná klíčová dírka. Snad by se dala i odemknout.";
+        };
+    }
+}, {
+    name: "bednu",
+    open: false,
+    tapeTaken: false,
+    readInit: function(obj) {
+        obj.desc = function() {
+            if (!obj.open) {
+                return "Obrovská dřevěná bedna, zatlučená hřeby. Co je asi uvnitř?";
+            }
+            if (!tapeTaken) {
+                return "Je ze silných fošen. Vypadá to, že je čerstvě vypáčená! Uvnitř leží nějaká krabička!";
+            }
+            return "Je ze silných fošen. Vypadá to, že je čerstvě vypáčená! Je však prázdná.";
+        };
+    }
+}, {
+    name: "videokazetu",
+    destroyed: false,
+    readInit: function(obj) {
+        obj.desc = function() {
+            if (!obj.destroyed) {
+                return "Tato krabička, omotaná čímsi hnědým byla kdysi kazeta SONY.";
+            }
+            return "Je to videokazeta firmy SONY. Ještě je v ochranném obalu.";
+        };
+    }
+}, {
+    name: "videokameru",
+    battery: false,
+    tape: false,
+    readInit: function(obj) {
+        obj.desc = function() {
+            if (obj.battery && obj.tape) {
+                return "Je to obyčejná videokamera. Na boku má nápis SONY a několik tlačítek. Když jsi stiskl tlačítko s nápisem EJECT, trochu to v ní zacvakalo a pak se otevřela dvířka s kazetou.";
+            } else if (obj.battery && !obj.tape) {
+                return  "Je to obyčejná videokamera. Na boku je nápis SONY a několik tlačítek. Když jsi stiskl tlačítko s nápisem EJECT, trochu to v ní zacvakalo a pak se otevřela dvířka na kazetu.";
+            }
+            return "Je to obyčejná videokamera. Na boku je nápis SONY a několik tlačítek. Stiskl jsi jedno z nich, ale nic se nestalo.";
+        };
+        obj.onUse = function(game) {
+            if(game.location.id === "m20") {
+                if (obj.battery && obj.tape) {
+                    game.print("Stiskl jsi červené tlačítko s nápisem RECORD. Kamera začala bzučet a nad tímto tlačítkem se rozsvítila červená dioda.", "end-win");
+                    game.end("win");
+                } else if(obj.battery && !obj.tape) {
+                    game.print("Stiskl jsi červené tlačítko s nápisem RECORD, kamera začala bzučet, ale po chvíli přestala. Asi není vše v pořádku.");
+                } else if(!obj.battery) {
+                    game.print("Stiskl jsi červené tlačítko s nápisem RECORD, ale nic se nestalo.");
+                }
+            }
+        }
+    }
+}, {
+    name: "žebřík",
+    desc: "Je to kovový třímetrový žebřík, má deset příček.",
+    readInit: function(obj) {
+        obj.onUse = function(game) {
+            if (game.location.id === "m16") {
+                game.print("Přistavil jsi žebřík ke zdi pod poklopem.");
+                game.location.exits.push({
+                    name: "Nahoru",
+                    location: "m21"
+                });
+            } else {
+                // TODO global message?
+                game.print("Nevím k čemu!");
+            }
+        }
+    }
+}, {
+    name: "rohožku",
+    desc: "Je to zcela normální rohožka (rozměry 100 x 50 x 1,5 cm) na čištění bot.",
+    readInit: function(obj) {
+        obj.onTake = function(game) {
+            game.print("Pod rohožkou se skrýval klíček!");
+            game.addLocationItem("klíček");
+        }
+    }
+}, {
+    name: "klíček",
+    destroyed: false,
+    readInit: function(obj) {
+        obj.desc = function() {
+            if (obj.destroyed) {
+                return "Je to jen rukojeť od bývalého klíčku.";
+            }
+            return "Je to malý klíček výrobního družstva INKLEMO Praha složící asi k odemykání čehosi.";
+        };
+        obj.onUse = function(game) {
+            if (game.location.id === "m21") {
+                const trapDoor = game.getLocationItem("poklop");
+                if (!trapDoor.open) {
+                    trapDoor.open = true;
+                    game.print("Odemkl jsi zámek visící na poklopu.");
+                    game.location.exits.push({
+                        name: "Nahoru",
+                        location: "m17"
+                    });
+                }
+            }
+        }
+    }
+}, {
+    name: "poklop",
+    open: false,
+    takeable: false,
+    readInit: function(obj) {
+        obj.desc = function() {
+            if (obj.open) {
+                return "Je to masivní kovový poklop. Visí na něm odemčený zámek.";
+            }
+            return "Je to masivní kovový poklop; asi vede na střechu. Je zajištěn visacím zámkem.";
+        };
+    }
+}, {
+    name: "baterie",
+    desc: "Jsou to baterie VARTA specielně určené pro elektronické přístroje."
+}, {
+    name: "hák",
+    desc: "Je to kovový \"s\"-hák sloužící k páčení."
 }];
 
 const locations = [{
@@ -48,6 +193,7 @@ const locations = [{
 }, {
     id: "m5",
     desc: "Jsi na chodníku na pravé straně Národní třídy.",
+    items: ["dveře"],
     exits: [{
         name: "Sever",
         location: "m4"
@@ -199,6 +345,13 @@ const locations = [{
         name: "Západ",
         location: "m19"
     }],
+}, {
+    id: "m21",
+    desc: "Stojíš na žebříku.",
+    exits: [{
+        name: "Dolů",
+        location: "m16"
+    }],
 }];
 
 // Global actions
@@ -271,6 +424,7 @@ const actions = [{
                                 game.print("O.K.");
                                 game.print("Vzal jsi " + ret.item.name);
                             }
+                            updateActionList(game);
                         }
                     });
                 }
@@ -306,6 +460,7 @@ const actions = [{
                                 game.print("O.K.");
                                 game.print("Položil jsi " + item.name);
                             }
+                            updateActionList(game);
                         }
                     });
                 }
@@ -323,7 +478,11 @@ const actions = [{
             game.print("Nemám co použít!");
         } else {
             if (items.length === 1) {
-                game.useItem(items[0].name);
+                const ret = game.useItem(items[0].name);
+                if (ret.used) {
+                    game.print("O.K.");
+                    game.print("Použil jsi " + items[0].name);
+                }
             } else {
                 game.print("Co mám použít?");
                 const itemsList = [];
@@ -333,7 +492,11 @@ const actions = [{
                         keys: [item.name.charAt(0)],
                         perform: function(game) {
                             game.clearOutput();
-                            game.useItem(item.name);
+                            if (game.useItem(item.name)) {
+                                game.print("O.K.");
+                                game.print("Použil jsi " + item.name);
+                            }
+                            updateActionList(game);
                         }
                     });
                 }
@@ -376,7 +539,8 @@ const actions = [{
                         keys: [item.name[0]],
                         perform: function(game) {
                             game.clearOutput();
-                            game.examineItem(items[0].name);
+                            game.examineItem(item.name);
+                            updateActionList(game);
                         }
                     });
                 }
@@ -490,12 +654,68 @@ function initState() {
     return game;
 }
 
+const builtinActions = [{
+    name: "Restart",
+    keys: ["r"],
+    perform: function(game) {
+        location.reload();
+    }
+}, {
+    name: "Save",
+    keys: ["s"],
+    perform: function(game) {
+        game.clearOutput();
+        game.print("Uložit do jaké pozice?");
+        const positionList = [];
+        for (let index = 1; index < 10; index++) {
+            positionList.push({
+                name: "P" + index,
+                keys: ["" + index],
+                perform: function(game) {
+                    game.clearOutput();
+                    const positionName = game.save(["P" + index]);
+                    if (game.messages.gameSaved) {
+                        game.print(game.messages.gameSaved + " [" + positionName + "]", "hint");
+                    }
+                    updateActionList(game);
+                }
+            });
+        }
+        updateActionList(game, positionList);
+    }
+}, {
+    name: "Load",
+    keys: ["l"],
+    perform: function(game) {
+        game.clearOutput();
+        game.print("Nahrát jakou pozici?");
+        const positionList = [];
+        for (let index = 1; index < 10; index++) {
+            positionList.push({
+                name: "P" + index,
+                keys: ["" + index],
+                perform: function(game) {
+                    game.clearOutput();
+                    const positionName = game.load(["P" + index]);
+                    // TODO we cannot use the game param since a new game was already loaded
+                    // if (game.messages.gameLoaded) {
+                    //     game.print(game.messages.gameLoaded + " [" + positionName + "]", "hint");
+                    // }
+                    updateActionList(game);
+                }
+            });
+        }
+        updateActionList(game, positionList);
+    }
+}];
+
 function updateActionList(game, actions) {
     if (game.endState) {
         return;
     }
     if (!actions) {
         actions = game.getActions();
+        builtinActions.forEach(a => actions.push(a));
         game.print("Co mám dělat?");
     }
     game.actionList = actions;
@@ -516,13 +736,15 @@ function fillActionList(game) {
     }
     for (let i = 0; i < game.actionList.length; i++) {
         const action = game.actionList[i];
+        let keyFound = false;
         for (let j = 0; j < action.name.length; j++) {
             const letter = action.name[j];
-            if (action.keys && action.keys.find(key => key.toLowerCase() === letter.toLowerCase())) {
+            if (!keyFound && action.keys && action.keys.find(key => key.toLowerCase() === letter.toLowerCase())) {
                 const keySpan = document.createElement("span");
                 keySpan.className = "key";
                 keySpan.textContent = letter;
                 actionListDiv.appendChild(keySpan);
+                keyFound = true;
             } else {
                 const letterSpan = document.createElement("span");
                 letterSpan.textContent = letter;

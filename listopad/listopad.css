@@ -25,6 +25,7 @@ div#game-all {
 
 #game-output-container {
 	min-height: 15em;
+	padding-top: 2em;
 }
 
 #game-output {
@@ -200,8 +201,10 @@ div#game-tricolor {
 	margin-top: auto;
 	margin-bottom: auto;
 	z-index: -1;
-	position: relative;
-	top: 20em;
+	position: fixed;
+	padding-top: 20em;
+	top: 0;
+	width: 100%;
 }
 
 span.key {

@@ -146,6 +146,12 @@ function createEngine(headless) {
         engine.game.loadLastPosition = function() {
             return engine.loadLastPosition();
         };
+        engine.game.load = function(params) {
+            return engine.load(params);
+        };
+        engine.game.save = function(params) {
+            return engine.save(params);
+        };
         engine.game.clearAll();
         console.log("Game initialized");
     }
