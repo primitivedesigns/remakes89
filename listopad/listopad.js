@@ -67,18 +67,18 @@ const items = [{
             if (obj.battery && obj.tape) {
                 return "Je to obyčejná videokamera. Na boku má nápis SONY a několik tlačítek. Když jsi stiskl tlačítko s nápisem EJECT, trochu to v ní zacvakalo a pak se otevřela dvířka s kazetou.";
             } else if (obj.battery && !obj.tape) {
-                return  "Je to obyčejná videokamera. Na boku je nápis SONY a několik tlačítek. Když jsi stiskl tlačítko s nápisem EJECT, trochu to v ní zacvakalo a pak se otevřela dvířka na kazetu.";
+                return "Je to obyčejná videokamera. Na boku je nápis SONY a několik tlačítek. Když jsi stiskl tlačítko s nápisem EJECT, trochu to v ní zacvakalo a pak se otevřela dvířka na kazetu.";
             }
             return "Je to obyčejná videokamera. Na boku je nápis SONY a několik tlačítek. Stiskl jsi jedno z nich, ale nic se nestalo.";
         };
         obj.onUse = function(game) {
-            if(game.location.id === "m20") {
+            if (game.location.id === "m20") {
                 if (obj.battery && obj.tape) {
                     game.print("Stiskl jsi červené tlačítko s nápisem RECORD. Kamera začala bzučet a nad tímto tlačítkem se rozsvítila červená dioda.", "end-win");
                     game.end("win");
-                } else if(obj.battery && !obj.tape) {
+                } else if (obj.battery && !obj.tape) {
                     game.print("Stiskl jsi červené tlačítko s nápisem RECORD, kamera začala bzučet, ale po chvíli přestala. Asi není vše v pořádku.");
-                } else if(!obj.battery) {
+                } else if (!obj.battery) {
                     game.print("Stiskl jsi červené tlačítko s nápisem RECORD, ale nic se nestalo.");
                 }
             }
@@ -95,9 +95,11 @@ const items = [{
                     name: "Nahoru",
                     location: "m21"
                 });
+            } else if (game.location.id.substring(1, game.location.id.length) > 7) {
+                game.print("Přistavil jsi žebřík k nejbližší zdi a zkušebně jsi na něj vylezl. Avšak žebřík nestál stabilně, proto jste se oba poroučeli k zemi. Vyvázl jsi pouze s otřesem mozku a zlomenou nohou.", "end-lose");
+                game.end("killed");
             } else {
-                // TODO global message?
-                game.print("Nevím k čemu!");
+                game.print(game.messages.wrongUsage);
             }
         }
     }
@@ -151,7 +153,18 @@ const items = [{
     desc: "Jsou to baterie VARTA specielně určené pro elektronické přístroje."
 }, {
     name: "hák",
-    desc: "Je to kovový \"s\"-hák sloužící k páčení."
+    desc: "Je to kovový \"s\"-hák sloužící k páčení.",
+    readInit: function(obj) {
+        obj.onUse = function(game) {
+            const box = game.getItem(game.getItems(), name);
+            if (box && !box.open) {
+                box.open = true;
+                game.print("Vypáčil jsi víko bedny. V bedně je videokazeta!");
+                // TODO really?
+                game.addLocationItem("videokazetu");
+            }
+        };
+    }
 }];
 
 const locations = [{
@@ -227,6 +240,7 @@ const locations = [{
 }, {
     id: "m8",
     desc: "Jsi ve sklepení domu.",
+    items: ["bednu"],
     exits: [{
         name: "Jih",
         location: "m10"
@@ -575,7 +589,7 @@ function initState() {
             locationItems: "Vidíš",
             noLocationItems: "Nevidíš nic zvláštního.",
             locationExits: "Můžeš jít",
-            unknownCommand: "To bohužel nejde!!!",
+            wrongUsage: "Nevím k čemu!",
             gameSaved: "Hra uložena.",
             gameLoaded: "Uložená pozice nahrána.",
             gamePositions: "Uložené pozice: ",
