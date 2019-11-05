@@ -1,0 +1,216 @@
+body {
+	background-color: black;
+	font-family: 'VT323', 'Roboto Mono', monospace;
+	text-transform: none;
+	color: white;
+}
+
+div#game-all {
+	width: auto;
+}
+
+#game-container {
+	margin: 0px;
+	padding: 0.5em;
+	background-color: black;
+	border-radius: 15px;
+	font-size: 2.5em;
+	height: auto;
+	width: auto;
+	margin-left: 5em;
+	margin-right: 5em;
+	min-height: 20em;
+	z-index: 1;
+}
+
+#game-output-container {
+	min-height: 15em;
+}
+
+#game-output {
+	margin-top: 0.2em;
+	height: auto;
+	/*overflow: auto;*/
+}
+
+#game-output div, #game-location div {
+	line-height: normal;
+	margin-top: 0.4em;
+}
+
+#game-location {
+	height: auto;
+}
+
+#game-location .exits {
+	margin-top: 0.5em;
+}
+
+#game-output div.end-lose {
+	background-color: red;
+	color: white;
+	padding: 0.2em;
+	border-radius: 10px;
+}
+
+#game-output div.end-win {
+	background-color: green;
+	color: white;
+	padding: 0.2em;
+	border-radius: 10px;
+}
+
+div.intro-text1_a {
+	margin-top: 2em;
+}
+
+div.intro-text1, div.intro-text1_a {
+	font-size: 2em;
+	text-align: center;
+	color: white;
+}
+
+div.intro-text2 {
+	float: right;
+	font-size: 2em;
+	clear: both;
+	margin-bottom: 1em;
+}
+
+div.intro-title {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 60%;
+}
+
+img.intro-img {
+	height: auto;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+}
+
+div.intro-enter {
+	float: right;
+	font-size: 1em;
+	background-color: white;
+	color: black;
+	text-align: right;
+	padding: 0.2em;
+	border-radius: 0px 0px 5px 5px;
+	clear: both;
+}
+
+div#game-sidebar {
+	font-family: 'Times New Roman', serif;
+	height: 100%;
+	width: 0;
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	right: 0;
+	background-color: white;
+	color: black;
+	overflow-x: auto;
+	padding: 0;
+	transition: 0.3s;
+	height: 100%;
+}
+
+div#game-sidebar h2 {
+	padding-left: 30px;
+	font-size: 1.4em;
+}
+
+div#game-sidebar p {
+	padding-left: 30px;
+	padding-right: 30px;
+	text-align: justify;
+}
+
+div#game-sidebar-open {
+	position: absolute;
+	top: 2em;
+	right: 4em;
+	display: none;
+}
+
+div#game-sidebar-open a.toggle-btn {
+	font-size: 4em;
+	text-decoration: none;
+	color: white;
+}
+
+div#game-sidebar a.toggle-btn {
+	position: fixed;
+	top: 0;
+	right: 1em;
+	font-size: 3em;
+	text-decoration: none;
+	margin-left: 30px;
+	margin-bottom: 2em;
+	color: black;
+	font-weight: bold;
+}
+
+a#game-sidebar-close {
+	display: none;
+}
+
+div#game-sidebar div.command {
+	font-family: 'VT323', 'Roboto Mono', monospace;
+	padding-left: 2em;
+}
+
+div#game-sidebar ul {
+	margin-left: 2em;
+}
+
+.typewriter {
+	overflow: hidden;
+	white-space: nowrap;
+	animation: typing 2s steps(40, end), blink-caret .75s step-end infinite;
+}
+
+div.hint {
+	color: lightblue;
+}
+
+div.tri {
+	height: 4em;
+	width: 100%;
+	float: left;
+}
+
+div.tri-white {
+	background-color: white;
+}
+
+div.tri-red {
+	background-color: red;
+}
+
+div.tri-blue {
+	background-color: blue;
+}
+
+div#game-tricolor {
+	margin-top: auto;
+	margin-bottom: auto;
+	z-index: -1;
+	position: relative;
+	top: 20em;
+}
+
+span.key {
+	color: black;
+	background-color: white;
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+span.action-separator {
+	color: silver,
+}

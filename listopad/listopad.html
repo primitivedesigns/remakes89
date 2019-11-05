@@ -1,0 +1,34 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>17. 11. 1989</title>
+<link href="https://fonts.googleapis.com/css?family=VT323
+&display=swap"
+    rel="stylesheet" />
+<link href="listopad.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+    <div id="game-all">
+        <div id="game-tricolor">
+            <div class="tri tri-white">&nbsp;</div>
+            <div class="tri tri-red">&nbsp;</div>
+            <div class="tri tri-blue">&nbsp;</div>
+        </div>
+        <div id="game-container"></div>
+    </div>
+    <div id="game-sidebar">
+        <a href="javascript:void(0)" id="game-sidebar-close" class="toggle-btn"
+            onclick="closeSide()">&times;</a>
+        <h2>Jak hrát textovku</h2>
+    </div>
+    <div id="game-sidebar-open">
+        <a href="javascript:void(0)" class="toggle-btn"
+            onclick="openSide()">&#9776;</a>
+    </div>
+    <script src="listopad.js"></script>
+    <script src="../engine.js"></script>
+    <script>
+                    const engine = runGame(initState());
+                </script>
+</body>
+</html>

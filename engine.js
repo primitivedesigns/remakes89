@@ -239,17 +239,18 @@ function createEngine(headless) {
     }
 
     engine.start = function() {
+        const game = engine.game;
 
         let inputBox, historyLimit, lineLimit, inputs;
 
-        if (this.game.onStart) {
-            this.game.onStart(this.game);
+        if (game.onStart) {
+            game.onStart(game);
         }
-        if (!this.game.time) {
-            this.game.time = 0;
+        if (!game.time) {
+            game.time = 0;
         }
 
-        if (!headless) {
+        if (!headless && !game.skipInputBox) {
             this.inputs = [];
             this.historyPos = 0;
 
@@ -274,7 +275,6 @@ function createEngine(headless) {
         }
 
         function processInput() {
-            const game = engine.game;
             if (game.endState) {
                 return;
             }
@@ -482,6 +482,7 @@ function createGame(initialState, savedPosition, headless) {
     game.buildLocationMessage = initialState.buildLocationMessage;
     game.onLocationItemAdded = initialState.onLocationItemAdded;
     game.adaptCommand = initialState.adaptCommand;
+    game.onEnterLocation = initialState.onEnterLocation;
 
     if (savedPosition) {
         game.locations = savedPosition.locations;
@@ -501,12 +502,12 @@ function createGame(initialState, savedPosition, headless) {
     } else {
         // Init UI controls
         // game-title
-        title = document.createElement("h1");
-        title.id = "game-title";
         if (initialState.title) {
+            title = document.createElement("h1");
+            title.id = "game-title";
             title.textContent = initialState.title;
+            gameContainerDiv.insertBefore(title, null);
         }
-        gameContainerDiv.insertBefore(title, null);
         // game-output-container
         outputContainerDiv = document.createElement("div");
         outputContainerDiv.id = "game-output-container";
@@ -519,25 +520,27 @@ function createGame(initialState, savedPosition, headless) {
         outputDiv = document.createElement("div");
         outputDiv.id = "game-output";
         outputContainerDiv.appendChild(outputDiv);
-        // game-input-container
-        inputContainerDiv = document.createElement("div");
-        inputContainerDiv.id = "game-input-container";
-        gameContainerDiv.appendChild(inputContainerDiv);
-        // game-input-help
-        inputHelpDiv = document.createElement("div");
-        inputHelpDiv.id = "game-input-help";
-        inputContainerDiv.appendChild(inputHelpDiv);
-        // game-input
-        inputBox = document.createElement("input");
-        inputBox.id = "game-input";
-        inputContainerDiv.appendChild(inputBox);
-        // game-input-tip
-        inputTip = document.createElement("div");
-        inputTip.id = "game-input-tip";
-        inputContainerDiv.appendChild(inputTip);
+        if (!game.skipInputBox) {
+            // game-input-container
+            inputContainerDiv = document.createElement("div");
+            inputContainerDiv.id = "game-input-container";
+            gameContainerDiv.appendChild(inputContainerDiv);
+            // game-input-help
+            inputHelpDiv = document.createElement("div");
+            inputHelpDiv.id = "game-input-help";
+            inputContainerDiv.appendChild(inputHelpDiv);
+            // game-input
+            inputBox = document.createElement("input");
+            inputBox.id = "game-input";
+            inputContainerDiv.appendChild(inputBox);
+            // game-input-tip
+            inputTip = document.createElement("div");
+            inputTip.id = "game-input-tip";
+            inputContainerDiv.appendChild(inputTip);
+        }
 
         if (initialState.onInitControls) {
-            initialState.onInitControls(gameContainerDiv);
+            initialState.onInitControls(gameContainerDiv, game);
         }
     }
 
@@ -783,6 +786,9 @@ function createGame(initialState, savedPosition, headless) {
         if (!location.explored) {
             location.explored = true;
         }
+        if (game.onEnterLocation) {
+            game.onEnterLocation(game, lastLocation);
+        }
     };
 
     game.printLocationInfo = function(useTypewriter) {
@@ -820,17 +826,25 @@ function createGame(initialState, savedPosition, headless) {
                     const descStr = location.desc instanceof Function ? location.desc(game) : location.desc;
                     game.printLocation(descStr, "desc", !useTypewriter);
                 }
-                if (location.exits && location.exits.length > 0) {
+                if (!game.skipLocationExits && location.exits && location.exits.length > 0) {
                     game.printLocation(game.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "), "exits", !useTypewriter);
                 }
-                let itemsStr = "";
-                if (location.items && location.items.length > 0) {
-                    itemsStr = game.messages.locationItems + ": " + location.items.map(i => game.mapItem(i).name).join(", ");
-                } else if (game.messages.noLocationItems) {
-                    itemsStr = game.messages.noLocationItems;
+                if (!game.skipLocationItems && !location.skipLocationItems) {
+                    let itemsStr = "";
+                    if (location.items && location.items.length > 0) {
+                        itemsStr = game.messages.locationItems + ": " + location.items.map(i => game.mapItem(i).name).join(", ");
+                    } else {
+                        if (location.noLocationItems) {
+                            itemsStr = location.noLocationItems;
+                        } else if (game.messages.noLocationItems) {
+                            itemsStr = game.messages.noLocationItems;
+                        }
+                    }
+                    game.printLocation(itemsStr, "items", !useTypewriter);
                 }
-                game.printLocation(itemsStr, "items", !useTypewriter);
-                game.printLocation("-".repeat(itemsStr.length), "dashes", !useTypewriter);
+                if (!game.skipLocationSeparator) {
+                    game.printLocation("-".repeat(itemsStr.length), "dashes", !useTypewriter);
+                }
             }
         }
     };
@@ -865,7 +879,7 @@ function createGame(initialState, savedPosition, headless) {
         }
     };
 
-    game.print = function(text, cssClass) {
+    game.print = function(text, cssClass, after) {
         if (headless) {
             console.log(text);
             return;
@@ -875,7 +889,7 @@ function createGame(initialState, savedPosition, headless) {
             line.className = cssClass;
         } : null;
         outputDiv.insertBefore(line, null)
-        queueOutput(line, text, before);
+        queueOutput(line, text, before, after);
     };
 
     game.printInputHelp = function(str, cssClass) {
@@ -891,7 +905,7 @@ function createGame(initialState, savedPosition, headless) {
 
     // Clear input help div
     game.clearInputHelp = function() {
-        if (headless) {
+        if (headless || game.skipInputBox) {
             return;
         }
         while (inputHelpDiv.firstChild) {
