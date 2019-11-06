@@ -489,6 +489,7 @@ function createGame(initialState, savedPosition, headless) {
     game.onLocationItemAdded = initialState.onLocationItemAdded;
     game.adaptCommand = initialState.adaptCommand;
     game.onEnterLocation = initialState.onEnterLocation;
+    game.headless = headless;
 
     if (savedPosition) {
         game.locations = savedPosition.locations;
@@ -812,6 +813,7 @@ function createGame(initialState, savedPosition, headless) {
             game.printLocation(buildLocationMessage(location, game), "custom")
         } else {
             if (headless) {
+                game.printLocation("[" + location.id + "]");
                 if (location.desc) {
                     const descStr = location.desc instanceof Function ? location.desc(game) : location.desc;
                     game.printLocation(descStr);
@@ -1002,7 +1004,6 @@ function createGame(initialState, savedPosition, headless) {
         }
         return null;
     };
-
 
     game.useItem = function(name) {
         const item = this.getItem(this.getItems(), name);
