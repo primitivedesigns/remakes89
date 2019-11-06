@@ -370,7 +370,7 @@ const locations = [{
 }, {
     id: "m5",
     desc: "O.K. Ulevuješ si mezi kytičky ve velkém květináči.",
-    hint: "Jeden z policajtů jistě bude mít něco, čím jde kámen odrazit.",
+    hint: "Jeden z policajtů jistě bude mít něco, čím jde kámen odrazit. S takovým kamenem pak jde zasáhnout i celkem vzdálený cíl.",
     items: ["kámen", "slovník"],
     exits: [{
         name: "doleva",
@@ -418,6 +418,7 @@ const locations = [{
 }, {
     id: "m6",
     desc: "O.K. Nacházíš se u domu módy v ústí do zatarasené Krakovské ulice.",
+    hint: "Tenhle policajt už ti k ničemu nebude.",
     // see item "kámen"
     shouldFail: true,
     readInit: function(obj) {
@@ -443,6 +444,7 @@ const locations = [{
     id: "m7",
     desc: "O.K. Stojíš před prodejnou knihy. Není nic slyšet, protože veliký dav tu skanduje heslo 'AŤ ŽIJE KAREL!' Vlevo je zatarasený vchod do Opletalky.",
     items: ["nápis na zdi", "pistoli"],
+    hint: "Václavák není místo, kde by tě pomohla pistole.",
     exits: [{
         name: "nahoru",
         location: "m4"
@@ -456,6 +458,7 @@ const locations = [{
 }, {
     id: "m8",
     desc: "O.K. Stojíš mezi patníky u kanálu. Není tu nic zvláštního. Dole jsou zátarasy.",
+    hint: "Nemohl by ti pomoct kanál?",
     items: ["poldu"],
     exits: [{
         name: "doleva",
@@ -508,6 +511,7 @@ const locations = [{
             }
         }
     },
+    hint: "Slyšíš ten tikot? Seber, co jde, a rychle pryč!",
     items: ["tyč"],
     exits: [{
         name: "doleva",
@@ -519,6 +523,7 @@ const locations = [{
 }, {
     id: "m10",
     desc: "O.K. Nacházíš se před LUXOL CLUBEM. Vedle je kino Jalta. Dole vidíš zátarasy.",
+    hint: "Některé předměty ti pomůžou víckrát. A pak nezapomeň, že šaty dělají člověka!",
     items: ["chlupatýho"],
     readInit: function(obj) {
         obj.onEnter = function(game) {
@@ -561,6 +566,7 @@ const locations = [{
 }, {
     id: "m11",
     desc: "O.K. Jsi v křoví.",
+    hint: "Někdo má uniformy rád, jiný zase nerad.",
     items: ["člena VB"],
     readInit: function(obj) {
         obj.onEnter = function(game) {
@@ -581,6 +587,7 @@ const locations = [{
 }, {
     id: "m12",
     desc: "O.K. Stojíš před bankou. Nahoře jsou zátarasy.",
+    hint: "Cedulka nelže!",
     items: ["oltář", "cedulku"],
     exits: [{
         name: "doleva",
@@ -633,6 +640,7 @@ const locations = [{
 }, {
     id: "m15",
     desc: "O.K. Stojíš pod lešením. Napravo je ústí do zatarasené Štěpánské ulice. Dole jsou také zátarasy.",
+    hint: "Některému nebezpečí se stačí jen uhnout.",
     items: ["civila"],
     readInit: function(obj) {
         obj.onEnter = function(game) {
@@ -654,6 +662,7 @@ const locations = [{
     id: "m16",
     desc: "O.K. Ležíš před obchodním domem DRUŽBA. Praštil tě totiž příslušník. Vchod do metra je zatarasen. Dole za zátarasy je tramvajové koleje.",
     items: ["příslušníka", "mrtvolu civila"],
+    hint: "Neber úplatky - dávej je!",
     exits: [{
         name: "doprava",
         location: "m17"
@@ -709,6 +718,7 @@ const locations = [{
             }
         }
     },
+    hint: "Milicionář to myslí vážně!",
     exits: [{
         name: "doleva",
         location: "m16"
@@ -722,6 +732,7 @@ const locations = [{
 }, {
     id: "m18",
     desc: "O.K. Stojíš u zataraseného vchodu do metra. Dole a nahoře jsou zátarasy.",
+    hint: "Na hod do dálky se budeš potřebovat posilnit.",
     items: ["špenát"],
     exits: [{
         name: "doleva",
