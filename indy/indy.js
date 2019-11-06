@@ -608,7 +608,8 @@ const locations = [{
 }, {
     id: "m14",
     cops: true,
-    readInit: function(obj) {
+    hint: "Některému nebezpečí se stačí jen uhnout.",
+        readInit: function(obj) {
         obj.desc = function(game) {
             let ret = "O.K. Sedíš na lavičce. (Už nemůžeš, co?) Kolem ucha ti hvízdla kulka. Nahoře jsou zátarasy.";
             if (obj.cops) {
@@ -640,7 +641,7 @@ const locations = [{
 }, {
     id: "m15",
     desc: "O.K. Stojíš pod lešením. Napravo je ústí do zatarasené Štěpánské ulice. Dole jsou také zátarasy.",
-    hint: "Některému nebezpečí se stačí jen uhnout.",
+    hint: "Kdo má málo místa v kapsách, musí se často převlékat!",
     items: ["civila"],
     readInit: function(obj) {
         obj.onEnter = function(game) {
