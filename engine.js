@@ -776,7 +776,7 @@ function createGame(initialState, savedPosition, headless) {
     // Return all takeable items in the current location
     game.getTakeableItems = function() {
         if (game.location.items) {
-            return game.location.items.map(item => game.mapItem(item)).filter(item => item.takeable === undefined || item.takeable);
+            return game.location.items.map(item => game.mapItem(item)).filter(item => item.takeable === undefined || item.takeable || item.maybeTakeable);
         }
     };
 
