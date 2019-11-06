@@ -38,6 +38,7 @@ const items = [{
     name: "bednu",
     keys: ["b"],
     takeable: false,
+    nonTakeableMessage: "Bohužel, ale bedna je řetězem přidělána k zábradlí. Jsi přece v Československu!",
     open: false,
     tapeTaken: false,
     readInit: function(obj) {
@@ -108,6 +109,9 @@ const items = [{
                     game.print("Stiskl jsi červené tlačítko s nápisem RECORD, ale nic se nestalo.");
                 }
                 return true;
+            } else {
+                game.print("Po chvíli natáčení se objevila  skupinka příslušníků Červených baretů. Vyrvali ti kameru z rukou a rozšlapali ji. Ty jsi na tom nebyl o moc lépe...", "end-lose");
+                game.end("kiled", false);
             }
         }
     }
@@ -158,6 +162,7 @@ const items = [{
     name: "klíček",
     keys: ["l"],
     destroyed: false,
+    skipOnUseMessage: true,
     readInit: function(obj) {
         obj.desc = function() {
             if (obj.destroyed) {
@@ -177,7 +182,7 @@ const items = [{
                     });
                     return true;
                 }
-            } else if(game.location.id === "m10") {
+            } else if (game.location.id === "m10") {
                 const door = game.getLocationItem("dveře");
                 if (door) {
                     door.destroyed = true;
@@ -495,20 +500,12 @@ const actions = [{
     keys: ["v"],
     perform: function(game, params) {
         game.clearOutput();
-        const takeableItems = game.getTakeableItems();
+        const takeableItems = game.location.items.map(i => game.mapItem(i)).filter(item => item.takeable === undefined || item.takeable || item.name === "bednu");
         if (!takeableItems || takeableItems.length === 0) {
             game.print("Nic tu není!");
         } else {
             if (takeableItems.length === 1) {
-                const ret = game.takeItem(takeableItems[0].name);
-                if (ret.full) {
-                    if (game.messages.inventoryFull) {
-                        game.print(game.messages.inventoryFull);
-                    }
-                } else if (ret.item) {
-                    game.print("O.K.");
-                    game.print("Vzal jsi " + ret.item.name);
-                }
+                takeItem(game, takeableItems[0]);
                 updateActionList(game);
             } else {
                 game.print("Co mám vzít?");
@@ -519,15 +516,7 @@ const actions = [{
                         keys: item.keys,
                         perform: function(game) {
                             game.clearOutput();
-                            const ret = game.takeItem(takeableItems[0].name);
-                            if (ret.full) {
-                                if (game.messages.inventoryFull) {
-                                    game.print(game.messages.inventoryFull);
-                                }
-                            } else if (ret.item) {
-                                game.print("O.K.");
-                                game.print("Vzal jsi " + ret.item.name);
-                            }
+                            takeItem(game, item);
                             updateActionList(game);
                         }
                     });
@@ -545,11 +534,7 @@ const actions = [{
             game.print("Nic neneseš!");
         } else {
             if (game.inventory.length === 1) {
-                const item = game.dropItem(game.inventory[0]);
-                if (item) {
-                    game.print("O.K.");
-                    game.print("Položil jsi " + item.name);
-                }
+                dropItem(game, game.mapItem(game.inventory[0]))
                 updateActionList(game);
             } else {
                 game.print("Co mám položit?");
@@ -561,11 +546,7 @@ const actions = [{
                         keys: item.keys,
                         perform: function(game) {
                             game.clearOutput();
-                            const item = game.dropItem(itemName);
-                            if (item) {
-                                game.print("O.K.");
-                                game.print("Položil jsi " + item.name);
-                            }
+                            dropItem(game, item);
                             updateActionList(game);
                         }
                     });
@@ -754,6 +735,32 @@ function processKey(game, key) {
         if (action.keys && action.keys.find(k => k.toLowerCase() === key)) {
             action.perform(game);
             break;
+        }
+    }
+}
+
+function dropItem(game, item) {
+    const ret = game.dropItem(item.name);
+    if (ret) {
+        game.print("O.K.");
+        game.print("Položil jsi " + item.name);
+    }
+}
+
+function takeItem(game, item) {
+    const ret = game.takeItem(item.name);
+    if (ret.full) {
+        if (game.messages.inventoryFull) {
+            game.print(game.messages.inventoryFull);
+        }
+    } else if (ret.item) {
+        game.print("O.K.");
+        game.print("Vzal jsi " + ret.item.name);
+    } else {
+        if (item.nonTakeableMessage) {
+            game.print(item.nonTakeableMessage);
+        } else {
+            game.print("Tohle nejde vzít.");
         }
     }
 }
