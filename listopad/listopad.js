@@ -783,10 +783,9 @@ function dropItem(game, item) {
 function takeItem(game, item) {
     const ret = game.takeItem(item.name);
     if (ret.full) {
-        if (game.messages.inventoryFull) {
-            game.print(game.messages.inventoryFull);
-        }
-    } else if (ret.item) {
+        return;
+    }
+    if (ret.item) {
         game.print("O.K.");
         game.print("Vzal jsi " + ret.item.name);
     } else {
