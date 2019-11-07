@@ -62,7 +62,7 @@ const items = [{
     readInit: function(obj) {
         obj.desc = function() {
             if (!obj.destroyed) {
-                return "Tato krabička, omotaná čímsi hnědým byla kdysi kazeta SONY.";
+                return "Tato krabička, omotaná čímsi hnědým, byla kdysi kazeta SONY.";
             }
             return "Je to videokazeta firmy SONY. Ještě je v ochranném obalu.";
         };
