@@ -125,7 +125,8 @@ const items = [{
                 game.print("Přistavil jsi žebřík ke zdi pod poklopem.");
                 game.location.exits.push({
                     name: "Nahoru",
-                    location: "m21"
+                    location: "m21",
+                    skipPreposition: true
                 });
                 return true;
             } else if (game.location.id.substring(1, game.location.id.length) > 7) {
@@ -178,7 +179,8 @@ const items = [{
                     game.print("Odemkl jsi zámek visící na poklopu.");
                     game.location.exits.push({
                         name: "Nahoru",
-                        location: "m17"
+                        location: "m17",
+                        skipPreposition: true
                     });
                     return true;
                 }
@@ -312,7 +314,8 @@ const locations = [{
         location: "m11"
     }, {
         name: "Dolů",
-        location: "m8"
+        location: "m8",
+        skipPreposition: true
     }],
 }, {
     id: "m8",
@@ -326,7 +329,8 @@ const locations = [{
         location: "m9"
     }, {
         name: "Nahoru",
-        location: "m7"
+        location: "m7",
+        skipPreposition: true
     }],
 }, {
     id: "m9",
@@ -352,7 +356,8 @@ const locations = [{
         location: "m12"
     }, {
         name: "Dolů",
-        location: "m7"
+        location: "m7",
+        skipPreposition: true
     }],
 }, {
     id: "m12",
@@ -372,7 +377,8 @@ const locations = [{
         location: "m12"
     }, {
         name: "Nahoru",
-        location: "m14"
+        location: "m14",
+        skipPreposition: true
     }],
 }, {
     id: "m14",
@@ -382,7 +388,8 @@ const locations = [{
         location: "m15"
     }, {
         name: "Dolů",
-        location: "m13"
+        location: "m13",
+        skipPreposition: true
     }],
 }, {
     id: "m15",
@@ -413,7 +420,8 @@ const locations = [{
         location: "m18"
     }, {
         name: "Dolů",
-        location: "m21"
+        location: "m21",
+        skipPreposition: true
     }],
 }, {
     id: "m18",
@@ -451,7 +459,8 @@ const locations = [{
     items: ["poklop"],
     exits: [{
         name: "Dolů",
-        location: "m16"
+        location: "m16",
+        skipPreposition: true
     }],
 }];
 
@@ -463,15 +472,7 @@ const actions = [{
         game.clearOutput();
         const exits = game.location.exits;
         if (exits.length === 1) {
-            game.print("O.K.");
-            game.print("Jdeš na " + exits[0].name.toLowerCase());
-            if (game.headless) {
-                game.goToLocation(exits[0].name);
-            } else {
-                setTimeout(function() {
-                    game.goToLocation(exits[0].name);
-                }, 1000);
-            }
+            goToLocation(game, exits[0]);
         } else {
             game.print("Kam mám jít?");
             const exitActionList = [];
@@ -481,15 +482,7 @@ const actions = [{
                     keys: [exit.name.charAt(0)],
                     perform: function(game) {
                         game.clearOutput();
-                        game.print("O.K.");
-                        game.print("Jdeš na " + exit.name.toLowerCase());
-                        if (game.headless) {
-                            game.goToLocation(exit.name);
-                        } else {
-                            setTimeout(function() {
-                                game.goToLocation(exit.name);
-                            }, 1000);
-                        }
+                        goToLocation(game, exit);
                     }
                 });
             }
@@ -737,6 +730,18 @@ function processKey(game, key) {
             action.perform(game);
             break;
         }
+    }
+}
+
+function goToLocation(game, exit) {
+    game.print("O.K.");
+    game.print("Jdeš " + (exit.skipPreposition ? "" : "na ") + exit.name.toLowerCase());
+    if (game.headless) {
+        game.goToLocation(exit.name);
+    } else {
+        setTimeout(function() {
+            game.goToLocation(exit.name);
+        }, 1000);
     }
 }
 
