@@ -24,16 +24,17 @@
             rámci herního světa si můžete přečíst její popis, seznam
             věcí, které vaše postava vidí, a seznam možných východů.
             Tyto hry se zpravidla ovládají pomocí psaných příkazů, které
-            jsou adresované hlavní postavě hry. Příkazy se píšou na
-            klávesnici a odesílají se klávesou Enter - připomínají tedy
-            příkazovou řádku ve starších i současných operačních
-            systémech. Československé textovky z 80. let dovolovaly psát
-            jednoduché příkazy skládající se ze slovesa a předmětu, jako
+            jsou adresované hlavní postavě hry. Tyto hry se obvykle hrají s tužkou a papírem, aby si hráči
+            mohli kreslit mapu místností a zapisovat lokace jednotlivých předmětů
+            a řešení hádanek.            
+            Ve hře P.R.E.S.T.A.V.B.A. se příkazy píšou na klávesnici a odesílají klávesou Enter - podobně jako na příkazové řádce
+            ve starších i současných operačních systémech. Hra rozumí 
+            jednoduchým příkazům skládajícím se ze slovesa a předmětu, jako
             například:</p>
         <div class="command">PROZKOUMEJ POKLOP</div>
         <div class="command">VEZMI KLÍČ</div>
-        <p>Naše verze textovek dovolují psát příkazy s diakritikou i
-            bez, a dokonce i zkracovat příkazy na tři první písmena.
+        <p>Naše verze hry dovoluje psát příkazy s diakritikou i
+            bez, a - stejně jako originál - zkracovat příkazy na tři první písmena.
             Výše uvedené příkazy tedy můžete napsat i jako:</p>
         <div class="command">PRO POK</div>
         <div class="command">VEZ KLI</div>
@@ -41,16 +42,19 @@
             označujících směr, kterým se chcete vydat, jako například:</p>
         <div class="command">SEVER (nebo S)</div>
         <div class="command">DOLŮ (nebo D)</div>
-        <p>Seznam všech dovolených sloves můžete vypsat příkazem
+        <p>Většinu hádanek ve hře vyřešíte použitím správného předmětu na správném místě. Manipulovat 
+            můžete jen s předměty, které hlavní postava vidí nebo nese. Seznam předmětů, které
+            má u sebe, vyvoláte příkazem "INVENTÁŘ" (nebo "I").</p>
+         <p>Seznam všech dovolených sloves můžete vypsat příkazem
             "SLOVNÍK". Pokud si nevíte rady, příkaz "POMOC" zobrazí
-            nápovědu k dané místnosti. V originálních verzích her však
+            nápovědu k dané místnosti. V originální verzi hry však
             tato nápověda nebyla, přidali jsme ji až do naší konverze.</p>
         <p>Pozici ve hře lze uložit a nahrát pomocí příkazů "SAVE" a "LOAD",
             případně také "ULOŽ" a "NAHRAJ". Za příkaz je třeba napsat název pozice, například:</p>
             <div class="command">SAVE ZACHOD</div>
             <div class="command">LOAD ZACHOD</div>
-        <p>Pokud nepoužijete název, uloží se pozice s názvem "SAVE". Pozice se ukládají
-            na pevný disk vašeho počítače do lokálního úložiště webového prohlížeče.
+        <p>Pokud nepoužijete název, uloží se pozice s názvem "SAVE". Seznam všech pozic vypíšete příkazem "POZICE". 
+            Pozice se ukládají na pevný disk vašeho počítače do lokálního úložiště webového prohlížeče.
             Zůstanou vám tedy i poté, co hru vypnete, avšak smažou se ve chvíli, kdy budete
             mazat soubory prohlížeče.</p>
         <h2>O hře P.R.E.S.T.A.V.B.A.</h2>
@@ -58,7 +62,7 @@
             známý pod značkou Cybexlab Software. V roce 1988 byl jedním
             z nejznámějších a nejrespektovanějších československých
             herních tvůrců. Hru P.R.E.S.T.A.V.B.A. však vydal pod
-            pseudonymem ÚV Software coby „naivní formu protestu“ a jeho
+            pseudonymem ÚV Software coby „formu protestu“ a jeho
             autorství vyšlo najevo až po roce 1989. Hra je ironicky
             dedikována „20. výročí osvobození Československa
             spojeneckými armádami“, ale ze samotné hry je jasné, že toto
@@ -74,8 +78,7 @@
         <p>Nejprve jsme analyzovali zdrojový kód v programovacím jazyce
             ZX Spectrum BASIC a pak jsme hru přepsali pro webové
             technologie (JavaScript, HTML a CSS) za použití vlastního na 
-            míru naprogramovaného enginu. Veškeré texty jsou
-            původní, pouze s přidanou diakritikou a případnou opravou
+            míru naprogramovaného enginu. Veškeré texty jsou původní, pouze s přidanou diakritikou a případnou opravou
             překlepů. Hádanky a jednotlivé herní mechaniky jsme se
             snažili co nejvěrněji reprodukovat. Oproti původní verzi
             jsou však v naší konverzi i následující změny:</p>
@@ -89,14 +92,45 @@
                 původní hře přítomny.</li>
             <li>Konverze umožňuje uložit a nahrát pozici ve hře (SAVE
                 a LOAD).</li>
-            <li>Konverze používá čitelnější písmo a má přívětivější uživatelské rozhraní.
+            <li>Konverze používá čitelnější písmo a má přívětivější a rychlejší uživatelské rozhraní.
                 Umožňuje například opakovat předchozí příkazy pomocí kurzorových šipek, případně klávesy TAB.</li>
             <li>Interface remaku umožňuje opakovat příkazy pomocí
                 šipek nahoru a dolů, případně klávesy TAB.</li>
 
         </ul>
+        
         <h2>Často kladené otázky (FAQ)</h2>
-        <p>TODO</p>
+        <p><i>Zasekl/a jsem se a nevím, jak dál. Co mám dělat?</i><br>
+            Zkuste použít příkazy POMOC a SLOVNIK. Tato hra má relativně bohatý slovník a na řadě míst budete muset použít
+            velmi specifická slovesa jako třeba ZAPAL. V případě největší nouze najdete kompletní návod na konci této stránky.</p>
+        <p><i>Je možné dostat se do stavu, kdy už hru nejde dohrát?</i><br>
+            Ano, je to možné. Pokud se to stalo, dozvíte se to pomocí příkazu POMOC. Potom můžete nahrát pozici nebo 
+            hru spustit znovu pomocí příkazů LOAD a RESTART.</p>
+        <p><i>Jak mám použít příkaz ZADEJ?</i><br>
+            Za sloveso napište přímo číslo nebo heslo, které chcete zadat, například "ZADEJ 12345678".</p>
+        
+        <h2>Titulky</h2>
+        <ul>
+            <li><b>ÚV Software (Miroslav Fídler)</b> - autor původní hry</li>
+            <li><b>Jaroslav Švelch</b> - produkce a design konverze, analýza zdrojového kódu a herních mechanik</li>
+            <li><b>Martin Kouba</b> - program a design konverze</li>
+            <li><b>Jana „Yuffie“ Kilianová</b> - pixel art</li>                        
+        </ul>
+        
+        <h2>Návod</h2>
+        <p>Pokud nutně potřebuješ vidět návod, označ kliknutím a přetažením myši následující odstavec:</p>
+        <p>V tmavém výklenku jsem vzal zapalovač (VEZ ZAP) a ve skladišti prozkoumal bednu (PRO BED), košík (PRO KOS), 
+            krabici (PRO KRA) a vzal klíč (VEZ KLI), se kterým jsem otevřel poklop (OTE POK). Nejdřív jsem ale ještě šel
+            ke dveřím záchodu a jako kód zadal pro komunistický režim významný rok 1948 (ZAD 1948) a dveře otevřel (OTE DVE).
+            Prozkoumal jsem mísu (PRO MIS) a našel knihu Karla Marxe Kapitál (VEZ KNI). S ní jsem se vydal k poklopu a
+            sešplhal po žebříku dolu. Zde jsem ve tmě zapálil knihu (ZAP KNI), vzal krumpáč (VEZ KRU) a ve výklenku i úvodník
+            Rudého práva (VEZ UVO). Ten jsem si přečetl, abych dostal chuť k práci (PRE UVO) a v místě, kde podlaha duněla,
+            jsem začal kopat (KOP). Novým průchodem jsem prošel až k dalšímu žebříku a vylezl nahoru. Objevil jsem se v kostelíku,
+            kde jsem prozkoumal oltář (PRO OLT), položil krumpáč (POL KRU) a sebral nalezený dynamit (VEZ DYN).
+            Z kostelíku jsem vyšel směrem JJJVV a došel do malého parčíku, kde se tyčila socha Lenina. 
+            Položil jsem dynamit a zapálil doutnák (ZAP DYN). Rychle jsem utekl pryč a počkal na výbuch.
+            Vrátil jsem se na místo činu a našel zlatou cihlu (VEZ CIH). 
+            [Autor návodu: UgraUgra, blog Herní archeolog (herniarcheolog.blogspot.com)]</p>
     </div>
     <div id="game-sidebar-open">
         <a href="javascript:void(0)" class="toggle-btn"
