@@ -727,6 +727,11 @@ function initState() {
         onEnterLocation: function(game, lastLocation) {
             updateActionList(game);
         },
+        onLoad: function(game, positionName) {
+            if (game.messages.gameLoaded) {
+                game.print(game.messages.gameLoaded + " [" + positionName + "]", "hint");
+            }
+        },
         actionList: [],
         isInputCaseSensitive: false,
         startLocation: "m1",
@@ -838,20 +843,21 @@ const builtinActions = [{
     keys: ["l"],
     perform: function(game) {
         game.clearOutput();
+        const positions = game.getPositions();
+        if (positions.length === 0) {
+            game.print("Nemám co nahrát!");
+            return;
+        }
         game.print("Nahrát jakou pozici?");
+        positions.sort();
         const positionList = [];
-        for (let index = 1; index < 10; index++) {
+        for (const position of positions) {
             positionList.push({
-                name: "P" + index,
-                keys: ["" + index],
+                name: position[0],
+                keys: [position[0].charAt(1)],
                 perform: function(game) {
-                    game.clearOutput();
-                    const positionName = game.load(["P" + index]);
-                    // TODO we cannot use the game param since a new game was already loaded
-                    // if (game.messages.gameLoaded) {
-                    //     game.print(game.messages.gameLoaded + " [" + positionName + "]", "hint");
-                    // }
-                    updateActionList(game);
+                    game.load([position[0]]);
+                    // We cannot use the game param since a new game was already loaded => onLoad callback
                 }
             });
         }

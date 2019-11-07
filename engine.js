@@ -34,9 +34,8 @@ function createEngine(headless) {
     }
 
     const printPositions = function(game, params) {
-        const prefix = buildPositionPrefix(game),
-            limit = 20;
-        let positions = engine.getPositions();
+        const limit = 20;
+        let positions = engine.getPositions(game);
         let shortened = false;
         if (positions.length > limit) {
             shortened = true;
@@ -47,7 +46,7 @@ function createEngine(headless) {
                 game.print(game.messages.gamePositionsEmpty, "hint");
             }
         } else if (game.messages.gamePositions) {
-            let msg = game.messages.gamePositions + positions.map(p => p[0].substring(prefix.length, p[0].length)).join(", ");
+            let msg = game.messages.gamePositions + positions.map(p => p[0]).join(", ");
             if (shortened) {
                 msg += ", ...";
             }
@@ -97,9 +96,6 @@ function createEngine(headless) {
                     engine.game.print(engine.game.messages.gameLoaded + " [" + positionName +
                         "]", "hint");
                 }
-                if (engine.game.onLoad) {
-                    engine.game.onLoad(game);
-                }
             } else {
                 // Game position does not exist
                 if (engine.game.messages) {
@@ -112,9 +108,8 @@ function createEngine(headless) {
             }
         },
         autocomplete: function(game, str) {
-            const prefix = buildPositionPrefix(game),
-                limit = 10;
-            let positions = engine.getPositions();
+            const limit = 10;
+            let positions = engine.getPositions(game);
             if (positions.length === 0) {
                 return positions;
             }
@@ -126,14 +121,13 @@ function createEngine(headless) {
             if (!str || str.length === 0) {
                 return positions.map(function(p) {
                     const ret = {};
-                    ret.name = p[0].substring(prefix.length, p[0].length);
+                    ret.name = p[0];
                     return ret;
                 });
             } else {
-                const name = prefix + str;
-                return positions.filter(p => p[0].startsWith(name)).map(function(p) {
+                return positions.filter(p => p[0].startsWith(str)).map(function(p) {
                     const ret = {};
-                    ret.name = p[0].substring(prefix.length, p[0].length);
+                    ret.name = p[0];
                     return ret;
                 })
             }
@@ -152,6 +146,9 @@ function createEngine(headless) {
         engine.game.save = function(params) {
             return engine.save(params);
         };
+        engine.game.getPositions = function() {
+            return engine.getPositions(engine.game);
+        }
         engine.game.clearAll();
         console.log("Game initialized");
     }
@@ -403,6 +400,9 @@ function createEngine(headless) {
             this.initGame(JSON.parse(position));
             this.start();
             console.log("Game loaded: " + positionName);
+            if (engine.game.onLoad) {
+                engine.game.onLoad(engine.game, positionName.substring(buildPositionPrefix(engine.game).length, positionName.length));
+            }
             return params && params.length > 0 ? params[0] : "save";
         } else {
             console.log("Game position does not exist: " + positionName);
@@ -411,13 +411,17 @@ function createEngine(headless) {
     }
 
     // Returns positions - [name, data, timestamp] - sorted by timestamp (lifo)
-    // Position name contains prefix
-    engine.getPositions = function() {
+    engine.getPositions = function(game) {
+        const prefix = buildPositionPrefix(game);
         const positions = [];
         for (var i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!key.startsWith(prefix)) {
+                continue;
+            }
             const pos = [];
-            pos.push(localStorage.key(i));
-            pos.push(JSON.parse(localStorage.getItem(pos[0])));
+            pos.push(key.substring(prefix.length, key.length));
+            pos.push(JSON.parse(localStorage.getItem(key)));
             pos.push(pos[1].timestamp);
             positions.push(pos);
         }
@@ -439,7 +443,7 @@ function createEngine(headless) {
     }
 
     engine.loadLastPosition = function() {
-        const positions = engine.getPositions();
+        const positions = engine.getPositions(engine.game);
         if (positions.length === 0) {
             return false;
         }
@@ -450,14 +454,14 @@ function createEngine(headless) {
     }
 
     function getPositionName(params) {
-        return buildPositionPrefix(this.game) + (params.length === 0 ? "save" : params[0]);
+        return buildPositionPrefix(engine.game) + (params.length === 0 ? "save" : params[0]);
     }
 
     return engine;
 }
 
 function buildPositionPrefix(game) {
-    const prefix = engine.game.savedPositionPrefix;
+    const prefix = game.savedPositionPrefix;
     if (!prefix) {
         console.log("Game does not specify a 'saved position prefix' - SAVE/LOAD may not work correctly");
     }
@@ -489,6 +493,7 @@ function createGame(initialState, savedPosition, headless) {
     game.onLocationItemAdded = initialState.onLocationItemAdded;
     game.adaptCommand = initialState.adaptCommand;
     game.onEnterLocation = initialState.onEnterLocation;
+    game.onLoad = initialState.onLoad;
     game.headless = headless;
 
     if (savedPosition) {
@@ -827,15 +832,20 @@ function createGame(initialState, savedPosition, headless) {
                 }
             } else {
                 // By default, each message is written on a separate line
+                let lastLine = "";
                 if (location.name) {
                     game.printLocation(location.name, "name", !useTypewriter);
+                    lastLine = location.name;
                 }
                 if (location.desc) {
                     const descStr = location.desc instanceof Function ? location.desc(game) : location.desc;
                     game.printLocation(descStr, "desc", !useTypewriter);
+                    lastLine = descStr;
                 }
                 if (!game.skipLocationExits && location.exits && location.exits.length > 0) {
-                    game.printLocation(game.messages.locationExits + ": " + location.exits.map(e => e.name).join(", "), "exits", !useTypewriter);
+                    const exitsStr = game.messages.locationExits + ": " + location.exits.map(e => e.name).join(", ");
+                    game.printLocation(exitsStr, "exits", !useTypewriter);
+                    lastLine = exitsStr;
                 }
                 if (!game.skipLocationItems && !location.skipLocationItems) {
                     let itemsStr = "";
@@ -849,9 +859,10 @@ function createGame(initialState, savedPosition, headless) {
                         }
                     }
                     game.printLocation(itemsStr, "items", !useTypewriter);
+                    lastLine = itemsStr;
                 }
                 if (!game.skipLocationSeparator) {
-                    game.printLocation("-".repeat(itemsStr.length), "dashes", !useTypewriter);
+                    game.printLocation("-".repeat(lastLine.length), "dashes", !useTypewriter);
                 }
             }
         }
