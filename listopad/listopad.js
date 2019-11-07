@@ -250,10 +250,10 @@ const locations = [{
         name: "Východ",
         location: "m2"
     }],
-    hint: "TODO test hint..."
+    hint: "Neotálej a jdi vpřed!"
 }, {
     id: "m2",
-    desc: "Pokračuješ s davem směrem k jazykové škole. Na jih od tebe je pasáž Metro. Vpředu se průvod zastavil a lidé se začínají mačkat. Vrátit se nelze.",
+    desc: "Pokračuješ s davem směrem k jazykové škole. Na sever od tebe je pasáž Metro. Vpředu se průvod zastavil a lidé se začínají mačkat. Vrátit se nelze.",
     exits: [{
         name: "Sever",
         location: "m3"
@@ -261,6 +261,7 @@ const locations = [{
         name: "Východ",
         location: "m4"
     }],
+    hint: "Pasáž nevypadá bezpečně.",
     items: ["klíč"]
 }, {
     id: "m3",
@@ -275,6 +276,7 @@ const locations = [{
 }, {
     id: "m4",
     desc: "Jsi namáčknut na zdi. Lidé skandují: \"Nechceme násilí\", \"Lidský práva\", \"Nechte nás projít\".",
+    hint: "Neotálej a jdi vpřed!",
     exits: [{
         name: "Jih",
         location: "m5"
@@ -283,6 +285,7 @@ const locations = [{
 }, {
     id: "m5",
     desc: "Jsi na chodníku na pravé straně Národní třídy.",
+    hint: "Jak se dostat do domu?",
     items: ["dveře"],
     exits: [{
             name: "Sever",
@@ -306,6 +309,7 @@ const locations = [{
 }, {
     id: "m7",
     desc: "Jsi v přízemí domu.",
+    hint: "Tady se nic zvláštního nestane.",
     exits: [{
         name: "Sever",
         location: "m5"
@@ -320,6 +324,7 @@ const locations = [{
 }, {
     id: "m8",
     desc: "Jsi ve sklepení domu.",
+    hint: "Bednu bude třeba vypáčit.",
     items: ["bednu"],
     exits: [{
         name: "Jih",
@@ -334,6 +339,7 @@ const locations = [{
     }],
 }, {
     id: "m9",
+    hint: "K videokameře bude třeba i příslušenství.",
     desc: "Jsi na západním konci sklepní chodby.",
     items: ["videokameru"],
     exits: [{
@@ -342,6 +348,7 @@ const locations = [{
     }],
 }, {
     id: "m10",
+    hint: "Žebřík se ti bude hodit, ale použij ho jen na tom správném místě.",
     desc: "Jsi na jižním konci sklepní chodby.",
     items: ["žebřík"],
     exits: [{
@@ -351,6 +358,7 @@ const locations = [{
 }, {
     id: "m11",
     desc: "Stojíš na schodech v prvním patře.",
+    hint: "Tady se nic zvláštního nestane.",
     exits: [{
         name: "Jih",
         location: "m12"
@@ -362,6 +370,7 @@ const locations = [{
 }, {
     id: "m12",
     desc: "Jsi v rohu prvního patra. Zvenku slyšíš štěkat psy.",
+    hint: "Tady se nic zvláštního nestane.",
     exits: [{
         name: "Sever",
         location: "m11"
@@ -372,6 +381,7 @@ const locations = [{
 }, {
     id: "m13",
     desc: "Stojíš pod schody, které zřejmě vedou do druhého patra.",
+    hint: "Tady se nic zvláštního nestane.",
     exits: [{
         name: "Západ",
         location: "m12"
@@ -382,6 +392,7 @@ const locations = [{
     }],
 }, {
     id: "m14",
+    hint: "Tady se nic zvláštního nestane.",
     desc: "Jsi na schodech ve druhém patře.",
     exits: [{
         name: "Západ",
@@ -394,6 +405,7 @@ const locations = [{
 }, {
     id: "m15",
     desc: "Jsi v rohu druhého patra.",
+    hint: "Copak je asi pod rohožkou?",
     // key is under the doormat 
     items: ["rohožku"],
     exits: [{
@@ -406,6 +418,7 @@ const locations = [{
 }, {
     id: "m16",
     desc: "Jsi na konci chodby v druhém patře.",
+    hint: "Odsud na poklop nedosáhneš.",
     // use the ladder -> exit "Nahoru" to m17
     items: ["poklop"],
     exits: [{
@@ -415,6 +428,7 @@ const locations = [{
 }, {
     id: "m17",
     desc: "Jsi na střeše obytného domu.",
+    hint: "Tady se nic zvláštního nestane.",
     exits: [{
         name: "Východ",
         location: "m18"
@@ -426,6 +440,7 @@ const locations = [{
 }, {
     id: "m18",
     desc: "Jsi v rohu střechy.",
+    hint: "Baterie přijdou vhod!",
     items: ["baterie"],
     exits: [{
         name: "Jih",
@@ -436,6 +451,7 @@ const locations = [{
     }],
 }, {
     id: "m19",
+    hint: "Z Národní třídy můžou příslušníci vidět i tebe!",
     desc: "Popošel jsi po střeše. Dostal jsi se na místo, z kterého je dobře vidět na Národní třídu.",
     items: ["hák"],
     exits: [{
@@ -448,6 +464,7 @@ const locations = [{
 }, {
     id: "m20",
     desc: "Dostal jsi se do rohu střechy. Je odtud nádherný výhled na osvětlené Hradčany.",
+    hint: "Kromě výhledu na Hradčany odsud vidíš i zásah na Národní třídě. Snad to bude stačit.",
     exits: [{
         name: "Západ",
         location: "m19"
@@ -455,6 +472,7 @@ const locations = [{
 }, {
     id: "m21",
     desc: "Stojíš na žebříku.",
+    hint: "Poklop bude třeba odemknout.",
     // open the trapdoor -> exit "Nahoru" to m21
     items: ["poklop"],
     exits: [{
