@@ -11,7 +11,7 @@ const items = [{
     readInit: function(obj) {
         obj.onUse = function(game) {
             if (game.location.id === "m5") {
-                const door = game.getLocationItem("dveře");
+                const door = game.getLocationItem("vrata");
                 if (!door.open) {
                     game.removeItem("klíč");
                     door.open = true;
@@ -286,7 +286,7 @@ const locations = [{
     id: "m5",
     desc: "Jsi na chodníku na pravé straně Národní třídy.",
     hint: "Jak se dostat do domu?",
-    items: ["dveře"],
+    items: ["vrata"],
     exits: [{
             name: "Sever",
             location: "m4"
