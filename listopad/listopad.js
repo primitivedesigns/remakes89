@@ -190,6 +190,8 @@ const items = [{
                 if (door) {
                     door.destroyed = true;
                     game.removeItem("klíček");
+                    game.print("Ztěžka jsi zasunul klíč do dírky ve dveřích, otočil jsi...  ...a došlo k nejhoršímu! KLÍČEK SE ZLOMIL!");
+                    // Klicek se zlomil je v blikajícím stylu
                     // TODO fail state
                     return true;
                 }
@@ -224,6 +226,7 @@ const items = [{
                 game.print("Odhodil jsi baterie do nejbližšího rohu.");
             }
             game.removeItem(obj.name);
+            // failstate
             return true;
         };
     }
@@ -349,9 +352,9 @@ const locations = [{
     }],
 }, {
     id: "m10",
-    hint: "Nezdá se, že by za těmi vraty bylo něco důležitého.",
+    hint: "Nezdá se, že by za těmi dveřmi bylo něco důležitého.",
     desc: "Jsi na jižním konci sklepní chodby.",
-    items: ["žebřík"],
+    items: ["žebřík", "dveře"],
     exits: [{
         name: "Sever",
         location: "m8"
