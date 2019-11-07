@@ -30,6 +30,7 @@ const items = [{
     keys: ["v"],
     open: false,
     takeable: false,
+    nonTakeableMessage: "Myslím, že bych je nevzal, ani kdyby byly otevřené, natož když jsou zamčené.",
     readInit: function(obj) {
         obj.desc = function() {
             return obj.open ? "Jsou odemčená. V dírce je ještě klíč." : "Obrovská dřevěná zamčená vrata, která ti brání ve vstupu do domu. Asi ve výši tvých očí se na tebe směje prázdná klíčová dírka. Snad by se dala i odemknout.";
@@ -153,6 +154,7 @@ const items = [{
     keys: ["d"],
     destroyed: false,
     takeable: false,
+    nonTakeableMessage: "Bohužel, ale dveře jsou tak masivní, že bys je sotva otevřel.",
     readInit: function(obj) {
         obj.desc = function() {
             if (obj.destroyed) {
@@ -220,6 +222,9 @@ const items = [{
                 return "Je to masivní kovový poklop. Visí na něm odemčený zámek.";
             }
             return "Je to masivní kovový poklop; asi vede na střechu. Je zajištěn visacím zámkem.";
+        };
+        obj.nonTakeableMessage = function(game) {
+            return game.location.id === "m21" ? "Je tak těžký, že kdybych ho vysadil z pantu, tak by mě srazil ze žebříku." : "Je moc vysoko!";
         };
     }
 }, {
@@ -801,7 +806,8 @@ function takeItem(game, item) {
         game.print("Vzal jsi " + ret.item.name);
     } else {
         if (item.nonTakeableMessage) {
-            game.print(item.nonTakeableMessage);
+            const msg = item.nonTakeableMessage instanceof Function ? item.nonTakeableMessage(game) : item.nonTakeableMessage;
+            game.print(msg);
         } else {
             game.print("Tohle nejde vzít.");
         }
