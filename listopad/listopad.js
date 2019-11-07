@@ -632,7 +632,7 @@ const actions = [{
                 for (const item of items) {
                     itemsList.push({
                         name: item.name,
-                        keys: [item.name[0]],
+                        keys: item.keys,
                         perform: function(game) {
                             game.clearOutput();
                             game.examineItem(item.name);
