@@ -183,7 +183,7 @@ const items = [{
             if (obj.destroyed) {
                 return "Je to jen rukojeť od bývalého klíčku.";
             }
-            return "Je to malý klíček výrobního družstva INKLEMO Praha složící asi k odemykání čehosi.";
+            return "Je to malý klíček výrobního družstva INKLEMO Praha sloužící asi k odemykání čehosi.";
         };
         obj.onUse = function(game) {
             if (game.location.id === "m21") {
