@@ -15,7 +15,7 @@ const items = [{
                 if (!door.open) {
                     game.removeItem("klíč");
                     door.open = true;
-                    game.print("Strčil jsi ho do klíčové dírky dveří, otočil jsi s ním a s velkou námahou jsi otevřel dveře do domu. S námahou proto, že na nich bylo instalováno BRANO.");
+                    game.print("Strčil jsi ho do klíčové dírky dveří, otoočil jsi s ním a s velkou námahou jsi otevřel dveře do domu. S námahou proto, že na nich bylo instalováno BRANO.");
                     game.location.exits.push({
                         name: "Jih",
                         location: "m7"
