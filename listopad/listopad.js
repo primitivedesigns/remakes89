@@ -100,19 +100,19 @@ const items = [{
             return "Je to obyčejná videokamera. Na boku je nápis SONY a několik tlačítek. Stiskl jsi jedno z nich, ale nic se nestalo.";
         };
         obj.onUse = function(game) {
-            if (game.location.id === "m20") {
-                if (obj.battery && obj.tape) {
+            if (!obj.battery) {
+                game.print("Stiskl jsi červené tlačítko s nápisem RECORD, ale nic se nestalo.");
+            } else if (obj.battery && !obj.tape) {
+                game.print("Stiskl jsi červené tlačítko s nápisem RECORD, kamera začala bzučet, ale po chvíli přestala. Asi není vše v pořádku.");
+            } else {
+                if (game.location.id === "m20") {
                     game.print("Stiskl jsi červené tlačítko s nápisem RECORD. Kamera začala bzučet a nad tímto tlačítkem se rozsvítila červená dioda.", "end-win");
                     game.end("win");
-                } else if (obj.battery && !obj.tape) {
-                    game.print("Stiskl jsi červené tlačítko s nápisem RECORD, kamera začala bzučet, ale po chvíli přestala. Asi není vše v pořádku.");
-                } else if (!obj.battery) {
-                    game.print("Stiskl jsi červené tlačítko s nápisem RECORD, ale nic se nestalo.");
+                    return true;
+                } else {
+                    game.print("Po chvíli natáčení se objevila skupinka příslušníků Červených baretů. Vyrvali ti kameru z rukou a rozšlapali ji. Ty jsi na tom nebyl o moc lépe...", "end-lose");
+                    game.end("kiled", false);
                 }
-                return true;
-            } else {
-                game.print("Po chvíli natáčení se objevila skupinka příslušníků Červených baretů. Vyrvali ti kameru z rukou a rozšlapali ji. Ty jsi na tom nebyl o moc lépe...", "end-lose");
-                game.end("kiled", false);
             }
         }
     }
