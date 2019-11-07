@@ -254,7 +254,7 @@ const locations = [{
     hint: "Neotálej a jdi vpřed!"
 }, {
     id: "m2",
-    desc: "Pokračuješ s davem směrem k jazykové škole. Na sever od tebe je pasáž Metro. Vpředu se průvod zastavil a lidé se začínají mačkat. Vrátit se nelze.",
+    desc: "Pokračuješ s davem směrem k jazykové škole. Na sever od tebe je pasáž Metro. Vpředu se průvod zastavil a lidé se začínají mačkat. Vrátit se nelze.",
     exits: [{
         name: "Sever",
         location: "m3"
