@@ -38,7 +38,7 @@ const fullPathCommands = [
     // m8
     "u", "h",
     // drop items
-    "p", "h", "p", "r", "p", "l", "p", "ž",
+    "p", "h", "p", "r", "p", //"l",
     // take tape
     "v", "i", "j", "z",
     // m9
