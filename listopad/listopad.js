@@ -607,7 +607,7 @@ const actions = [{
         game.clearOutput();
         game.print("Zůstal jsi stát na místě...");
         if (game.location.id === "m1") {
-            game.print("Dokud okolo tebe šel průvod, lidé se ti ohleduplně vyhýbali. Po chvíli však byl průvod přerušen kordonem \"pořádkových jednotek\", který přišel z mostu 1. Máje. Tito \"lidé\" se ti již nevyhli...", "end-lose");
+            game.print("Dokud okolo tebe šel průvod, lidé se ti ohleduplně vyhýbali. Po chvíli však byl průvod přerušen kordonem \"pořádkových jednotek\", který přišel z mostu 1. Máje. Tito \"lidé\" se ti již nevyhli...", "end-lose");
             game.end("killed", false);
         } else if (game.location.id === "m4") {
             game.print("Chvíli jsi čekal,že bude průvod propuštěn směrem k Václavskému náměstí. Stalo se však něco uplně jiného. Příslušníci tvrdě zasáhli...", "end-lose");
