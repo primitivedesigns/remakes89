@@ -822,6 +822,7 @@ function useItem(game, item) {
 const builtinActions = [{
     name: "Restart",
     keys: ["r"],
+    lineBreak: true,
     perform: function(game) {
         location.reload();
     }
@@ -915,6 +916,9 @@ function fillActionList(game) {
         const action = game.actionList[i];
         let keyFound = false;
         for (let j = 0; j < action.name.length; j++) {
+            if (j === 0 && action.lineBreak) {
+                actionListDiv.appendChild(document.createElement("br"));
+            }
             const letter = action.name[j];
             if (!keyFound && action.keys && action.keys.find(key => key.toLowerCase() === letter.toLowerCase())) {
                 const keySpan = document.createElement("span");
