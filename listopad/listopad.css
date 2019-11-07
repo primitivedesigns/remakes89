@@ -61,21 +61,9 @@ div#game-all {
 	border-radius: 10px;
 }
 
-div.intro-text1_a {
-	margin-top: 2em;
-}
-
-div.intro-text1, div.intro-text1_a {
-	font-size: 2em;
-	text-align: center;
-	color: white;
-}
-
-div.intro-text2 {
-	float: right;
-	font-size: 2em;
-	clear: both;
-	margin-bottom: 1em;
+/* TODO fix text overflow */
+#game-output div {
+	overflow-wrap: break-word;
 }
 
 div.intro-title {

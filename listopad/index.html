@@ -20,6 +20,74 @@
         <a href="javascript:void(0)" id="game-sidebar-close" class="toggle-btn"
             onclick="closeSide()">&times;</a>
         <h2>Jak hrát textovku</h2>
+        <p>Textovky (někdy také nazývané "interaktivní fikce")
+            popisují herní svět pomocí psaného textu. V každé lokaci v
+            rámci herního světa si můžete přečíst její popis, seznam
+            věcí, které vaše postava vidí, a seznam možných východů.
+            Tyto hry se ovládají pomocí příkazů, které
+            jsou adresované hlavní postavě hry. Textovky se obvykle hrají s tužkou a papírem, aby si hráči
+            mohli kreslit mapu místností a zapisovat lokace jednotlivých předmětů
+            a řešení hádanek.            
+            Ve hře 17. 11. 1989 příkazy a jejich předměty skládáte pomocí výběru z možností uvedených
+            ve spodní části obrazovky. Nejprve pomocí vyznačené klávesy zvolte sloveso a poté předmět nebo směr.
+            V případě, že není z čeho vybírat, program automaticky vybere jedinou možnou akci.          
+        <p>Abyste dosáhli cíle hry, který je popsaný v úvodu hry, musíte vyřešit několik hádanek. Řešení zpravidla
+            spočívá v použití správného předmětu na správném místě. Hlavní hrdina může používat pouze předměty, které
+            vidí nebo má u sebe. Seznam předmětů, které nese, vyvoláte příkazem "Inventář" (klávesa "I").</p>
+         <p>Pokud si nevíte rady, příkaz "Pomoc" (klávesa "O") zobrazí nápovědu k dané místnosti. V originální verzi hry však
+            tato nápověda nebyla, přidali jsme ji až do naší konverze.</p>
+        <p>Pozici ve hře lze uložit a nahrát pomocí příkazů "Save" a "Load". Použít lze jeden z deseti připravených slotů.
+            Pozice se ukládají na pevný disk vašeho počítače do lokálního úložiště webového prohlížeče.
+            Zůstanou vám tedy i poté, co hru vypnete, avšak smažou se ve chvíli, kdy budete
+            mazat soubory prohlížeče.</p>
+        <h2>O hře 17. 11. 1989</h2>
+        <p>Spolehneme-li se na datum uvedené přímo na úvodní obrazovce, tato hra byla vydána 19. 11. 1989, 
+            tedy hned dva dny po násilném policejním zásahu na Národní třídě.  V té době ještě rozuzlení Sametové revoluce nebylo ani zdaleka jasné 
+            a oficiální média se snažila zprávy o událostech na Národní třídě ututlat. Textovka 17. 11. 1989
+            tematizuje touhu občanů po nezkreslených informacích. Demonstraci ukazuje z pohledu amatérského novináře, 
+            který má za úkol natočit svědectví o brutalitě policejního zásahu a poslat jej západním médiím. Autor - jehož identitu doposud neznáme -
+            se podepsal pseudonymem Hoblsoft. Zajímavá je i úvodní obrazovka (podepsaná pseudonymem Hoblsoft), která je svébytnou koláží protestních sloganů 
+            a grafiky převzaté z australské karate „mlátičky“ The Way of the Exploding Fist (1985).</p>
+        <h2>Jak jsme hru rekonstruovali</h2>
+        <p>Nejprve jsme analyzovali zdrojový kód v programovacím jazyce
+            ZX Spectrum BASIC a pak jsme hru přepsali pro webové
+            technologie (JavaScript, HTML a CSS) za použití vlastního na 
+            míru naprogramovaného enginu. Veškeré texty jsou původní, pouze s přidanou diakritikou a případnou opravou
+            překlepů. Hádanky a jednotlivé herní mechaniky jsme se
+            snažili co nejvěrněji reprodukovat. Oproti původní verzi
+            jsou však v naší konverzi i následující změny:</p>
+        <ul>
+            <li>Konverze obsahuje nápovědy (přes příkaz Pomoc - O), které nebyly v
+                původní hře přítomny.</li>
+            <li>Konverze umožňuje uložit a nahrát pozici ve hře.</li>
+            <li>Konverze používá čitelnější písmo a má přívětivější, rychlejší a jednotnější uživatelské rozhraní.</li>
+        </ul>
+        
+        <h2>Často kladené otázky (FAQ)</h2>
+        <p><b>Zasekl/a jsem se a nevím, jak dál. Co mám dělat?</b><br>
+            Zkuste použít příkaz POMOC. V případě největší nouze najdete kompletní návod na konci této stránky.</p>
+        <p><b>Je možné dostat se do stavu, kdy už hru nejde dohrát?</b><br>
+            Ano, je to možné, pokud vyhodíte nebo zničíte předmět nutný k dohrání hry. V takovém případě můžete nahrát pozici nebo 
+            hru spustit znovu pomocí příkazů Load a Restart.</p>
+        
+        <h2>Titulky</h2>
+        <ul>
+            <li><b>Doublesoft (anonym)</b> - autor původní hry</li>
+            <li><b>Hoblsoft (anonym)</b> - autor úvodního obrázku</li>            
+            <li><b>Jaroslav Švelch</b> - produkce a design konverze, analýza zdrojového kódu a herních mechanik</li>
+            <li><b>Martin Kouba</b> - program a design konverze</li>
+       </ul>
+        
+        <h2>Návod</h2>
+        <p>Pokud nutně potřebuješ vidět návod, označ kliknutím a přetažením myši následující odstavec:</p>
+        <p>Jděte na východ, seberte klíč, jděte dál na východ, otevřete dveře pomocí klíče, jděte do domu na jih, 
+            jděte do sklepa, najděte žebřík a vezměte ho, jděte zpět do přízemí, jděte do prvního patra domu, 
+            najděte schody do druhého patra a zamiřte tam, pod rohožkou najděte klíček, u poklopu použijte žebřík, 
+            vylezte na žebřík a pomocí klíčku otevřete poklop, jděte na střechu, najděte páčidlo "S-hák" a seberte ho, vraťte
+            se do sklepa, najděte tam videokameru, pomocí páčidla otevřete bednu, vezměte z bedny kazetu, 
+            jděte opět na střechu, na střeše najděte baterie, vložte baterie do kamery, zasuňte kazetu do kamery, 
+            najděte místo s výhledem na Hradčany, začněte natáčet videokamerou a to je konec hry.
+            [Autor návodu: Karel Ondráček (solaris108), ZX-Spectrum.cz]</p>        
     </div>
     <div id="game-sidebar-open">
         <a href="javascript:void(0)" class="toggle-btn"
