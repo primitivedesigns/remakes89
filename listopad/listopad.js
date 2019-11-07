@@ -30,6 +30,7 @@ const items = [{
     keys: ["v"],
     open: false,
     takeable: false,
+    nonTakeableMessage: "Myslím, že bych je nevzal, ani kdyby byly otevřené, natož když jsou zamčené.",
     readInit: function(obj) {
         obj.desc = function() {
             return obj.open ? "Jsou odemčená. V dírce je ještě klíč." : "Obrovská dřevěná zamčená vrata, která ti brání ve vstupu do domu. Asi ve výši tvých očí se na tebe směje prázdná klíčová dírka. Snad by se dala i odemknout.";
@@ -100,19 +101,19 @@ const items = [{
             return "Je to obyčejná videokamera. Na boku je nápis SONY a několik tlačítek. Stiskl jsi jedno z nich, ale nic se nestalo.";
         };
         obj.onUse = function(game) {
-            if (game.location.id === "m20") {
-                if (obj.battery && obj.tape) {
+            if (!obj.battery) {
+                game.print("Stiskl jsi červené tlačítko s nápisem RECORD, ale nic se nestalo.");
+            } else if (obj.battery && !obj.tape) {
+                game.print("Stiskl jsi červené tlačítko s nápisem RECORD, kamera začala bzučet, ale po chvíli přestala. Asi není vše v pořádku.");
+            } else {
+                if (game.location.id === "m20") {
                     game.print("Stiskl jsi červené tlačítko s nápisem RECORD. Kamera začala bzučet a nad tímto tlačítkem se rozsvítila červená dioda.", "end-win");
                     game.end("win");
-                } else if (obj.battery && !obj.tape) {
-                    game.print("Stiskl jsi červené tlačítko s nápisem RECORD, kamera začala bzučet, ale po chvíli přestala. Asi není vše v pořádku.");
-                } else if (!obj.battery) {
-                    game.print("Stiskl jsi červené tlačítko s nápisem RECORD, ale nic se nestalo.");
+                    return true;
+                } else {
+                    game.print("Po chvíli natáčení se objevila skupinka příslušníků Červených baretů. Vyrvali ti kameru z rukou a rozšlapali ji. Ty jsi na tom nebyl o moc lépe...", "end-lose");
+                    game.end("kiled", false);
                 }
-                return true;
-            } else {
-                game.print("Po chvíli natáčení se objevila skupinka příslušníků Červených baretů. Vyrvali ti kameru z rukou a rozšlapali ji. Ty jsi na tom nebyl o moc lépe...", "end-lose");
-                game.end("kiled", false);
             }
         }
     }
@@ -153,6 +154,7 @@ const items = [{
     keys: ["d"],
     destroyed: false,
     takeable: false,
+    nonTakeableMessage: "Bohužel, ale dveře jsou tak masivní, že bys je sotva otevřel.",
     readInit: function(obj) {
         obj.desc = function() {
             if (obj.destroyed) {
@@ -220,6 +222,9 @@ const items = [{
                 return "Je to masivní kovový poklop. Visí na něm odemčený zámek.";
             }
             return "Je to masivní kovový poklop; asi vede na střechu. Je zajištěn visacím zámkem.";
+        };
+        obj.nonTakeableMessage = function(game) {
+            return game.location.id === "m21" ? "Je tak těžký, že kdybych ho vysadil z pantu, tak by mě srazil ze žebříku." : "Je moc vysoko!";
         };
     }
 }, {
@@ -801,7 +806,8 @@ function takeItem(game, item) {
         game.print("Vzal jsi " + ret.item.name);
     } else {
         if (item.nonTakeableMessage) {
-            game.print(item.nonTakeableMessage);
+            const msg = item.nonTakeableMessage instanceof Function ? item.nonTakeableMessage(game) : item.nonTakeableMessage;
+            game.print(msg);
         } else {
             game.print("Tohle nejde vzít.");
         }
@@ -822,6 +828,7 @@ function useItem(game, item) {
 const builtinActions = [{
     name: "Restart",
     keys: ["r"],
+    lineBreak: true,
     perform: function(game) {
         location.reload();
     }
@@ -915,6 +922,9 @@ function fillActionList(game) {
         const action = game.actionList[i];
         let keyFound = false;
         for (let j = 0; j < action.name.length; j++) {
+            if (j === 0 && action.lineBreak) {
+                actionListDiv.appendChild(document.createElement("br"));
+            }
             const letter = action.name[j];
             if (!keyFound && action.keys && action.keys.find(key => key.toLowerCase() === letter.toLowerCase())) {
                 const keySpan = document.createElement("span");
