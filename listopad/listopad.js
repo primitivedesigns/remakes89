@@ -248,6 +248,7 @@ const locations = [{
         name: "Východ",
         location: "m2"
     }],
+    hint: "TODO test hint..."
 }, {
     id: "m2",
     desc: "Pokračuješ s davem směrem k jazykové škole. Na jih od tebe je pasáž Metro. Vpředu se průvod zastavil a lidé se začínají mačkat. Vrátit se nelze.",
@@ -828,6 +829,17 @@ const builtinActions = [{
             });
         }
         updateActionList(game, positionList);
+    }
+}, {
+    name: "Pomoc",
+    keys: ["o"],
+    perform: function(game) {
+        game.clearOutput();
+        if (game.location.hint) {
+            game.print(game.location.hint, "hint");
+        } else {
+            game.print("Nevím, jak ti pomoci...");
+        }
     }
 }];
 
