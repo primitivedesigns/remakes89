@@ -110,7 +110,7 @@ const items = [{
                 }
                 return true;
             } else {
-                game.print("Po chvíli natáčení se objevila  skupinka příslušníků Červených baretů. Vyrvali ti kameru z rukou a rozšlapali ji. Ty jsi na tom nebyl o moc lépe...", "end-lose");
+                game.print("Po chvíli natáčení se objevila skupinka příslušníků Červených baretů. Vyrvali ti kameru z rukou a rozšlapali ji. Ty jsi na tom nebyl o moc lépe...", "end-lose");
                 game.end("kiled", false);
             }
         }
@@ -299,7 +299,7 @@ const locations = [{
     skipLocationItems: true,
     readInit: function(obj) {
         obj.onEnter = function(game) {
-            game.print("Vešel jsi do pasáže u Reduty. Jsou zde příslušníci \"Červených baretů\". Asi čtyři se na tebe ihned vrhli a se slovy \"Dělejte, ať se tu s váma nemusíme ... do půlnoci\" tě umlátili do bezvědomí.", "end-lose");
+            game.print("Vešel jsi do pasáže u Reduty. Jsou zde příslušníci \"Červených baretů\". Asi čtyři se na tebe ihned vrhli a se slovy \"Dělejte, ať se tu s váma nemusíme ... do půlnoci\" tě umlátili do bezvědomí.", "end-lose");
             game.end("killed", false);
         }
     },
@@ -334,7 +334,7 @@ const locations = [{
     }],
 }, {
     id: "m9",
-    desc: "Jsi uprostřed sklepní chodby.",
+    desc: "Jsi na západním konci sklepní chodby.",
     items: ["videokameru"],
     exits: [{
         name: "Východ",
@@ -342,7 +342,7 @@ const locations = [{
     }],
 }, {
     id: "m10",
-    desc: "Jsi na konci sklepní chodby.",
+    desc: "Jsi na jižním konci sklepní chodby.",
     items: ["žebřík"],
     exits: [{
         name: "Sever",
@@ -525,7 +525,7 @@ const actions = [{
     perform: function(game, params) {
         game.clearOutput();
         if (!game.inventory || game.inventory.length === 0) {
-            game.print("Nic neneseš!");
+            game.print("Nic neneseš.");
         } else {
             if (game.inventory.length === 1) {
                 dropItem(game, game.mapItem(game.inventory[0]))
