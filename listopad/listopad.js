@@ -249,7 +249,8 @@ const items = [{
 
 const locations = [{
     id: "m1",
-    desc: "Nacházíš se u Národního divadla. Dav tě strhává směrem k nakladatelství ALBATROS. Zůstat na místě je nemožné.",
+    desc: "Nacházíš se u Národního divadla. Dav tě strhává směrem k nakladatelství ALBATROS. Zůstat na místě je nemožné.",
+    // 
     exits: [{
         name: "Východ",
         location: "m2"
