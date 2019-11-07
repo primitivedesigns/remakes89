@@ -120,20 +120,31 @@ const items = [{
     name: "žebřík",
     keys: ["ž", "z"],
     desc: "Je to kovový třímetrový žebřík, má deset příček.",
+    skipOnUseMessage: true,
     readInit: function(obj) {
         obj.onUse = function(game) {
             if (game.location.id === "m16") {
-                game.print("Přistavil jsi žebřík ke zdi pod poklopem.");
-                game.location.exits.push({
-                    name: "Nahoru",
-                    location: "m21",
-                    skipPreposition: true
-                });
+                if (!game.location.exits.find(e => e.name === "Nahoru")) {
+                    game.print("Přistavil jsi žebřík ke zdi pod poklopem.");
+                    if (game.getInventoryItem(obj.name)) {
+                        game.dropItem(obj.name);
+                    }
+                    game.location.exits.push({
+                        name: "Nahoru",
+                        location: "m21",
+                        skipPreposition: true
+                    });
+                }
                 return true;
             } else if (game.location.id.substring(1, game.location.id.length) > 7) {
                 game.print("Přistavil jsi žebřík k nejbližší zdi a zkušebně jsi na něj vylezl. Avšak žebřík nestál stabilně, proto jste se oba poroučeli k zemi. Vyvázl jsi pouze s otřesem mozku a zlomenou nohou.", "end-lose");
                 game.end("killed");
                 return true;
+            }
+        };
+        obj.onTake = function(game) {
+            if (game.location.id === "m16") {
+                game.removeLocationExit("Nahoru");
             }
         }
     }

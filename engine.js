@@ -785,6 +785,14 @@ function createGame(initialState, savedPosition, headless) {
         }
     };
 
+    game.removeLocationExit = function(name, location) {
+        const loc = location ? location : game.location;
+        const idx = loc.exits.findIndex(e => e.name === name);
+        if (idx != -1) {
+            loc.exits.splice(idx, 1);
+        }
+    }
+
     game.enterLocation = function(location) {
         const lastLocation = game.location;
         if (lastLocation && lastLocation.onLeave) {
