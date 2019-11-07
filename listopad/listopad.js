@@ -348,7 +348,7 @@ const locations = [{
     }],
 }, {
     id: "m10",
-    hint: "Žebřík se ti bude hodit, ale použij ho jen na tom správném místě.",
+    hint: "Nezdá se, že by za těmi vraty bylo něco důležitého.",
     desc: "Jsi na jižním konci sklepní chodby.",
     items: ["žebřík"],
     exits: [{
