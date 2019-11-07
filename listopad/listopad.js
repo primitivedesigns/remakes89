@@ -30,7 +30,7 @@ const items = [{
     keys: ["v"],
     open: false,
     takeable: false,
-    nonTakeableMessage: "Myslím, že bych je nevzal, ani kdyby byly otevřené, natož když jsou zamčené.",
+    nonTakeableMessage: "Myslím, že bych je nevzal, ani kdyby byly otevřená, natož když jsou zamčená.",
     readInit: function(obj) {
         obj.desc = function() {
             return obj.open ? "Jsou odemčená. V dírce je ještě klíč." : "Obrovská dřevěná zamčená vrata, která ti brání ve vstupu do domu. Asi ve výši tvých očí se na tebe směje prázdná klíčová dírka. Snad by se dala i odemknout.";
