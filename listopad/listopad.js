@@ -7,7 +7,7 @@ let sideOpen = false;
 const items = [{
     name: "klíč",
     keys: ["k"],
-    desc: "Je to trochu větší kónický klíč. Má tři zuby a zdobenou rukojeť. Asi bude od nějakých vrat.",
+    desc: "Je to trochu větší kónický klíč. Má tři zuby a zdobenou rukojeť. Asi bude od nějakých vrat.",
     readInit: function(obj) {
         obj.onUse = function(game) {
             if (game.location.id === "m5") {
@@ -15,7 +15,7 @@ const items = [{
                 if (!door.open) {
                     game.removeItem("klíč");
                     door.open = true;
-                    game.print("Strčil jsi ho do klíčové dírky dveří, otočil jsi s ním a s velkou námahou jsi otevřel dveře do domu. S námahou proto, že na nich bylo instalováno BRANO.");
+                    game.print("Strčil jsi ho do klíčové dírky dveří, otočil jsi s ním a s velkou námahou jsi otevřel dveře do domu. S námahou proto, že na nich bylo instalováno BRANO.");
                     game.location.exits.push({
                         name: "Jih",
                         location: "m7"
@@ -33,7 +33,7 @@ const items = [{
     nonTakeableMessage: "Myslím, že bych je nevzal, ani kdyby byly otevřená, natož když jsou zamčená.",
     readInit: function(obj) {
         obj.desc = function() {
-            return obj.open ? "Jsou odemčená. V dírce je ještě klíč." : "Obrovská dřevěná zamčená vrata, která ti brání ve vstupu do domu. Asi ve výši tvých očí se na tebe směje prázdná klíčová dírka. Snad by se dala i odemknout.";
+            return obj.open ? "Jsou odemčená. V dírce je ještě klíč." : "Obrovská dřevěná zamčená vrata, která ti brání ve vstupu do domu. Asi ve výši tvých očí se na tebe směje prázdná klíčová dírka. Snad by se dala i odemknout.";
         };
     }
 }, {
@@ -46,12 +46,12 @@ const items = [{
     readInit: function(obj) {
         obj.desc = function() {
             if (!obj.open) {
-                return "Obrovská dřevěná bedna, zatlučená hřeby. Co je asi uvnitř?";
+                return "Obrovská dřevěná bedna, zatlučená hřeby. Co je asi uvnitř?";
             }
             if (!tapeTaken) {
-                return "Je ze silných fošen. Vypadá to, že je čerstvě vypáčená! Uvnitř leží nějaká krabička!";
+                return "Je ze silných fošen. Vypadá to, že je čerstvě vypáčená! Uvnitř leží nějaká krabička!";
             }
-            return "Je ze silných fošen. Vypadá to, že je čerstvě vypáčená! Je však prázdná.";
+            return "Je ze silných fošen. Vypadá to, že je čerstvě vypáčená! Je však prázdná.";
         };
     }
 }, {
@@ -62,9 +62,9 @@ const items = [{
     readInit: function(obj) {
         obj.desc = function() {
             if (!obj.destroyed) {
-                return "Tato krabička, omotaná čímsi hnědým, byla kdysi kazeta SONY.";
+                return "Tato krabička, omotaná čímsi hnědým, byla kdysi kazeta SONY.";
             }
-            return "Je to videokazeta firmy SONY. Ještě je v ochranném obalu.";
+            return "Je to videokazeta firmy SONY. Ještě je v ochranném obalu.";
         };
         obj.onTake = function(game) {
             const box = game.getItem(game.getItems(), "bednu");
@@ -76,11 +76,11 @@ const items = [{
             const cam = game.getItem(game.getItems(), "videokameru");
             if (cam) {
                 cam.tape = true;
-                game.print("Zasunul jsi kazetu do videokamery.");
+                game.print("Zasunul jsi kazetu do videokamery.");
                 game.removeItem(obj.name);
             } else {
                 obj.destroyed = true;
-                game.print("Vymotal jsi pásek z kazety ve snaze ho použít. Ale dopadlo to jinak. Z kazety se stala krabička omotaná čímsi hnědým.");
+                game.print("Vymotal jsi pásek z kazety ve snaze ho použít. Ale dopadlo to jinak. Z kazety se stala krabička omotaná čímsi hnědým.");
             }
             return true;
         }
@@ -94,24 +94,24 @@ const items = [{
     readInit: function(obj) {
         obj.desc = function() {
             if (obj.battery && obj.tape) {
-                return "Je to obyčejná videokamera. Na boku má nápis SONY a několik tlačítek. Když jsi stiskl tlačítko s nápisem EJECT, trochu to v ní zacvakalo a pak se otevřela dvířka s kazetou.";
+                return "Je to obyčejná videokamera. Na boku má nápis SONY a několik tlačítek. Když jsi stiskl tlačítko s nápisem EJECT, trochu to v ní zacvakalo a pak se otevřela dvířka s kazetou.";
             } else if (obj.battery && !obj.tape) {
-                return "Je to obyčejná videokamera. Na boku je nápis SONY a několik tlačítek. Když jsi stiskl tlačítko s nápisem EJECT, trochu to v ní zacvakalo a pak se otevřela dvířka na kazetu.";
+                return "Je to obyčejná videokamera. Na boku je nápis SONY a několik tlačítek. Když jsi stiskl tlačítko s nápisem EJECT, trochu to v ní zacvakalo a pak se otevřela dvířka na kazetu.";
             }
-            return "Je to obyčejná videokamera. Na boku je nápis SONY a několik tlačítek. Stiskl jsi jedno z nich, ale nic se nestalo.";
+            return "Je to obyčejná videokamera. Na boku je nápis SONY a několik tlačítek. Stiskl jsi jedno z nich, ale nic se nestalo.";
         };
         obj.onUse = function(game) {
             if (!obj.battery) {
-                game.print("Stiskl jsi červené tlačítko s nápisem RECORD, ale nic se nestalo.");
+                game.print("Stiskl jsi červené tlačítko s nápisem RECORD, ale nic se nestalo.");
             } else if (obj.battery && !obj.tape) {
-                game.print("Stiskl jsi červené tlačítko s nápisem RECORD, kamera začala bzučet, ale po chvíli přestala. Asi není vše v pořádku.");
+                game.print("Stiskl jsi červené tlačítko s nápisem RECORD, kamera začala bzučet, ale po chvíli přestala. Asi není vše v pořádku.");
             } else {
                 if (game.location.id === "m20") {
-                    game.print("Stiskl jsi červené tlačítko s nápisem RECORD. Kamera začala bzučet a nad tímto tlačítkem se rozsvítila červená dioda.", "end-win");
+                    game.print("Stiskl jsi červené tlačítko s nápisem RECORD. Kamera začala bzučet a nad tímto tlačítkem se rozsvítila červená dioda.", "end-win");
                     game.end("win");
                     return true;
                 } else {
-                    game.print("Po chvíli natáčení se objevila skupinka příslušníků Červených baretů. Vyrvali ti kameru z rukou a rozšlapali ji. Ty jsi na tom nebyl o moc lépe...", "end-lose");
+                    game.print("Po chvíli natáčení se objevila skupinka příslušníků Červených baretů. Vyrvali ti kameru z rukou a rozšlapali ji. Ty jsi na tom nebyl o moc lépe...", "end-lose");
                     game.end("kiled", false);
                 }
             }
@@ -120,13 +120,13 @@ const items = [{
 }, {
     name: "žebřík",
     keys: ["ž", "z"],
-    desc: "Je to kovový třímetrový žebřík, má deset příček.",
+    desc: "Je to kovový třímetrový žebřík, má deset příček.",
     skipOnUseMessage: true,
     readInit: function(obj) {
         obj.onUse = function(game) {
             if (game.location.id === "m16") {
                 if (!game.location.exits.find(e => e.name === "Nahoru")) {
-                    game.print("Přistavil jsi žebřík ke zdi pod poklopem.");
+                    game.print("Přistavil jsi žebřík ke zdi pod poklopem.");
                     if (game.getInventoryItem(obj.name)) {
                         game.dropItem(obj.name);
                     }
@@ -138,7 +138,7 @@ const items = [{
                 }
                 return true;
             } else if (game.location.id.substring(1, game.location.id.length) > 7) {
-                game.print("Přistavil jsi žebřík k nejbližší zdi a zkušebně jsi na něj vylezl. Avšak žebřík nestál stabilně, proto jste se oba poroučeli k zemi. Vyvázl jsi pouze s otřesem mozku a zlomenou nohou.", "end-lose");
+                game.print("Přistavil jsi žebřík k nejbližší zdi a zkušebně jsi na něj vylezl. Avšak žebřík nestál stabilně, proto jste se oba poroučeli k zemi. Vyvázl jsi pouze s otřesem mozku a zlomenou nohou.", "end-lose");
                 game.end("killed");
                 return true;
             }
@@ -158,15 +158,15 @@ const items = [{
     readInit: function(obj) {
         obj.desc = function() {
             if (obj.destroyed) {
-                return "Jsou to kovové dveře. V klíčové  dírce je zlomený klíček. To bude zas domovnice řádit...";
+                return "Jsou to kovové dveře. V klíčové  dírce je zlomený klíček. To bude zas domovnice řádit...";
             }
-            return "Je v nich malá klíčová dírka (asi pro malý klíček).";
+            return "Je v nich malá klíčová dírka (asi pro malý klíček).";
         }
     }
 }, {
     name: "rohožku",
     keys: ["r"],
-    desc: "Je to zcela normální rohožka (rozměry 100 x 50 x 1,5 cm) na čištění bot.",
+    desc: "Je to zcela normální rohožka (rozměry 100 x 50 x 1,5 cm) na čištění bot.",
     readInit: function(obj) {
         obj.onTake = function(game) {
             game.print("Pod rohožkou se skrýval klíček!");
@@ -181,16 +181,16 @@ const items = [{
     readInit: function(obj) {
         obj.desc = function() {
             if (obj.destroyed) {
-                return "Je to jen rukojeť od bývalého klíčku.";
+                return "Je to jen rukojeť od bývalého klíčku.";
             }
-            return "Je to malý klíček výrobního družstva INKLEMO Praha sloužící asi k odemykání čehosi.";
+            return "Je to malý klíček výrobního družstva INKLEMO Praha sloužící asi k odemykání čehosi.";
         };
         obj.onUse = function(game) {
             if (game.location.id === "m21") {
                 const trapDoor = game.getLocationItem("poklop");
                 if (!trapDoor.open) {
                     trapDoor.open = true;
-                    game.print("Odemkl jsi zámek visící na poklopu.");
+                    game.print("Odemkl jsi zámek visící na poklopu.");
                     game.location.exits.push({
                         name: "Nahoru",
                         location: "m17",
@@ -203,7 +203,7 @@ const items = [{
                 if (door) {
                     door.destroyed = true;
                     game.removeItem("klíček");
-                    game.print("Ztěžka jsi zasunul klíč do dírky ve dveřích, otočil jsi...  ...a došlo k nejhoršímu! KLÍČEK SE ZLOMIL!");
+                    game.print("Ztěžka jsi zasunul klíč do dírky ve dveřích, otočil jsi...  ...a došlo k nejhoršímu! KLÍČEK SE ZLOMIL!");
                     // Klicek se zlomil je v blikajícím stylu
                     // TODO fail state
                     return true;
@@ -219,9 +219,9 @@ const items = [{
     readInit: function(obj) {
         obj.desc = function() {
             if (obj.open) {
-                return "Je to masivní kovový poklop. Visí na něm odemčený zámek.";
+                return "Je to masivní kovový poklop. Visí na něm odemčený zámek.";
             }
-            return "Je to masivní kovový poklop; asi vede na střechu. Je zajištěn visacím zámkem.";
+            return "Je to masivní kovový poklop; asi vede na střechu. Je zajištěn visacím zámkem.";
         };
         obj.nonTakeableMessage = function(game) {
             return game.location.id === "m21" ? "Je tak těžký, že kdybych ho vysadil z pantu, tak by mě srazil ze žebříku." : "Je moc vysoko!";
@@ -230,16 +230,16 @@ const items = [{
 }, {
     name: "baterie",
     keys: ["b"],
-    desc: "Jsou to baterie VARTA specielně určené pro elektronické přístroje.",
+    desc: "Jsou to baterie VARTA specielně určené pro elektronické přístroje.",
     skipOnUseMessage: true,
     readInit: function(obj) {
         obj.onUse = function(game) {
             const cam = game.getItem(game.getItems(), "videokameru");
             if (cam) {
                 cam.battery = true;
-                game.print("Vložil jsi baterie do kamery.");
+                game.print("Vložil jsi baterie do kamery.");
             } else {
-                game.print("Odhodil jsi baterie do nejbližšího rohu.");
+                game.print("Odhodil jsi baterie do nejbližšího rohu.");
             }
             game.removeItem(obj.name);
             // failstate
@@ -249,13 +249,13 @@ const items = [{
 }, {
     name: "hák",
     keys: ["h"],
-    desc: "Je to kovový \"s\"-hák sloužící k páčení.",
+    desc: "Je to kovový \"s\"-hák sloužící k páčení.",
     readInit: function(obj) {
         obj.onUse = function(game) {
             const box = game.getItem(game.getItems(), "bednu");
             if (box && !box.open) {
                 box.open = true;
-                game.print("Vypáčil jsi víko bedny. V bedně je videokazeta!");
+                game.print("Vypáčil jsi víko bedny. V bedně je videokazeta!");
                 game.addLocationItem("videokazetu");
                 return true;
             }
@@ -265,7 +265,7 @@ const items = [{
 
 const locations = [{
     id: "m1",
-    desc: "Nacházíš se u Národního divadla. Dav tě strhává směrem k nakladatelství ALBATROS. Zůstat na místě je nemožné.",
+    desc: "Nacházíš se u Národního divadla. Dav tě strhává směrem k nakladatelství ALBATROS. Zůstat na místě je nemožné.",
     exits: [{
         name: "Východ",
         location: "m2"
@@ -273,7 +273,7 @@ const locations = [{
     hint: "Neotálej a jdi vpřed!"
 }, {
     id: "m2",
-    desc: "Pokračuješ s davem směrem k jazykové škole. Na sever od tebe je pasáž Metro. Vpředu se průvod zastavil a lidé se začínají mačkat. Vrátit se nelze.",
+    desc: "Pokračuješ s davem směrem k jazykové škole. Na sever od tebe je pasáž Metro. Vpředu se průvod zastavil a lidé se začínají mačkat. Vrátit se nelze.",
     exits: [{
         name: "Sever",
         location: "m3"
@@ -289,22 +289,22 @@ const locations = [{
     skipLocationItems: true,
     readInit: function(obj) {
         obj.onEnter = function(game) {
-            game.print("Vlezl jsi do pasáže Metro. Vmžiku se na tebe vrhlo pět příslušníků \"Červených baretů\" a zmlátili tě do bezvědomí.", "end-lose");
+            game.print("Vlezl jsi do pasáže Metro. Vmžiku se na tebe vrhlo pět příslušníků \"Červených baretů\" a zmlátili tě do bezvědomí.", "end-lose");
             game.end("killed", false);
         }
     },
 }, {
     id: "m4",
-    desc: "Jsi namáčknut na zdi. Lidé skandují: \"Nechceme násilí\", \"Lidský práva\", \"Nechte nás projít\".",
+    desc: "Jsi namáčknut na zdi. Lidé skandují: \"Nechceme násilí\", \"Lidský práva\", \"Nechte nás projít\".",
     hint: "Neotálej a jdi vpřed!",
     exits: [{
         name: "Jih",
         location: "m5"
     }],
-    noLocationItems: "Mimo kordon příslušníků VB nevidíš nic zvláštního."
+    noLocationItems: "Mimo kordon příslušníků VB nevidíš nic zvláštního."
 }, {
     id: "m5",
-    desc: "Jsi na chodníku na pravé straně Národní třídy.",
+    desc: "Jsi na chodníku na pravé straně Národní třídy.",
     hint: "Jak se dostat do domu?",
     items: ["vrata"],
     exits: [{
@@ -322,13 +322,13 @@ const locations = [{
     skipLocationItems: true,
     readInit: function(obj) {
         obj.onEnter = function(game) {
-            game.print("Vešel jsi do pasáže u Reduty. Jsou zde příslušníci \"Červených baretů\". Asi čtyři se na tebe ihned vrhli a se slovy \"Dělejte, ať se tu s váma nemusíme ... do půlnoci\" tě umlátili do bezvědomí.", "end-lose");
+            game.print("Vešel jsi do pasáže u Reduty. Jsou zde příslušníci \"Červených baretů\". Asi čtyři se na tebe ihned vrhli a se slovy \"Dělejte, ať se tu s váma nemusíme ... do půlnoci\" tě umlátili do bezvědomí.", "end-lose");
             game.end("killed", false);
         }
     },
 }, {
     id: "m7",
-    desc: "Jsi v přízemí domu.",
+    desc: "Jsi v přízemí domu.",
     hint: "Tady se nic zvláštního nestane.",
     exits: [{
         name: "Sever",
@@ -343,7 +343,7 @@ const locations = [{
     }],
 }, {
     id: "m8",
-    desc: "Jsi ve sklepení domu.",
+    desc: "Jsi ve sklepení domu.",
     hint: "Bednu bude třeba vypáčit.",
     items: ["bednu"],
     exits: [{
@@ -369,7 +369,7 @@ const locations = [{
 }, {
     id: "m10",
     hint: "Nezdá se, že by za těmi dveřmi bylo něco důležitého.",
-    desc: "Jsi na jižním konci sklepní chodby.",
+    desc: "Jsi na jižním konci sklepní chodby.",
     items: ["žebřík", "dveře"],
     exits: [{
         name: "Sever",
@@ -377,7 +377,7 @@ const locations = [{
     }],
 }, {
     id: "m11",
-    desc: "Stojíš na schodech v prvním patře.",
+    desc: "Stojíš na schodech v prvním patře.",
     hint: "Tady se nic zvláštního nestane.",
     exits: [{
         name: "Jih",
@@ -389,7 +389,7 @@ const locations = [{
     }],
 }, {
     id: "m12",
-    desc: "Jsi v rohu prvního patra. Zvenku slyšíš štěkat psy.",
+    desc: "Jsi v rohu prvního patra. Zvenku slyšíš štěkat psy.",
     hint: "Tady se nic zvláštního nestane.",
     exits: [{
         name: "Sever",
@@ -400,7 +400,7 @@ const locations = [{
     }],
 }, {
     id: "m13",
-    desc: "Stojíš pod schody, které zřejmě vedou do druhého patra.",
+    desc: "Stojíš pod schody, které zřejmě vedou do druhého patra.",
     hint: "Tady se nic zvláštního nestane.",
     exits: [{
         name: "Západ",
@@ -413,7 +413,7 @@ const locations = [{
 }, {
     id: "m14",
     hint: "Tady se nic zvláštního nestane.",
-    desc: "Jsi na schodech ve druhém patře.",
+    desc: "Jsi na schodech ve druhém patře.",
     exits: [{
         name: "Západ",
         location: "m15"
@@ -424,7 +424,7 @@ const locations = [{
     }],
 }, {
     id: "m15",
-    desc: "Jsi v rohu druhého patra.",
+    desc: "Jsi v rohu druhého patra.",
     hint: "Copak je asi pod rohožkou?",
     // key is under the doormat 
     items: ["rohožku"],
@@ -437,7 +437,7 @@ const locations = [{
     }],
 }, {
     id: "m16",
-    desc: "Jsi na konci chodby v druhém patře.",
+    desc: "Jsi na konci chodby v druhém patře.",
     hint: "Odsud na poklop nedosáhneš.",
     // use the ladder -> exit "Nahoru" to m17
     items: ["poklop"],
@@ -447,7 +447,7 @@ const locations = [{
     }],
 }, {
     id: "m17",
-    desc: "Jsi na střeše obytného domu.",
+    desc: "Jsi na střeše obytného domu.",
     hint: "Tady se nic zvláštního nestane.",
     exits: [{
         name: "Východ",
@@ -459,7 +459,7 @@ const locations = [{
     }],
 }, {
     id: "m18",
-    desc: "Jsi v rohu střechy.",
+    desc: "Jsi v rohu střechy.",
     hint: "Baterie přijdou vhod!",
     items: ["baterie"],
     exits: [{
@@ -472,7 +472,7 @@ const locations = [{
 }, {
     id: "m19",
     hint: "Z Národní třídy můžou příslušníci vidět i tebe!",
-    desc: "Popošel jsi po střeše. Dostal jsi se na místo, z kterého je dobře vidět na Národní třídu.",
+    desc: "Popošel jsi po střeše. Dostal jsi se na místo, z kterého je dobře vidět na Národní třídu.",
     items: ["hák"],
     exits: [{
         name: "Sever",
@@ -483,7 +483,7 @@ const locations = [{
     }],
 }, {
     id: "m20",
-    desc: "Dostal jsi se do rohu střechy. Je odtud nádherný výhled na osvětlené Hradčany.",
+    desc: "Dostal jsi se do rohu střechy. Je odtud nádherný výhled na osvětlené Hradčany.",
     hint: "Kromě výhledu na Hradčany odsud vidíš i zásah na Národní třídě. Snad to bude stačit.",
     exits: [{
         name: "Západ",
@@ -491,7 +491,7 @@ const locations = [{
     }],
 }, {
     id: "m21",
-    desc: "Stojíš na žebříku.",
+    desc: "Stojíš na žebříku.",
     hint: "Poklop bude třeba odemknout.",
     // open the trapdoor -> exit "Nahoru" to m21
     items: ["poklop"],
@@ -563,7 +563,7 @@ const actions = [{
     perform: function(game, params) {
         game.clearOutput();
         if (!game.inventory || game.inventory.length === 0) {
-            game.print("Nic neneseš.");
+            game.print("Nic neneseš.");
         } else {
             if (game.inventory.length === 1) {
                 dropItem(game, game.mapItem(game.inventory[0]))
@@ -623,10 +623,10 @@ const actions = [{
         game.clearOutput();
         game.print("Zůstal jsi stát na místě...");
         if (game.location.id === "m1") {
-            game.print("Dokud okolo tebe šel průvod, lidé se ti ohleduplně vyhýbali. Po chvíli však byl průvod přerušen kordonem \"pořádkových jednotek\", který přišel z mostu 1. Máje. Tito \"lidé\" se ti již nevyhli...", "end-lose");
+            game.print("Dokud okolo tebe šel průvod, lidé se ti ohleduplně vyhýbali. Po chvíli však byl průvod přerušen kordonem \"pořádkových jednotek\", který přišel z mostu 1. Máje. Tito \"lidé\" se ti již nevyhli...", "end-lose");
             game.end("killed", false);
         } else if (game.location.id === "m4") {
-            game.print("Chvíli jsi čekal,že bude průvod propuštěn směrem k Václavskému náměstí. Stalo se však něco uplně jiného. Příslušníci tvrdě zasáhli...", "end-lose");
+            game.print("Chvíli jsi čekal,že bude průvod propuštěn směrem k Václavskému náměstí. Stalo se však něco uplně jiného. Příslušníci tvrdě zasáhli...", "end-lose");
             game.end("killed", false);
         } else {
             game.print("Nic se nestalo.");
@@ -668,7 +668,7 @@ const actions = [{
         if (game.inventory && game.inventory.length > 0) {
             game.print("Neseš " + game.inventory.join(", "));
         } else {
-            game.print("Nic neneseš!");
+            game.print("Nic neneseš!");
         }
     },
 }];
@@ -901,7 +901,7 @@ function updateActionList(game, actions) {
     if (!actions) {
         actions = game.getActions();
         builtinActions.forEach(a => actions.push(a));
-        game.print("Co mám dělat?");
+        game.print("Co mám dělat?");
     }
     game.actionList = actions;
     if (game.headless) {
