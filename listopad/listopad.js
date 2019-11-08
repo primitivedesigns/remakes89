@@ -666,7 +666,7 @@ const actions = [{
     perform: function(game, params) {
         game.clearOutput();
         if (game.inventory && game.inventory.length > 0) {
-            game.print("Neseš " + game.inventory.join(", "));
+            game.print("Neseš " + game.inventory.join(", ") );
         } else {
             game.print("Nic neneseš!");
         }
@@ -695,6 +695,121 @@ function initState() {
             gamePositionDoesNotExist: "Nelze nahrát pozici: ",
             inventoryFull: "Máš plné ruce!",
         },
+        intro: [function(gameContainer) {
+            // Image
+            const title = document.createElement("div");
+            gameContainer.appendChild(title);
+            title.className = "intro-title";
+
+            const img = document.createElement("img");
+            img.src = "img/title.png";
+            img.className = "intro-img";
+            title.appendChild(img);
+
+            const textEnter = document.createElement("div");
+            title.appendChild(textEnter);
+
+            queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
+                textEnter.className = "intro-enter";
+            });
+
+        }, function(gameContainer) {
+            // Title
+            while (gameContainer.firstChild) {
+                gameContainer.removeChild(gameContainer.firstChild);
+            }
+            const text1_a = document.createElement("div");
+            text1_a.className = "intro-text1_a";
+            gameContainer.appendChild(text1_a);
+            const text1_b = document.createElement("div");
+            text1_b.className = "intro-text1";
+            gameContainer.appendChild(text1_b);
+            const text1_c = document.createElement("div");
+            text1_c.className = "intro-text1";
+            gameContainer.appendChild(text1_c);
+            const text1_d = document.createElement("div");
+            text1_d.className = "intro-text1";
+            gameContainer.appendChild(text1_d);
+
+            const text2 = document.createElement("div");
+            text2.className = "intro-text2";
+            gameContainer.appendChild(text2);
+
+            const textEnter = document.createElement("div");
+            gameContainer.appendChild(textEnter);
+
+            queueOutput(text1_a, "Tato hra vznikla podle skutečných událostí dne 17. 11. 1989. Hra vznikla na protest proti brutálnímu zásahu \"POŔÁDKOVÝCH JEDNOTEK\" Sboru národní bezpečnosti a tzv. ČERVENÝCH BARETŮ (Speciální jednotky ministerstva vnitra).");
+            queueOutput(text1_b, "DOUBLESOFT");
+            queueOutput(text1_c, "NAŠÍM CÍLEM NEBYLO ZNEVÁŽIT TO, CO SE STALO DNE 17. 11. 1989 NA NÁRODNÍ TŘÍDĚ, ALE ZOBRAZIT BRUTÁLNÍ ZÁSAH VB PROTI POKOJNÉ MANIFESTACI");
+            queueOutput(text1_d, "");
+
+            queueOutput(text2, "", undefined, undefined, true);
+
+            queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
+                textEnter.className = "intro-enter";
+            });
+
+        }, function(gameContainer) {
+            // Story
+            while (gameContainer.firstChild) {
+                gameContainer.removeChild(gameContainer.firstChild);
+            }
+
+            const text1 = document.createElement("div");
+            text1.className = "intro-story1";
+            gameContainer.appendChild(text1);
+            const text2 = document.createElement("div");
+            text2.className = "intro-story2";
+            gameContainer.appendChild(text2);
+            const text3 = document.createElement("div");
+            text3.className = "intro-story3";
+            gameContainer.appendChild(text3);
+
+            const textAdd = document.createElement("div");
+            textAdd.className = "intro-add";
+            gameContainer.appendChild(textAdd);
+
+            const textAdd1 = document.createElement("div");
+            textAdd1.className = "intro-add-next";
+            gameContainer.appendChild(textAdd1);
+            const textAdd2 = document.createElement("div");
+            textAdd2.className = "intro-add-next";
+            gameContainer.appendChild(textAdd2);
+            const textAdd3 = document.createElement("div");
+            textAdd3.className = "intro-add-next";
+            gameContainer.appendChild(textAdd3);
+            const textAdd4 = document.createElement("div");
+            textAdd4.className = "intro-add-next";
+            gameContainer.appendChild(textAdd4);
+
+            const textPhone = document.createElement("div");
+            textPhone.className = "intro-phone";
+            gameContainer.appendChild(textPhone);
+
+            const textMilos = document.createElement("div");
+            textMilos.className = "intro-milos";
+            gameContainer.appendChild(textMilos);
+
+            const textEnter = document.createElement("div");
+            gameContainer.appendChild(textEnter);
+
+            queueOutput(text1, "CÍL HRY");
+            queueOutput(text2, "Cílem hry je vyhnout se kordonu \"POŘÁDKOVÝCH SIL\", najít VIDEO KAMERU, KAZETU DO VIDEO KAMERY a celý \"masakr\" natočit na VIDEO z místa, z kterého vás nikdo z příslušníků \"POŘÁDKOVÝCH JEDNOTEK\" neuvidí.");
+            queueOutput(text3, "Během hry nacházíte předměty, které vám usnadní řešení. Zaváhání může přinést jen nepříjemnosti.");
+
+            queueOutput(textAdd, "PAMATUJTE:");
+            queueOutput(textAdd1, "JEDNA RÁNA OBUŠKEM STAČÍ!");
+            queueOutput(textAdd2, "");
+            queueOutput(textAdd3, "");
+            queueOutput(textAdd4, "");
+
+            queueOutput(textPhone, "");
+            queueOutput(textMilos, "");
+
+            queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
+                textEnter.className = "intro-enter";
+            });
+        }],
         onInitControls: initControls,
         onStart: function(game) {
             document.onkeydown = function(event) {
