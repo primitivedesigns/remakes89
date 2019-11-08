@@ -740,7 +740,7 @@ function initState() {
 
             queueOutput(text1_a, "Tato hra vznikla podle skutečných událostí dne 17. 11. 1989. Hra vznikla na protest proti brutálnímu zásahu \"POŘÁDKOVÝCH JEDNOTEK\" Sboru národní bezpečnosti a tzv. ČERVENÝCH BARETŮ (Speciální jednotky ministerstva vnitra).");
             queueOutput(text1_b, "DOUBLES©FT");
-            queueOutput(text1_c, "NAŠÍM CÍLEM NEBYLO ZNEVÁŽIT TO, CO SE STALO DNE 17. 11. 1989 NA NÁRODNÍ TŘÍDĚ, ALE ZOBRAZIT BRUTÁLNÍ ZÁSAH VB PROTI POKOJNÉ MANIFESTACI");
+            queueOutput(text1_c, "NAŠÍM CÍLEM NEBYLO ZNEVÁŽIT TO, CO SE STALO DNE 17. 11. 1989 NA NÁRODNÍ TŘÍDĚ, ALE ZOBRAZIT BRUTÁLNÍ ZÁSAH VB PROTI POKOJNÉ MANIFESTACI.");
             queueOutput(text1_d, "");
 
             queueOutput(text2, "", undefined, undefined, true);
@@ -853,6 +853,15 @@ function initState() {
                 this.print("Stiskni klávesu R pro RESTART nebo L a nahraje se poslední uložená pozice.", "intro-enter");
             } else if (endState === "win") {
                 this.print("!!! Natáčíš !!!", "end-win");
+                this.print ("Gratuluji!");
+                this.print ("Scénář: Miroslav Štěpán");
+                this.print ("Režie: Miloš Jakeš");
+                this.print ("Kostýmy: Matador Bratislava");
+                this.print ("VYROBILA");
+                this.print ("ÚV KSČ ve spolupráci s MV ČSSR © 1989");
+                this.print ("Těšte se na další hry od firmy DOUBLES©FT");
+                this.print ("DOUBLES©FT se s Vámi loučí");
+                this.print ("Informace o jiných textových hrách od firmy DOUBLES©FT na tel. 75-33-56 nebo 77-48-55");
                 this.print("Stiskni klávesu R pro RESTART", "intro-enter");
             }
         },
