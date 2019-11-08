@@ -735,6 +735,7 @@ function initState() {
         onEnd: function(endState) {
             if (endState === "killed") {
                 this.print("Dlouho jsi nevydržel!");
+                this.print("Stiskni klávesu R pro RESTART nebo L a nahraje se poslední uložená pozice.", "intro-enter");
             } else if (endState === "win") {
                 this.print("!!! Natáčíš !!!", "end-win");
                 this.print("Stiskni klávesu R pro RESTART", "intro-enter");
