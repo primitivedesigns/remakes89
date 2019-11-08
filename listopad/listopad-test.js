@@ -12,7 +12,7 @@ const fullPathCommands = [
     // m8
     "j", "j",
     // m10
-    "v", "j", "j", "n",
+    "v", "ž", "j", "j", "n",
     // m7
     "j", "n",
     // m11
