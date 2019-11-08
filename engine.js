@@ -449,6 +449,10 @@ function createEngine(headless) {
         }
         this.initGame(positions[0][1]);
         this.start();
+        if (engine.game.messages.gameLoaded) {
+            engine.game.print(engine.game.messages.gameLoaded + " [" + positions[0][0] +
+                "]", "hint");
+        }
         console.log("Game loaded: " + positions[0][0]);
         return true;
     }
