@@ -739,7 +739,7 @@ function initState() {
             gameContainer.appendChild(textEnter);
 
             queueOutput(text1_a, "Tato hra vznikla podle skutečných událostí dne 17. 11. 1989. Hra vznikla na protest proti brutálnímu zásahu \"POŘÁDKOVÝCH JEDNOTEK\" Sboru národní bezpečnosti a tzv. ČERVENÝCH BARETŮ (Speciální jednotky ministerstva vnitra).");
-            queueOutput(text1_b, "DOUBLESOFT");
+            queueOutput(text1_b, "DOUBLES©FT");
             queueOutput(text1_c, "NAŠÍM CÍLEM NEBYLO ZNEVÁŽIT TO, CO SE STALO DNE 17. 11. 1989 NA NÁRODNÍ TŘÍDĚ, ALE ZOBRAZIT BRUTÁLNÍ ZÁSAH VB PROTI POKOJNÉ MANIFESTACI");
             queueOutput(text1_d, "");
 
