@@ -3,6 +3,10 @@
  */
 
 let sideOpen = false;
+let beepOn = true;
+const actionBeep = new Audio("snd/actionbeep.wav");
+const screenBeep = new Audio("snd/screenbeep.wav");
+const choiceBeep = new Audio("snd/choicebeep.wav");
 
 const items = [{
     name: "klíč",
@@ -525,6 +529,8 @@ const actions = [{
                 });
             }
             updateActionList(game, exitActionList);
+                // Choice action
+            return true;
         }
     },
 }, {
@@ -554,6 +560,8 @@ const actions = [{
                     });
                 }
                 updateActionList(game, itemsList);
+                // Choice action
+                return true;
             }
         }
     },
@@ -584,6 +592,8 @@ const actions = [{
                     });
                 }
                 updateActionList(game, itemsList);
+                // Choice action
+                return true;
             }
         }
     },
@@ -613,6 +623,8 @@ const actions = [{
                     });
                 }
                 updateActionList(game, itemsList);
+                // Choice action
+                return true;
             }
         }
     },
@@ -657,6 +669,8 @@ const actions = [{
                     });
                 }
                 updateActionList(game, itemsList);
+                // Choice action
+                return true;
             }
         }
     },
@@ -666,7 +680,7 @@ const actions = [{
     perform: function(game, params) {
         game.clearOutput();
         if (game.inventory && game.inventory.length > 0) {
-            game.print("Neseš " + game.inventory.join(", ") );
+            game.print("Neseš " + game.inventory.join(", "));
         } else {
             game.print("Nic neneseš!");
         }
@@ -837,10 +851,6 @@ function initState() {
                         }
                     }
                 }
-                // Play beep sound
-                // if (beepOn) {
-                //     beep.play();
-                // }
             };
             const sidebarOpen = document.querySelector("#game-sidebar-open");
             if (sidebarOpen) {
@@ -853,15 +863,15 @@ function initState() {
                 this.print("Stiskni klávesu R pro RESTART nebo L a nahraje se poslední uložená pozice.", "intro-enter");
             } else if (endState === "win") {
                 this.print("!!! Natáčíš !!!", "end-win");
-                this.print ("Gratuluji!");
-                this.print ("Scénář: Miroslav Štěpán");
-                this.print ("Režie: Miloš Jakeš");
-                this.print ("Kostýmy: Matador Bratislava");
-                this.print ("VYROBILA");
-                this.print ("ÚV KSČ ve spolupráci s MV ČSSR © 1989");
-                this.print ("Těšte se na další hry od firmy DOUBLES©FT");
-                this.print ("DOUBLES©FT se s Vámi loučí");
-                this.print ("Informace o jiných textových hrách od firmy DOUBLES©FT na tel. 75-33-56 nebo 77-48-55");
+                this.print("Gratuluji!");
+                this.print("Scénář: Miroslav Štěpán");
+                this.print("Režie: Miloš Jakeš");
+                this.print("Kostýmy: Matador Bratislava");
+                this.print("VYROBILA");
+                this.print("ÚV KSČ ve spolupráci s MV ČSSR © 1989");
+                this.print("Těšte se na další hry od firmy DOUBLES©FT");
+                this.print("DOUBLES©FT se s Vámi loučí");
+                this.print("Informace o jiných textových hrách od firmy DOUBLES©FT na tel. 75-33-56 nebo 77-48-55");
                 this.print("Stiskni klávesu R pro RESTART", "intro-enter");
             }
         },
@@ -872,6 +882,13 @@ function initState() {
             if (game.messages.gameLoaded) {
                 game.print(game.messages.gameLoaded + " [" + positionName + "]", "hint");
             }
+        },
+        onLocationInfo: function(game) {
+            // Play beep sound
+            if (beepOn) {
+                screenBeep.play();
+            }
+            return true;
         },
         actionList: [],
         isInputCaseSensitive: false,
@@ -895,7 +912,15 @@ function processKey(game, key) {
     }
     for (const action of game.actionList) {
         if (action.keys && action.keys.find(k => k.toLowerCase() === key)) {
-            action.perform(game);
+            const isChoice = action.perform(game);
+            // Play beep sound
+            if (beepOn) {
+                if (isChoice) {
+                    choiceBeep.play();
+                } else {
+                    actionBeep.play();                    
+                }
+            }
             break;
         }
     }
