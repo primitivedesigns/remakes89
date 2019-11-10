@@ -126,22 +126,13 @@ div#game-sidebar-open {
 	display: none;
 }
 
-div#game-sidebar-open a.toggle-btn {
-	font-size: 4em;
-	text-decoration: none;
-	color: white;
-}
-
-div#game-sidebar a.toggle-btn {
-	position: fixed;
-	top: 0;
-	right: 1em;
+a.toggle-btn {
 	font-size: 3em;
 	text-decoration: none;
-	margin-left: 30px;
-	margin-bottom: 2em;
-	color: black;
-	font-weight: bold;
+	color:black;
+	border-radius: 7px;
+	padding: 0px 10px 0px 10px;
+	background-color:white;
 }
 
 a#game-sidebar-close {
