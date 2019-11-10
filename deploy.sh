@@ -19,33 +19,35 @@ mkdir $DEPLOY_DIR
 cp engine.js $DEPLOY_DIR
 # Indy
 mkdir $DEPLOY_DIR/indy
-mkdir $DEPLOY_DIR/indy/snd
 mkdir $DEPLOY_DIR/indy/img
-cp indy/indy.js $DEPLOY_DIR/indy
-cp indy/index.html $DEPLOY_DIR/indy
-cp indy/indy.css $DEPLOY_DIR/indy
-cp indy/img/title.png $DEPLOY_DIR/indy/img
-cp indy/snd/beep.wav $DEPLOY_DIR/indy/snd
+mkdir $DEPLOY_DIR/indy/snd
+cp indy/index.html $DEPLOY_DIR/indy/index.html
+cp indy/indy.js $DEPLOY_DIR/indy/indy.js
+cp indy/indy.css $DEPLOY_DIR/indy/indy.css
+cp indy/img/* $DEPLOY_DIR/indy/img
+cp indy/snd/* $DEPLOY_DIR/indy/snd
 # Prestavba
 mkdir $DEPLOY_DIR/prestavba
-mkdir $DEPLOY_DIR/prestavba/snd
 mkdir $DEPLOY_DIR/prestavba/img
-cp prestavba/prestavba.js $DEPLOY_DIR/prestavba
-cp prestavba/index.html $DEPLOY_DIR/prestavba
-cp prestavba/prestavba.css $DEPLOY_DIR/prestavba
-cp prestavba/img/title.png $DEPLOY_DIR/prestavba/img
-cp prestavba/snd/beep.wav $DEPLOY_DIR/prestavba/snd
+mkdir $DEPLOY_DIR/prestavba/snd
+cp prestavba/index.html $DEPLOY_DIR/prestavba/index.html
+cp prestavba/prestavba.js $DEPLOY_DIR/prestavba/prestavba.js
+cp prestavba/prestavba.css $DEPLOY_DIR/prestavba/prestavba.css
+cp prestavba/img/* $DEPLOY_DIR/prestavba/img
+cp prestavba/snd/* $DEPLOY_DIR/prestavba/snd
 # Listopad
 mkdir $DEPLOY_DIR/listopad
-mkdir $DEPLOY_DIR/listopad/snd
 mkdir $DEPLOY_DIR/listopad/img
-cp listopad/listopad.js $DEPLOY_DIR/listopad
-cp listopad/index.html $DEPLOY_DIR/listopad
-cp listopad/listopad.css $DEPLOY_DIR/listopad
-# TODO img and snd
+mkdir $DEPLOY_DIR/listopad/snd
+cp listopad/index.html $DEPLOY_DIR/listopad/index.html
+cp listopad/listopad.js $DEPLOY_DIR/listopad/listopad.js
+cp listopad/listopad.css $DEPLOY_DIR/listopad/listopad.css
+cp listopad/img/* $DEPLOY_DIR/listopad/img
+cp listopad/snd/* $DEPLOY_DIR/listopad/snd
 
 git checkout gh-pages
 
+rm -rf ./
 cp -rf $DEPLOY_DIR/. ./
 
 git add indy/*
