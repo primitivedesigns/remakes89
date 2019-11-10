@@ -877,18 +877,15 @@ function initState() {
         },
         onEnterLocation: function(game, lastLocation) {
             updateActionList(game);
+            // Play beep sound
+            if (beepOn) {
+                screenBeep.play();
+            }
         },
         onLoad: function(game, positionName) {
             if (game.messages.gameLoaded) {
                 game.print(game.messages.gameLoaded + " [" + positionName + "]", "hint");
             }
-        },
-        onLocationInfo: function(game) {
-            // Play beep sound
-            if (beepOn) {
-                screenBeep.play();
-            }
-            return true;
         },
         actionList: [],
         isInputCaseSensitive: false,
@@ -918,7 +915,7 @@ function processKey(game, key) {
                 if (isChoice) {
                     choiceBeep.play();
                 } else {
-                    actionBeep.play();                    
+                    actionBeep.play();
                 }
             }
             break;
