@@ -198,21 +198,27 @@ div#game-sidebar-open {
 	display: none;
 }
 
-div#game-sidebar-open a.toggle-btn {
-	font-size: 4em;
+#game-sidebar-open a.toggle-btn {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 3em;
 	text-decoration: none;
-	color: white;
+	color:black;
+	border-radius: 8px 8px 0px 8px;
+	padding: 0px 6px 0px 6px;
+	background-color:white;
+	position: fixed;
+	top: 0.5em;
+	right: 1em;
+	font-weight: bold;
 }
 
-div#game-sidebar a.toggle-btn {
+#game-sidebar a.toggle-btn {
+	font-size: 3em;
+	text-decoration: none;
+	color:black;
 	position: fixed;
 	top: 0;
 	right: 1em;
-	font-size: 3em;
-	text-decoration: none;
-	margin-left: 30px;
-	margin-bottom: 2em;
-	color: black;
 	font-weight: bold;
 }
 
