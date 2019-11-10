@@ -130,12 +130,12 @@ div#game-sidebar-open {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 3em;
 	text-decoration: none;
-	color:white;
-	border-radius: 7px;
+	color:black;
+	border-radius: 8px 8px 0px 8px;
 	padding: 0px 6px 0px 6px;
-	background-color:black;
+	background-color:white;
 	position: fixed;
-	top: 0;
+	top: 0.5em;
 	right: 1em;
 	font-weight: bold;
 }
