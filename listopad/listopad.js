@@ -66,7 +66,7 @@ const items = [{
     skipOnUseMessage: true,
     readInit: function(obj) {
         obj.desc = function() {
-            if (!obj.destroyed) {
+            if (obj.destroyed) {
                 return "Tato krabička, omotaná čímsi hnědým, byla kdysi kazeta SONY.";
             }
             return "Je to videokazeta firmy SONY. Ještě je v ochranném obalu.";
@@ -78,6 +78,9 @@ const items = [{
             }
         };
         obj.onUse = function(game) {
+            if (obj.destroyed) {
+                return false;
+            }
             const cam = game.getItem(game.getItems(), "videokameru");
             game.print("O.K.");
             if (cam) {
