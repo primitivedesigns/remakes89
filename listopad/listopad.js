@@ -147,7 +147,7 @@ const items = [{
                 return true;
             } else if (game.location.id.substring(1, game.location.id.length) > 7) {
                 game.print("Přistavil jsi žebřík k nejbližší zdi a zkušebně jsi na něj vylezl. Avšak žebřík nestál stabilně, proto jste se oba poroučeli k zemi. Vyvázl jsi pouze s otřesem mozku a zlomenou nohou.", "end-lose");
-                game.end("killed");
+                game.end("killed", false);
                 return true;
             }
         };
