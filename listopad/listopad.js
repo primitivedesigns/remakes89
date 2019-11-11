@@ -748,13 +748,13 @@ function initState() {
             text1_a.className = "intro-text1_a";
             gameContainer.appendChild(text1_a);
             const text1_b = document.createElement("div");
-            text1_b.className = "intro-text1";
+            text1_b.className = "intro-text1_b";
             gameContainer.appendChild(text1_b);
             const text1_c = document.createElement("div");
-            text1_c.className = "intro-text1";
+            text1_c.className = "intro-text1_c";
             gameContainer.appendChild(text1_c);
             const text1_d = document.createElement("div");
-            text1_d.className = "intro-text1";
+            text1_d.className = "intro-text1_d";
             gameContainer.appendChild(text1_d);
 
 
@@ -768,7 +768,7 @@ function initState() {
             queueOutput(text1_a, "INFORMACE O HŘE");
             queueOutput(text1_b, "Tato hra vznikla podle skutečných událostí dne 17. 11. 1989. Hra vznikla na protest proti brutálnímu zásahu \"POŘÁDKOVÝCH JEDNOTEK\" Sboru národní bezpečnosti a tzv. ČERVENÝCH BARETŮ (Speciální jednotky ministerstva vnitra).");
             queueOutput(text1_c, "DOUBLES©FT");
-            queueOutput(text1_d, "NAŠÍM CÍLEM NEBYLO ZNEVÁŽIT TO, CO SE STALO DNE 17. 11. 1989 NA NÁRODNÍ TŘÍDĚ, ALE ZOBRAZIT BRUTÁLNÍ ZÁSAH VB PROTI POKOJNÉ MANIFESTACI.");
+            queueOutput(text1_d, "NAŠÍM CÍLEM NEBYLO ZNEVÁŽIT TO, CO SE STALO DNE 17. 11. 1989 NA NÁRODNÍ TŘÍDĚ, ALE ZOBRAZIT BRUTÁLNÍ ZÁSAH VB PROTI POKOJNÉ MANIFESTACI.");
 
             queueOutput(text2, "", undefined, undefined, true);
 
@@ -783,7 +783,7 @@ function initState() {
             }
 
             const text1 = document.createElement("div");
-            text1.className = "intro-story1";
+            text1.className = "intro-story1_a";
             gameContainer.appendChild(text1);
             const text2 = document.createElement("div");
             text2.className = "intro-story2";
@@ -799,24 +799,7 @@ function initState() {
             const textAdd1 = document.createElement("div");
             textAdd1.className = "intro-add-next";
             gameContainer.appendChild(textAdd1);
-            const textAdd2 = document.createElement("div");
-            textAdd2.className = "intro-add-next";
-            gameContainer.appendChild(textAdd2);
-            const textAdd3 = document.createElement("div");
-            textAdd3.className = "intro-add-next";
-            gameContainer.appendChild(textAdd3);
-            const textAdd4 = document.createElement("div");
-            textAdd4.className = "intro-add-next";
-            gameContainer.appendChild(textAdd4);
-
-            const textPhone = document.createElement("div");
-            textPhone.className = "intro-phone";
-            gameContainer.appendChild(textPhone);
-
-            const textMilos = document.createElement("div");
-            textMilos.className = "intro-milos";
-            gameContainer.appendChild(textMilos);
-
+            
             const textEnter = document.createElement("div");
             gameContainer.appendChild(textEnter);
 
@@ -826,12 +809,6 @@ function initState() {
 
             queueOutput(textAdd, "PAMATUJTE:");
             queueOutput(textAdd1, "JEDNA RÁNA OBUŠKEM STAČÍ!");
-            queueOutput(textAdd2, "");
-            queueOutput(textAdd3, "");
-            queueOutput(textAdd4, "");
-
-            queueOutput(textPhone, "");
-            queueOutput(textMilos, "");
 
             queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
                 textEnter.className = "intro-enter";
