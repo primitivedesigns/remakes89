@@ -19,6 +19,7 @@ const items = [{
                 if (!door.open) {
                     game.removeItem("klíč");
                     door.open = true;
+                    game.print("O.K.");
                     game.print("Strčil jsi ho do klíčové dírky dveří, otočil jsi s ním a s velkou námahou jsi otevřel dveře do domu. S námahou proto, že na nich bylo instalováno BRANO.");
                     game.location.exits.push({
                         name: "Jih",
@@ -78,6 +79,7 @@ const items = [{
         };
         obj.onUse = function(game) {
             const cam = game.getItem(game.getItems(), "videokameru");
+            game.print("O.K.");
             if (cam) {
                 cam.tape = true;
                 game.print("Zasunul jsi kazetu do videokamery.");
@@ -105,6 +107,7 @@ const items = [{
             return "Je to obyčejná videokamera. Na boku je nápis SONY a několik tlačítek. Stiskl jsi jedno z nich, ale nic se nestalo.";
         };
         obj.onUse = function(game) {
+            game.print("O.K.");
             if (!obj.battery) {
                 game.print("Stiskl jsi červené tlačítko s nápisem RECORD, ale nic se nestalo.");
             } else if (obj.battery && !obj.tape) {
@@ -130,6 +133,7 @@ const items = [{
         obj.onUse = function(game) {
             if (game.location.id === "m16") {
                 if (!game.location.exits.find(e => e.name === "Nahoru")) {
+                    game.print("O.K.");
                     game.print("Přistavil jsi žebřík ke zdi pod poklopem.");
                     if (game.getInventoryItem(obj.name)) {
                         game.dropItem(obj.name);
@@ -194,6 +198,7 @@ const items = [{
                 const trapDoor = game.getLocationItem("poklop");
                 if (!trapDoor.open) {
                     trapDoor.open = true;
+                    game.print("O.K.");
                     game.print("Odemkl jsi zámek visící na poklopu.");
                     game.location.exits.push({
                         name: "Nahoru",
@@ -207,6 +212,7 @@ const items = [{
                 if (door) {
                     door.destroyed = true;
                     game.removeItem("klíček");
+                    game.print("O.K.");
                     game.print("Ztěžka jsi zasunul klíč do dírky ve dveřích, otočil jsi...  ...a došlo k nejhoršímu! KLÍČEK SE ZLOMIL!");
                     // Klicek se zlomil je v blikajícím stylu
                     // TODO fail state
@@ -239,6 +245,7 @@ const items = [{
     readInit: function(obj) {
         obj.onUse = function(game) {
             const cam = game.getItem(game.getItems(), "videokameru");
+            game.print("O.K.");
             if (cam) {
                 cam.battery = true;
                 game.print("Vložil jsi baterie do kamery.");
@@ -259,6 +266,7 @@ const items = [{
             const box = game.getItem(game.getItems(), "bednu");
             if (box && !box.open) {
                 box.open = true;
+                game.print("O.K.");
                 game.print("Vypáčil jsi víko bedny. V bedně je videokazeta!");
                 game.addLocationItem("videokazetu");
                 return true;
@@ -965,10 +973,9 @@ function takeItem(game, item) {
 
 function useItem(game, item) {
     if (game.useItem(item.name)) {
-        if (!item.skipOnUseMessage) {
-            game.print("O.K.");
-            game.print("Použil jsi " + item.name);
-        }
+        // if (!item.skipOnUseMessage) {
+        //     game.print("Použil jsi " + item.name);
+        // }
     } else {
         game.print(game.messages.wrongUsage);
     }
