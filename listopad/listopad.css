@@ -233,3 +233,7 @@ span.key {
 span.action-separator {
 	color: silver,
 }
+
+p.walkthrough {
+	color: white;
+}
