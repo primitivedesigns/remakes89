@@ -52,7 +52,7 @@ const items = [{
             if (!obj.open) {
                 return "Obrovská dřevěná bedna, zatlučená hřeby. Co je asi uvnitř?";
             }
-            if (!tapeTaken) {
+            if (!obj.tapeTaken) {
                 return "Je ze silných fošen. Vypadá to, že je čerstvě vypáčená! Uvnitř leží nějaká krabička!";
             }
             return "Je ze silných fošen. Vypadá to, že je čerstvě vypáčená! Je však prázdná.";
@@ -538,7 +538,8 @@ const actions = [{
     keys: ["v"],
     perform: function(game, params) {
         game.clearOutput();
-        const takeableItems = game.location.items.map(i => game.mapItem(i)).filter(item => item.takeable === undefined || item.takeable || item.name === "bednu" || item.name === "vrata" || item.name === "poklop" || item.name === "dveře");
+        const takeableItems = game.location.items.map(i => game.mapItem(i)).filter(item => item.takeable === undefined || item.takeable 
+            || item.name === "bednu" || item.name === "vrata" || item.name === "poklop" || item.name === "dveře");
         if (!takeableItems || takeableItems.length === 0) {
             game.print("Nic tu není!");
         } else {
@@ -744,6 +745,7 @@ function initState() {
             const text1_d = document.createElement("div");
             text1_d.className = "intro-text1";
             gameContainer.appendChild(text1_d);
+            
 
             const text2 = document.createElement("div");
             text2.className = "intro-text2";
@@ -752,11 +754,11 @@ function initState() {
             const textEnter = document.createElement("div");
             gameContainer.appendChild(textEnter);
 
-            queueOutput(text1_a, "Tato hra vznikla podle skutečných událostí dne 17. 11. 1989. Hra vznikla na protest proti brutálnímu zásahu \"POŘÁDKOVÝCH JEDNOTEK\" Sboru národní bezpečnosti a tzv. ČERVENÝCH BARETŮ (Speciální jednotky ministerstva vnitra).");
-            queueOutput(text1_b, "DOUBLES©FT");
-            queueOutput(text1_c, "NAŠÍM CÍLEM NEBYLO ZNEVÁŽIT TO, CO SE STALO DNE 17. 11. 1989 NA NÁRODNÍ TŘÍDĚ, ALE ZOBRAZIT BRUTÁLNÍ ZÁSAH VB PROTI POKOJNÉ MANIFESTACI.");
-            queueOutput(text1_d, "");
-
+            queueOutput(text1_a, "INFORMACE O HŘE");
+            queueOutput(text1_b, "Tato hra vznikla podle skutečných událostí dne 17. 11. 1989. Hra vznikla na protest proti brutálnímu zásahu \"POŘÁDKOVÝCH JEDNOTEK\" Sboru národní bezpečnosti a tzv. ČERVENÝCH BARETŮ (Speciální jednotky ministerstva vnitra).");
+            queueOutput(text1_c, "DOUBLES©FT");
+            queueOutput(text1_d, "NAŠÍM CÍLEM NEBYLO ZNEVÁŽIT TO, CO SE STALO DNE 17. 11. 1989 NA NÁRODNÍ TŘÍDĚ, ALE ZOBRAZIT BRUTÁLNÍ ZÁSAH VB PROTI POKOJNÉ MANIFESTACI.");
+            
             queueOutput(text2, "", undefined, undefined, true);
 
             queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
