@@ -1,3 +1,5 @@
+beepOn = false;
+
 function runTests(engine, initState) {
     testFullPath(engine);
 }

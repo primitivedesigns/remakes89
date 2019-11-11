@@ -1,3 +1,5 @@
+beepOn = false;
+
 const fullPathCommands = [
     // m2
     "PROZKOUMEJ OCAS", "SEBER SEKERU", "L",
