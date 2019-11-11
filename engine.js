@@ -1000,7 +1000,9 @@ function createGame(initialState, savedPosition, headless) {
                     this.printLocationInfo(false);
                 }
                 if (item.onTake) {
-                    item.onTake(this);
+                    if (item.onTake(this)) {
+                        this.printLocationInfo(false);
+                    }
                 }
                 ret.item = item;
             }

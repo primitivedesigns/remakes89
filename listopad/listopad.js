@@ -175,10 +175,13 @@ const items = [{
     name: "rohožku",
     keys: ["r"],
     desc: "Je to zcela normální rohožka (rozměry 100 x 50 x 1,5 cm) na čištění bot.",
+    skipGeneralMessage: true,
     readInit: function(obj) {
         obj.onTake = function(game) {
+            game.print("O.K.");
             game.print("Pod rohožkou se skrýval klíček!");
             game.addLocationItem("klíček");
+            return true;
         }
     }
 }, {
@@ -537,7 +540,7 @@ const actions = [{
                 });
             }
             updateActionList(game, exitActionList);
-                // Choice action
+            // Choice action
             return true;
         }
     },
@@ -546,8 +549,8 @@ const actions = [{
     keys: ["v"],
     perform: function(game, params) {
         game.clearOutput();
-        const takeableItems = game.location.items.map(i => game.mapItem(i)).filter(item => item.takeable === undefined || item.takeable 
-            || item.name === "bednu" || item.name === "vrata" || item.name === "poklop" || item.name === "dveře");
+        const takeableItems = game.location.items.map(i => game.mapItem(i)).filter(item => item.takeable === undefined || item.takeable ||
+            item.name === "bednu" || item.name === "vrata" || item.name === "poklop" || item.name === "dveře");
         if (!takeableItems || takeableItems.length === 0) {
             game.print("Nic tu není!");
         } else {
@@ -753,7 +756,7 @@ function initState() {
             const text1_d = document.createElement("div");
             text1_d.className = "intro-text1";
             gameContainer.appendChild(text1_d);
-            
+
 
             const text2 = document.createElement("div");
             text2.className = "intro-text2";
@@ -766,7 +769,7 @@ function initState() {
             queueOutput(text1_b, "Tato hra vznikla podle skutečných událostí dne 17. 11. 1989. Hra vznikla na protest proti brutálnímu zásahu \"POŘÁDKOVÝCH JEDNOTEK\" Sboru národní bezpečnosti a tzv. ČERVENÝCH BARETŮ (Speciální jednotky ministerstva vnitra).");
             queueOutput(text1_c, "DOUBLES©FT");
             queueOutput(text1_d, "NAŠÍM CÍLEM NEBYLO ZNEVÁŽIT TO, CO SE STALO DNE 17. 11. 1989 NA NÁRODNÍ TŘÍDĚ, ALE ZOBRAZIT BRUTÁLNÍ ZÁSAH VB PROTI POKOJNÉ MANIFESTACI.");
-            
+
             queueOutput(text2, "", undefined, undefined, true);
 
             queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
@@ -959,8 +962,10 @@ function takeItem(game, item) {
         return;
     }
     if (ret.item) {
-        game.print("O.K.");
-        game.print("Vzal jsi " + ret.item.name);
+        if (!ret.item.skipGeneralMessage) {
+            game.print("O.K.");
+            game.print("Vzal jsi " + ret.item.name);
+        }
     } else {
         if (item.nonTakeableMessage) {
             const msg = item.nonTakeableMessage instanceof Function ? item.nonTakeableMessage(game) : item.nonTakeableMessage;
