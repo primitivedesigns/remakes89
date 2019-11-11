@@ -261,3 +261,7 @@ div.outro-text {
 	margin-top: 1em;
 	text-transform: uppercase;
 }
+
+p.walkthrough {
+	color: white;
+}

@@ -900,6 +900,7 @@ function processKey(game, key) {
     if (game.headless) {
         console.log(">> " + key);
     }
+    key = key.toLowerCase();
     for (const action of game.actionList) {
         if (action.keys && action.keys.find(k => k.toLowerCase() === key)) {
             const isChoice = action.perform(game);
