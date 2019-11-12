@@ -73,8 +73,20 @@ const testFullPath = function(engine) {
     }
 }
 
+const testBreakHook = function(engine) {
+    info("---- Break Hook Test ----");
+    engine.game.inventory.push("hák");
+    engine.game.getLocation("m19").items =[];
+    updateActionList(engine.game);
+    processKey(engine.game, "u");
+    if (assertFalse(engine.game.findItem("hák").item, "Hak ma zmizet")) {
+        return;
+    }
+    success("Test passed");
+}
+
 const testSuite = [
-    testFullPath
+    testFullPath, testBreakHook
 ]
 
 

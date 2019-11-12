@@ -270,11 +270,19 @@ const items = [{
     readInit: function(obj) {
         obj.onUse = function(game) {
             const box = game.getItem(game.getItems(), "bednu");
-            if (box && !box.open) {
-                box.open = true;
+            // Box is non-takeable - we can be sure we're in m8
+            if (box) {
+                if (!box.open) {
+                    box.open = true;
+                    game.print("O.K.");
+                    game.print("Vypáčil jsi víko bedny. V bedně je videokazeta!");
+                    game.addLocationItem("videokazetu");
+                    return true;
+                }
+            } else {
                 game.print("O.K.");
-                game.print("Vypáčil jsi víko bedny. V bedně je videokazeta!");
-                game.addLocationItem("videokazetu");
+                game.print("Úderem o zem jsi \"s\"-hák přerazil.");
+                game.removeItem(obj.name);
                 return true;
             }
         };
@@ -802,7 +810,7 @@ function initState() {
             const textAdd1 = document.createElement("div");
             textAdd1.className = "intro-add-next";
             gameContainer.appendChild(textAdd1);
-            
+
             const textEnter = document.createElement("div");
             gameContainer.appendChild(textEnter);
 
