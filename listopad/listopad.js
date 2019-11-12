@@ -376,7 +376,8 @@ const locations = [{
         location: "m5"
     }, {
         name: "Nahoru",
-        location: "m11"
+        location: "m11",
+        skipPreposition: true
     }, {
         name: "Dolů",
         location: "m8",
