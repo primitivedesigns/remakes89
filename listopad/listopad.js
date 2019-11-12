@@ -978,7 +978,6 @@ function useItem(game, item) {
 const builtinActions = [{
     name: "Restart",
     keys: ["r"],
-    lineBreak: true,
     perform: function(game) {
         location.reload();
     }
