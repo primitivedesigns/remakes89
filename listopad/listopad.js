@@ -234,10 +234,12 @@ const items = [{
                 game.setFailState();
                 game.print("O.K.");
                 game.print("Odhodil jsi klíček a ten zapadl do škvíry v podlaze.");
+                return true;
             } else if (game.location.id.substring(1, game.location.id.length) < 7) {
                 game.setFailState();
                 game.print("O.K.");
                 game.print("Odhodil jsi klíček a ten nenávratně zmizel.");
+                return true;
             }
         }
     }
