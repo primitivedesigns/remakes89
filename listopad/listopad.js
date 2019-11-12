@@ -17,7 +17,7 @@ const items = [{
             if (game.location.id === "m5") {
                 const door = game.getLocationItem("vrata");
                 if (!door.open) {
-                    game.removeItem("klíč");
+                    game.removeItem(obj.name);
                     door.open = true;
                     game.print("O.K.");
                     game.print("Strčil jsi ho do klíčové dírky dveří, otočil jsi s ním a s velkou námahou jsi otevřel dveře do domu. S námahou proto, že na nich bylo instalováno BRANO.");
@@ -27,6 +27,12 @@ const items = [{
                     });
                     return true;
                 }
+            } else {
+                game.removeItem(obj.name);
+                game.print("O.K.");
+                game.print("Hodil jsi ho po příslušníku Červených baretů, který okolo tebe běžel. Zastavil se, sebral klíč, strčil ho do kapsy (zřejmě jako předmět doličný). Dovoluji si podotknout, že k tomuto účelu neměl klíč sloužit.");
+                game.setFailState();
+                return true;
             }
         };
     }
@@ -90,6 +96,7 @@ const items = [{
             } else {
                 obj.destroyed = true;
                 game.print("Vymotal jsi pásek z kazety ve snaze ho použít. Ale dopadlo to jinak. Z kazety se stala krabička omotaná čímsi hnědým.");
+                game.setFailState();
             }
             return true;
         }
@@ -122,7 +129,7 @@ const items = [{
                     return true;
                 } else {
                     game.print("Po chvíli natáčení se objevila skupinka příslušníků Červených baretů. Vyrvali ti kameru z rukou a rozšlapali ji. Ty jsi na tom nebyl o moc lépe...", "end-lose");
-                    game.end("kiled", false);
+                    game.end("killed", false);
                 }
             }
         }
@@ -200,6 +207,7 @@ const items = [{
             return "Je to malý klíček výrobního družstva INKLEMO Praha sloužící asi k odemykání čehosi.";
         };
         obj.onUse = function(game) {
+            game.removeItem(obj.name);
             if (game.location.id === "m21") {
                 const trapDoor = game.getLocationItem("poklop");
                 if (!trapDoor.open) {
@@ -217,13 +225,19 @@ const items = [{
                 const door = game.getLocationItem("dveře");
                 if (door) {
                     door.destroyed = true;
-                    game.removeItem("klíček");
                     game.print("O.K.");
                     game.print("Ztěžka jsi zasunul klíč do dírky ve dveřích, otočil jsi...  ...a došlo k nejhoršímu! KLÍČEK SE ZLOMIL!");
                     // Klicek se zlomil je v blikajícím stylu
-                    // TODO fail state
                     return true;
                 }
+            } else if (game.location.id.substring(1, game.location.id.length) >= 7) {
+                game.setFailState();
+                game.print("O.K.");
+                game.print("Odhodil jsi klíček a ten zapadl do škvíry v podlaze.");
+            } else if (game.location.id.substring(1, game.location.id.length) < 7) {
+                game.setFailState();
+                game.print("O.K.");
+                game.print("Odhodil jsi klíček a ten nenávratně zmizel.");
             }
         }
     }
@@ -257,9 +271,9 @@ const items = [{
                 game.print("Vložil jsi baterie do kamery.");
             } else {
                 game.print("Odhodil jsi baterie do nejbližšího rohu.");
+                game.setFailState();
             }
             game.removeItem(obj.name);
-            // failstate
             return true;
         };
     }
@@ -283,6 +297,7 @@ const items = [{
                 game.print("O.K.");
                 game.print("Úderem o zem jsi \"s\"-hák přerazil.");
                 game.removeItem(obj.name);
+                game.setFailState();
                 return true;
             }
         };
@@ -731,6 +746,7 @@ function initState() {
             gamePositionsEmpty: "Nemáš žádnou uloženou pozici.",
             gamePositionDoesNotExist: "Nelze nahrát pozici: ",
             inventoryFull: "Máš plné ruce!",
+            failState: "Přišli jste o důležitý předmět, bez něhož nejde dohrát hru!",
         },
         intro: [function(gameContainer) {
             // Image
@@ -777,7 +793,7 @@ function initState() {
             gameContainer.appendChild(textEnter);
 
             queueOutput(text1_a, "INFORMACE O HŘE");
-            queueOutput(text1_b, "Tato hra vznikla podle skutečných událostí dne 17. 11. 1989. Hra vznikla na protest proti brutálnímu zásahu \"POŘÁDKOVÝCH JEDNOTEK\" Sboru národní bezpečnosti a tzv. ČERVENÝCH BARETŮ (Speciální jednotky ministerstva vnitra).");
+            queueOutput(text1_b, "Tato hra vznikla podle skutečných událostí dne 17. 11. 1989. Hra vznikla na protest proti brutálnímu zásahu \"POŘÁDKOVÝCH JEDNOTEK\" Sboru národní bezpečnosti a tzv. ČERVENÝCH BARETŮ (Speciální jednotky ministerstva vnitra).");
             queueOutput(text1_c, "DOUBLES©FT");
             queueOutput(text1_d, "NAŠÍM CÍLEM NEBYLO ZNEVÁŽIT TO, CO SE STALO DNE 17. 11. 1989 NA NÁRODNÍ TŘÍDĚ, ALE ZOBRAZIT BRUTÁLNÍ ZÁSAH VB PROTI POKOJNÉ MANIFESTACI.");
 
