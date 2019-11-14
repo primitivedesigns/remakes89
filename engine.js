@@ -1182,6 +1182,24 @@ function createGame(initialState, savedPosition, headless) {
         this.clearInputHelp();
     }
 
+    game.setFailState = function(msg) {
+        if (game.failState) {
+            return;
+        }
+        if (!msg && game.messages && game.messages.failState) {
+            msg = " " + game.messages.failState;
+        }
+        game.failState = true;
+        // Append message to all hints
+        for (const loc of game.locations) {
+            if (loc.hint) {
+                loc.hint += msg;
+            } else {
+                loc.hint = msg;
+            }
+        }
+    }
+
     return game;
 }
 
