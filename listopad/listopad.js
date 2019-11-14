@@ -120,8 +120,10 @@ const items = [{
             game.print("O.K.");
             if (!obj.battery) {
                 game.print("Stiskl jsi červené tlačítko s nápisem RECORD, ale nic se nestalo.");
+                return true;
             } else if (obj.battery && !obj.tape) {
                 game.print("Stiskl jsi červené tlačítko s nápisem RECORD, kamera začala bzučet, ale po chvíli přestala. Asi není vše v pořádku.");
+                return true;
             } else {
                 if (game.location.id === "m20") {
                     game.print("Stiskl jsi červené tlačítko s nápisem RECORD. Kamera začala bzučet a nad tímto tlačítkem se rozsvítila červená dioda.", "end-win");
