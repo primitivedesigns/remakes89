@@ -238,3 +238,8 @@ span.action-separator {
 p.walkthrough {
 	color: white;
 }
+
+span.exists {
+	background-color: blue;
+	color: white;
+}

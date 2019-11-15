@@ -1008,14 +1008,28 @@ const builtinActions = [{
     perform: function(game) {
         game.clearOutput();
         game.print("Uložit do jaké pozice?");
-        const positionList = [];
+        const positions = game.getPositions().map(function(p) {
+            return { name: p[0], exists: true};
+        });
+        // P1, P2, P4 => P1, P2, P3, ... P10
         for (let index = 1; index < 10; index++) {
+            const name = "P" + index;
+            if (!positions.find(p => p.name === name)) {
+                positions.push({ name: name, exists: false}); 
+            }
+        }
+        positions.sort(function(a,b) {
+            return a.name.localeCompare(b.name);
+        });
+        const positionList = [];
+        for (const position of positions) {
             positionList.push({
-                name: "P" + index,
-                keys: ["" + index],
+                name: position.name,
+                keyStyle: position.exists ? "exists" : "",
+                keys: [position.name.charAt(1)],
                 perform: function(game) {
                     game.clearOutput();
-                    const positionName = game.save(["P" + index]);
+                    const positionName = game.save([position.name]);
                     if (game.messages.gameSaved) {
                         game.print(game.messages.gameSaved + " [" + positionName + "]", "hint");
                     }
@@ -1023,6 +1037,14 @@ const builtinActions = [{
                 }
             });
         }
+        positionList.push({
+            name: "Zpět",
+            keys: ["z"],
+            perform: function(game) {
+                game.clearOutput();
+                updateActionList(game);
+            }
+        });
         updateActionList(game, positionList);
     }
 }, {
@@ -1036,18 +1058,28 @@ const builtinActions = [{
             return;
         }
         game.print("Nahrát jakou pozici?");
-        positions.sort();
+        const positionNames = positions.map(p => p[0]);
+        positionNames.sort();
         const positionList = [];
-        for (const position of positions) {
+        for (const positionName of positionNames) {
             positionList.push({
-                name: position[0],
-                keys: [position[0].charAt(1)],
+                name: positionName,
+                keys: [positionName.charAt(1)],
+                keyStyle: "exists",
                 perform: function(game) {
-                    game.load([position[0]]);
+                    game.load([positionName]);
                     // We cannot use the game param since a new game was already loaded => onLoad callback
                 }
             });
         }
+        positionList.push({
+            name: "Zpět",
+            keys: ["z"],
+            perform: function(game) {
+                game.clearOutput();
+                updateActionList(game);
+            }
+        });
         updateActionList(game, positionList);
     }
 }, {
@@ -1098,7 +1130,7 @@ function fillActionList(game) {
             const letter = action.name[j];
             if (!keyFound && action.keys && action.keys.find(key => key.toLowerCase() === letter.toLowerCase())) {
                 const keySpan = document.createElement("span");
-                keySpan.className = "key";
+                keySpan.className = action.keyStyle ? "key " + action.keyStyle : "key";
                 keySpan.textContent = letter;
                 actionListDiv.appendChild(keySpan);
                 keyFound = true;
