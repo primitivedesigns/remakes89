@@ -45,6 +45,11 @@ cp listopad/listopad.css $DEPLOY_DIR/listopad/listopad.css
 cp listopad/img/* $DEPLOY_DIR/listopad/img
 cp listopad/snd/* $DEPLOY_DIR/listopad/snd
 
+# Add google analytics tag
+sed -i "s/<!-- Google Analytics placeholder -->/<script async src=\"https:\/\/www.googletagmanager.com\/gtag\/js?id=UA-41837896-2\"><\/script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-41837896-2'); <\/script>/g"  $DEPLOY_DIR/indy/index.html
+sed -i "s/<!-- Google Analytics placeholder -->/<script async src=\"https:\/\/www.googletagmanager.com\/gtag\/js?id=UA-41837896-2\"><\/script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-41837896-2'); <\/script>/g"  $DEPLOY_DIR/prestavba/index.html
+sed -i "s/<!-- Google Analytics placeholder -->/<script async src=\"https:\/\/www.googletagmanager.com\/gtag\/js?id=UA-41837896-2\"><\/script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-41837896-2'); <\/script>/g"  $DEPLOY_DIR/listopad/index.html
+
 git checkout gh-pages
 
 rm -rf ./
