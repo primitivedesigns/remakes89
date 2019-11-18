@@ -411,7 +411,7 @@ function createEngine(headless) {
     }
 
     // Returns positions - [name, data, timestamp] - sorted by timestamp (lifo)
-    engine.getPositions = function(game) {
+    engine.getPositions = function(game, sortFun) {
         const prefix = buildPositionPrefix(game);
         const positions = [];
         for (var i = 0; i < localStorage.length; i++) {
@@ -426,18 +426,21 @@ function createEngine(headless) {
             positions.push(pos);
         }
         if (positions.length != 0) {
-            positions.sort(function(a, b) {
-                const ts1 = a[2];
-                const ts2 = b[2];
-                if (ts1 && ts2) {
-                    return ts2 - ts1;
-                } else if (ts1) {
-                    return -1;
-                } else if (ts2) {
-                    return 1;
-                }
-                return 0;
-            });
+            if (!sortFun) {
+                sortFun = function(a, b) {
+                    const ts1 = a[2];
+                    const ts2 = b[2];
+                    if (ts1 && ts2) {
+                        return ts2 - ts1;
+                    } else if (ts1) {
+                        return -1;
+                    } else if (ts2) {
+                        return 1;
+                    }
+                    return 0;
+                };
+            }
+            positions.sort(sortFun);
         }
         return positions;
     }

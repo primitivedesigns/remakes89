@@ -95,6 +95,7 @@ div.intro-enter {
 div.intro-text1_a, div.intro-story1_a {
 	text-align: center;
 	margin-bottom: 1em;
+	margin-top: 2em;
 }
 
 div.intro-text1_b, div.intro-story1, div.intro-story2, div.intro-story3 {
@@ -235,5 +236,10 @@ span.action-separator {
 }
 
 p.walkthrough {
+	color: white;
+}
+
+span.exists {
+	background-color: blue;
 	color: white;
 }
