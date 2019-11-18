@@ -1,6 +1,6 @@
 body {
 	background-color: black;
-	font-family: 'VT323', 'Roboto Mono', monospace;
+	font-family: 'VT323', monospace;
 	text-transform: none;
 	color: white;
 }
@@ -98,7 +98,7 @@ div.end-win {
 }
 
 #game-input {
-	font-family: 'VT323', 'Roboto Mono', monospace;
+	font-family: 'VT323', monospace;
 	font-size: 1em;
 	width: 100%;
 	background-color: #242424;
@@ -227,18 +227,12 @@ a#game-sidebar-close {
 }
 
 div#game-sidebar div.command {
-	font-family: 'VT323', 'Roboto Mono', monospace;
+	font-family: 'VT323', monospace;
 	padding-left: 2em;
 }
 
 div#game-sidebar ul {
 	margin-left: 2em;
-}
-
-.typewriter {
-	overflow: hidden;
-	white-space: nowrap;
-	animation: typing 2s steps(40, end), blink-caret .75s step-end infinite;
 }
 
 div.hint {
