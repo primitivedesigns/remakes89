@@ -431,7 +431,9 @@ const locations = [{
 }, {
     id: "m6",
     desc: "O.K. Nacházíš se u domu módy v ústí do zatarasené Krakovské ulice.",
+    // O.K. You're standing by the Fashion Building, next to the barricaded Krakovská street. 
     hint: "Tenhle policajt už ti k ničemu nebude.",
+    // This cop will be of no more use to you.
     // see item "kámen"
     shouldFail: true,
     readInit: function(obj) {
@@ -456,8 +458,10 @@ const locations = [{
 }, {
     id: "m7",
     desc: "O.K. Stojíš před prodejnou knihy. Není nic slyšet, protože veliký dav tu skanduje heslo 'AŤ ŽIJE KAREL!' Vlevo je zatarasený vchod do Opletalky.",
+    // O.K. You're standing in front of the bookstore. You cannot hear anything, because a large crowd keeps chanting the slogan 'LONG LIVE KAREL!' To the left, you can see a blocked entrace into the Opletalova street.
     items: ["nápis na zdi", "pistoli"],
     hint: "Václavák není místo, kde by tě pomohla pistole.",
+    // Wencleslas Square is not a place where a gun would help you.
     exits: [{
         name: "nahoru",
         location: "m4"
@@ -471,6 +475,7 @@ const locations = [{
 }, {
     id: "m8",
     desc: "O.K. Stojíš mezi patníky u kanálu. Není tu nic zvláštního. Dole jsou zátarasy.",
+    // O.K. You're standing between traffic posts, right by a drain. There is nothing special here. There are roadblocks downward.
     hint: "Nemohl by ti pomoct kanál?",
     items: ["poldu"],
     exits: [{
@@ -511,8 +516,10 @@ const locations = [{
         obj.desc = function() {
             if (this.exploded) {
                 return "O.K. Balancuješ na kraji obrovského kráteru. Na dně vidíš ceduli 'Dům módy'.";
+                // O.K. You're balancing on the edge of a huge crater. At the bottom, you can see a sign saying 'The Fashion Building'.
             } else {
                 return "O.K. Stojíš pod lešením. Dole jsou zátarasy. Slyšíš tichý, leč podezřelý tikot. Vidíš do ústí zatarasené ulice Ve Smečkách.";
+                // O.K. You are standing under the scaffolding. There are roadblocks downward. You can hear a quiet, yet suspicious ticking. You can see the blocked entrance into the Ve Smečkách street.
             }
         };
         obj.onEnter = function(game) {
@@ -525,6 +532,7 @@ const locations = [{
         }
     },
     hint: "Slyšíš ten tikot? Seber, co jde, a rychle pryč!",
+    // Can you hear the ticking? Pick up what you can, and scram!
     items: ["tyč"],
     exits: [{
         name: "doleva",
@@ -536,7 +544,9 @@ const locations = [{
 }, {
     id: "m10",
     desc: "O.K. Nacházíš se před LUXOL CLUBEM. Vedle je kino Jalta. Dole vidíš zátarasy.",
+    // O.K. You find yourself in front of the Luxol Club. The Jalta cinema is next door. You can see roadblocks further down.
     hint: "Některé předměty ti pomůžou víckrát. A pak nezapomeň, že šaty dělají člověka!",
+    // Some items will help you more than once. And don't forget to dress up for each occasion!
     items: ["chlupatýho"],
     readInit: function(obj) {
         obj.onEnter = function(game) {
@@ -579,7 +589,9 @@ const locations = [{
 }, {
     id: "m11",
     desc: "O.K. Jsi v křoví.",
+    // O.K. You're in the shrubs.
     hint: "Někdo má uniformy rád, jiný zase nerad.",
+    // Someone likes uniforms, someone doesn't.
     items: ["člena VB"],
     readInit: function(obj) {
         obj.onEnter = function(game) {
@@ -600,6 +612,7 @@ const locations = [{
 }, {
     id: "m12",
     desc: "O.K. Stojíš před bankou. Nahoře jsou zátarasy.",
+    // O.K. You're standing in front of a bank. There are roadblocks uphill.
     hint: "Cedulka nelže!",
     items: ["oltář", "cedulku"],
     exits: [{
@@ -612,6 +625,7 @@ const locations = [{
 }, {
     id: "m13",
     desc: "O.K. Jsi před grandhotelem EVROPA. Zahlédl jsi však videokameru zamířenou přímo na tebe.",
+    // O.K. You're in front of the grand hotel Europe. But you've noticed a video camera pointed right at you.
     readInit: function(obj) {
         obj.onEnter = function(game) {
             game.print("Uznal jsi, že veškerý odpor je marný a spáchal jsi sebevraždu.", "end-lose");
@@ -622,9 +636,11 @@ const locations = [{
     id: "m14",
     cops: true,
     hint: "Některému nebezpečí se stačí jen uhnout.",
+    // Some danger you can simply avoid.
         readInit: function(obj) {
         obj.desc = function(game) {
             let ret = "O.K. Sedíš na lavičce. (Už nemůžeš, co?) Kolem ucha ti hvízdla kulka. Nahoře jsou zátarasy.";
+            // O.K. You're sitting on a bench. (You're out of breath, aren't you?) A bullet just swooshed past your ear. There are roadblocks up ahead.
             if (obj.cops) {
                 ret += " Blíží se k tobě řada policajtů.";
             }
@@ -654,7 +670,9 @@ const locations = [{
 }, {
     id: "m15",
     desc: "O.K. Stojíš pod lešením. Napravo je ústí do zatarasené Štěpánské ulice. Dole jsou také zátarasy.",
+    // O.K. You're standing under a scaffolding. To the right, the way into the Štěpánská street is blocked. There are roadblocks downhill, too.
     hint: "Kdo má málo místa v kapsách, musí se často převlékat!",
+    // If you don't have enough room in your pockets, you'll have to change clothes often!
     items: ["civila"],
     readInit: function(obj) {
         obj.onEnter = function(game) {
@@ -675,8 +693,10 @@ const locations = [{
 }, {
     id: "m16",
     desc: "O.K. Ležíš před obchodním domem DRUŽBA. Praštil tě totiž příslušník. Vchod do metra je zatarasen. Dole za zátarasy je tramvajové koleje.",
+    // O.K. You are lying on the ground in front of the COMRADERIE department store. That's because an officer has just hit you. The entrace into the metro is blocked. There are tram tracks further down behind roadblocks.
     items: ["příslušníka", "mrtvolu civila"],
     hint: "Neber úplatky - dávej je!",
+    // Bribery is the enemy of socialism - but it works!
     exits: [{
         name: "doprava",
         location: "m17"
@@ -717,11 +737,13 @@ const locations = [{
         obj.desc = function(game) {
             if (!obj.explored) {
                 return "O.K. Sedíš v květináči mezi kytičkami a nadává ti milicionář. Cituji: 'Jestli tě tu uvidím ještě jednou, tak uvidíš.'";
+                // O.K. You're sitting in a flowerpot between flowers and a militiaman is shouting at you. To quote: 'If I see you here again, you're a dead man.'
             } else {
                 if (game.getLocationItem("mrtvolu milicionáře")) {
                     return "O.K. Sedíš v květináči mezi kytičkami.";
                 } else {
                     return "O.K. Sedíš v květináči mezi kytičkami a nadává ti milicionář. Cituji: 'Já tě upozorňoval, ty hajzle.'";
+                    // O.K. You're sitting in a flowerpot between flowers and the militia man is shouting at you. To quote: 'I've warned you, you fucker.'
                 }
             }
         };
@@ -733,6 +755,7 @@ const locations = [{
         }
     },
     hint: "Milicionář to myslí vážně!",
+    // The militiaman is being serious!
     exits: [{
         name: "doleva",
         location: "m16"
@@ -746,7 +769,9 @@ const locations = [{
 }, {
     id: "m18",
     desc: "O.K. Stojíš u zataraseného vchodu do metra. Dole a nahoře jsou zátarasy.",
+    // O.K. You're standing by a blocked entrance into the subway. There are roadblocks up- and downhill.
     hint: "Na hod do dálky se budeš potřebovat posilnit.",
+    // To throw with power, you'll need some energy.
     items: ["špenát"],
     exits: [{
         name: "doleva",
@@ -755,6 +780,7 @@ const locations = [{
 }, {
     id: "m19",
     desc: "O.K. Dostal ses do metra. Všude je tu rozšířen slzný plyn.",
+    // O.K. You've entered the subway. There's teargas everywhere.
     readInit: function(obj) {
         obj.onEnter = function(game) {
             game.print("Je ho tu tolik, že ses udusil.", "end-lose");
