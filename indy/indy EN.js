@@ -7,12 +7,14 @@ let beepOn = true;
 const beep = new Audio("snd/beep.wav");
 
 const items = [{
-    name: "diamanty",
+    name: "diamanty",    
     desc: "Jsou to čtyři nádherné drahokamy.",
+    // Four beautiful gems.
     readInit: function(obj) {
         obj.onDrop = function(game) {
             if (game.location.id === "m12") {
                 game.print("Jakmile jsi je položil, někdo je z oltáře ukradl.");
+                // As soon as you put them down, someone has snatched them from the altar.
                 game.removeItem("diamanty");
             }
         }
@@ -21,11 +23,13 @@ const items = [{
     name: "fízla",
     aliases: ["fizla"],
     desc: "Chystá se zmlátit tě.",
+    // He's about to beat you up.
     takeable: false
 }, {
     name: "mrtvolu fízla",
     aliases: ["mrtvolu fizla"],
     desc: "Má hluboko v hlavě zaseklou sekeru (dobrá práce)! Našels' u něj štít.",
+    // The axe has cut down deep inside his skull (good job)! You've found a shield."
     readInit: function(obj) {
         obj.onExamine = function(game) {
             game.addLocationItem("štít");
@@ -36,6 +40,7 @@ const items = [{
     name: "štít",
     aliases: ["stit"],
     desc: "Je vhodně upraven proti padajícímu kamení.",
+    // It is designed to shield you from falling rocks.
     readInit: function(obj) {
         obj.onUse = function(game) {
             if (game.location.id === "m5" && !game.location.shieldUsed) {
@@ -46,6 +51,7 @@ const items = [{
                     boulder.unusable = false;
                 }
                 game.print("O.K. Odrazil jsi kámen štítem.");
+                // You have used the shield to deflect the rock.
                 game.onLocationItemAdded(game, boulder.name);
                 return true;
             }
@@ -61,8 +67,10 @@ const items = [{
         };
         obj.desc = function() {
             let ret = "Je to ocas koně, na kterém sedí svatý Václav.";
+            // It's the tail of the horse that St. Wenceslas sits on.
             if (!this.examined) {
                 ret += " Ve skulince pod ocasem jsi našel sekeru.";
+                // You've found an axe in a little crevice.
             }
             return ret;
         };
@@ -71,11 +79,13 @@ const items = [{
 }, {
     name: "sekeru",
     desc: "Do tupé policajtské hlavy by zajela jako po másle.",
+    // It would cut cops' stupid heads like butter.
     readInit: function(obj) {
         obj.onUse = function(game) {
             const cop = game.getLocationItem("fízla");
             if (cop) {
                 game.print("O.K. Zasekl jsi mu sekeru do hlavy tak hluboko, že nejde vytáhnout.");
+                // You've driven your axe so deep inside his skull that it cannot be pulled out.
                 game.removeItem("sekeru");
                 game.removeLocationItem(cop.name);
                 game.addLocationItem("mrtvolu fízla");
@@ -87,12 +97,14 @@ const items = [{
     name: "kámen",
     aliases: ["kamen"],
     desc: "Není to obyčejný kámen, je to dlažební kostka.",
+    // It's no ordinary rock, it's a cobblestone.
     takeable: false,
     unusable: true,
     readInit: function(obj) {
         obj.onUse = function(game) {
             if (!this.used && game.location.id === "m5") {
                 game.print("O.K. Vrhnul jsi kámen napravo. Zprava (a to je pozoruhodné) jsi zaslechl výkřik.");
+                // You have cast the rock to the right. You have heard a scream (and that is intriguing) from the right.
                 // Set m6 property
                 game.getLocation("m6").shouldFail = false;
                 game.removeItem(obj.name);
@@ -105,10 +117,12 @@ const items = [{
     name: "slovník",
     aliases: ["slovnik"],
     desc: "Podrobný česko-anglicky slovník.",
+    // A comprehensive Czech-English dictionary.
     readInit: function(obj) {
         obj.onUse = function(game) {
             if (game.location.id === "m7") {
                 game.print("O.K. Přeložil sis nápis na zdi. Cituji: Jakeš je vůl, KAREL.");
+                // O.K. You have read the writing on the wall. It reads: Jakeš is a dumbass, KAREL.
                 return true;
             }
         }
@@ -116,36 +130,44 @@ const items = [{
 }, {
     name: "mrtvolu policajta",
     desc: "Byl nepochybně zasažen dlažební kostkou.",
+    // Apparatently, he has been hit by a cobblestone. 
     takeable: false
 }, {
     name: "nápis na zdi",
     aliases: ["napis na zdi"],
     desc: "Bez slovníku jej nerozluštíš.",
+    // You won't decipher it without a dictionary.
     takeable: false
 }, {
     name: "pistoli",
     desc: "Bohužel v ní nejsou náboje.",
+    // There's no ammunition, unfortunately.
 }, {
     name: "poldu",
     desc: "Chystá se zmlátit tě.",
+    // He's about to beat you up.
     takeable: false
 }, {
     name: "tyč",
     aliases: ["tyc"],
     desc: "Na ledacos by se hodila.",
+    // It could come in handy.
     readInit: function(obj) {
         obj.onUse = function(game) {
             if (game.location.id === "m8" && game.getLocationItem("poldu")) {
                 game.print("O.K. Vypáčil jsi poklop kanálu. Poklop spadnul do šachty. Polda se na tebe s řevem vrhnul, ale v okamžiku, kdy tě chtěl udeřit, zahučel přímo před tebou do kanálu.");
+                // O.K. You have pried the manhole cover open, and it fell down into the hole. Screaming, the cop charged at you, but at the very moment he was about to hit you, he dropped down the open manhole right in front of you.
                 game.removeLocationItem("poldu");
                 return true;
             } else if (game.location.id === "m10" && game.getLocationItem("chlupatýho")) {
                 game.print("O.K. Praštil jsi chlupatýho tyčí přes hlavu.");
+                // O.K. You have hit the cop with the iron rod, right into the head.
                 game.removeLocationItem("chlupatýho");
                 game.addLocationItem("mrtvolu chlupatýho");
                 return true;
             } else if (game.location.id === "m18" && obj.throwable) {
                 game.print("O.K. Mrštil jsi tyčí nalevo a uslyšel jsi zasténání. Cha, cha, cha, cha.");
+                // O.K. You have hurled the rod to the left and heard a groan. Ha ha ha ha.
                 game.removeItem(obj.name);
                 game.addLocationItem("mrtvolu milicionáře", "m17");
                 return true;
@@ -156,11 +178,13 @@ const items = [{
     name: "chlupatýho",
     aliases: ["chlupatyho"],
     desc: "Chystá se zmlátit tě.",
+    // He's about to beat you up.
     takeable: false,
 }, {
     name: "mrtvolu chlupatýho",
     aliases: ["mrtvolu chlupatyho"],
     desc: "Někdo mu rozrazil tyči lebku (kdo asi?). Má na sobě uniformu.",
+    // Someone (guess who?) has split his skull with an iron rod. He's wearing a uniform.
     readInit: function(obj) {
         obj.onExamine = function(game) {
             game.addLocationItem("uniformu");
@@ -170,6 +194,7 @@ const items = [{
 }, {
     name: "uniformu",
     desc: "Je to uniforma člena Veřejné bezpečnosti.",
+    // It's the uniform of a member of the Public Security, or the Czechoslovak police.
     readInit: function(obj) {
         const dressAction = {
             name: "obleč",
@@ -184,6 +209,7 @@ const items = [{
                     if (uniform && !uniform.dressed) {
                         obj.dressed = true;
                         game.print("O.K. Oblékl sis uniformu člena Veřejné bezpečnosti.");
+                        // O.K. You've put on the police uniform.
                     }
                 }
             }
@@ -196,6 +222,7 @@ const items = [{
                 if (obj.dressed && uniform && game.aliasObjectNameStartsWith(uniform, params.join(" "))) {
                     obj.dressed = false;
                     game.print("O.K. Svlékl sis uniformu.");
+                    // O.K. You've put down the uniform.
                 }
             }
         };
@@ -216,28 +243,34 @@ const items = [{
     name: "člena VB",
     aliases: ["clena VB"],
     desc: "Kontroluje kolemjdoucí.",
+    // He's checking the passersby.
     takeable: false
 }, {
     name: "oltář",
     aliases: ["oltar"],
     desc: "Jako by ti něco říkalo: Polož sem diamanty.",
+    // As if something was telling you: Put the diamonds here.
     takeable: false
 }, {
     name: "cedulku",
     desc: "Je na ní napsáno: 'A ven se dostane jen ten, kdo má čtyři magické diamanty.'",
+    // It reads: Only that who has four magic diamonds will make it out of here.
     takeable: false
 }, {
     name: "civila",
     desc: "Je na něm vidět, že nemá v lásce komunisty.",
+    // You can see that he's not fond of communists.
     takeable: false
 }, {
     name: "příslušníka",
     aliases: ["prislusnika"],
     desc: "Chystá se zmlátit tě.",
+    // He's about to beat you up.
     takeable: false
 }, {
     name: "mrtvolu civila",
     desc: "Je ti velice podobný. Má u sebe legitimaci.",
+    // He looks very much like you. He's got an ID card on him.
     takeable: false,
     readInit: function(obj) {
         obj.onExamine = function(game) {
@@ -247,18 +280,22 @@ const items = [{
 }, {
     name: "legitimaci",
     desc: "Patří členu tajné policie, který je ti velice podobný.",
+    // It belongs to the member of the secret police who looks very much like you.
 }, {
     name: "mrtvolu milicionáře",
     aliases: ["mrtvolu milicionare"],
     desc: "Někdo po něm mrštil tyči. Hádám tak dle toho, že ji má zaraženou v hlavě.",
+    // Someone has thrown an iron bar at him, guessing from the fact that it is sticking out of his head.
     takeable: false,
 }, {
     name: "špenát",
     aliases: ["spenat"],
     desc: "Ještě je v záruční lhůtě.",
+    // It's still before its best before date.
     readInit: function(obj) {
         obj.onUse = function(game) {
             game.print("O.K. Snědl jsi špenát a hned se cítíš silnější, že bys mohl tyčí házet.");
+            // O.K. You've eaten the spinach and you feel stronger at once - so strong you could throw javelin.
             const rodRet = game.findItem("tyč");
             if (rodRet.item) {
                 rodRet.item.throwable = true;
@@ -275,6 +312,7 @@ const items = [{
 }, {
     name: "plechovku",
     desc: "Je to dočista vylízaná plechovka od špenátu."
+    // It's a spinach can, licked completely clean.
 }];
 
 const locations = [{
@@ -771,7 +809,7 @@ const locations = [{
     desc: "O.K. Stojíš u zataraseného vchodu do metra. Dole a nahoře jsou zátarasy.",
     // O.K. You're standing by a blocked entrance into the subway. There are roadblocks up- and downhill.
     hint: "Na hod do dálky se budeš potřebovat posilnit.",
-    // To throw with power, you'll need some energy.
+    // To throw anywhere far, you'll need some energy.
     items: ["špenát"],
     exits: [{
         name: "doleva",
