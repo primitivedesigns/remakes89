@@ -14,7 +14,7 @@ const items = [{
         obj.onDrop = function(game) {
             if (game.location.id === "m12") {
                 game.print("Jakmile jsi je položil, někdo je z oltáře ukradl.");
-                // As soon as you've put them down, someone has snatched them from the altar.
+                // As soon as you put them down, someone has snatched them from the altar.
                 game.removeItem("diamanty");
             }
         }
