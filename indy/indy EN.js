@@ -14,7 +14,7 @@ const items = [{
         obj.onDrop = function(game) {
             if (game.location.id === "m12") {
                 game.print("Jakmile jsi je položil, někdo je z oltáře ukradl.");
-                // As soon as you put them down, someone has snatched them from the altar.
+                // As soon as you've put them down, someone has snatched them from the altar.
                 game.removeItem("diamanty");
             }
         }
@@ -29,7 +29,7 @@ const items = [{
     name: "mrtvolu fízla",
     aliases: ["mrtvolu fizla"],
     desc: "Má hluboko v hlavě zaseklou sekeru (dobrá práce)! Našels' u něj štít.",
-    // The axe has cut down deep inside his skull (good job)! You've found a shield."
+    // The axe has cut down deep inside his skull (good job)! He's equipped with a shield."
     readInit: function(obj) {
         obj.onExamine = function(game) {
             game.addLocationItem("štít");
@@ -1052,15 +1052,20 @@ function initState() {
             gameContainer.appendChild(textEnter);
 
             queueOutput(text1_a, "DOBRODRUŽSTVÍ INDIANA JONESE");
+            // THE ADVENTURES OF INDIANA JONES
             queueOutput(text1_b, "NA VÁCLAVSKÉM NÁMĚSTÍ");
+            // IN WENCESLAS SQUARE
             queueOutput(text1_c, "V PRAZE");
+            // IN PRAGUE
             queueOutput(text1_d, "DNE 16.1. 1989");
+            // ON JANUARY 16, 1989
 
             queueOutput(text2, "&copy; 1989", undefined, undefined, true);
 
             queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
                 textEnter.className = "intro-enter";
             });
+            // Press ENTER
 
         }, function(gameContainer) {
             // Story
@@ -1104,18 +1109,26 @@ function initState() {
             gameContainer.appendChild(textEnter);
 
             queueOutput(text1, "Jste Indiana Jones a vaším úkolem je dostat se do vaší rodné země, do Ameriky. Jste totiž na Václavském náměstí pod sochou svatého Václava. Je 16. 1. 1989.");
+            // You are Indiana Jones and your goal is to get to your homeland, America. Incidentally, you find yourself on Wenceslas Square under the statue of St. Wenceslas. The date is January 16, 1989.
             queueOutput(text2, "Tato hra je určena pro pokročilejší hráče textových her.");
+            // This game is designed for advanced adventure game players.
 
             queueOutput(textAdd, "S úctou");
+            // Yours sincerely,
             queueOutput(textAdd1, "Zuzan Znovuzrozený");
             queueOutput(textAdd2, "Ztracená bez čísla");
+            // Zillion and One Overlooked Street
             queueOutput(textAdd3, "Zapadákov City");
+            // Zero City
             queueOutput(textAdd4, "TRAMTÁRIE");
 
             queueOutput(textPhone, "Telefon: 16 1 1989");
+            // Phone no.: 16 1 1989
             queueOutput(textMilos, "BIJTE MILOŠE !!!");
+            // BEAT 'EM UP!
 
             queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
+                // Press ENTER
                 textEnter.className = "intro-enter";
             });
         }],
@@ -1127,12 +1140,15 @@ function initState() {
                 if (bombTime > 2) {
                     if (game.location.id === "m9") {
                         game.print("Zahlédl jsi záblesk, po kterém následuje ohromný výbuch. Než tě zasáhla střepina, došlo ti,co znamenal ten tikot.", "end-lose");
+                        // You noticed a flash, followed by a massive explosion. Right before a shard hit you, you've realized what the ticking was.
                         game.end("killed", false);
                     } else {
                         m9.exploded = true;
                         game.print("Místo, ze kterého jsi právě vyšel, vyletělo do povětří. Tys měl ale štěstí.");
+                        // The spot that you've just left, has now exploded. Lucky you!
                         if (game.getLocationItem("tyč", m9)) {
                             game.print("Výbuch zničil předmět, který jsi potřeboval k dohrání hry. Napiš RESTART a začni znovu.", "hint");
+                            // The explosion destroyed an object that you required to finish the game. Type in RESTART to try again.
                         }
                     }
                 }
