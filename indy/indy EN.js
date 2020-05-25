@@ -122,7 +122,7 @@ const items = [{
         obj.onUse = function(game) {
             if (game.location.id === "m7") {
                 game.print("O.K. Přeložil sis nápis na zdi. Cituji: Jakeš je vůl, KAREL.");
-                // O.K. You have read the writing on the wall. It reads: Jakeš is a dumbass, KAREL.
+                // O.K. You've translated the writing on the wall. It says that the General Secretary Jakeš "is a dumbass". It's signed KAREL.
                 return true;
             }
         }
@@ -156,7 +156,7 @@ const items = [{
         obj.onUse = function(game) {
             if (game.location.id === "m8" && game.getLocationItem("poldu")) {
                 game.print("O.K. Vypáčil jsi poklop kanálu. Poklop spadnul do šachty. Polda se na tebe s řevem vrhnul, ale v okamžiku, kdy tě chtěl udeřit, zahučel přímo před tebou do kanálu.");
-                // O.K. You have pried the manhole cover open, and it fell down into the hole. Screaming, the cop charged at you, but at the very moment he was about to hit you, he dropped down the open manhole right in front of you.
+                // O.K. You have pried the drain cover open, and it fell down into the manhole. Screaming, the cop charged at you, but at the very moment he was about to hit you, he dropped down the open manhole right in front of you.
                 game.removeLocationItem("poldu");
                 return true;
             } else if (game.location.id === "m10" && game.getLocationItem("chlupatýho")) {
@@ -515,6 +515,7 @@ const locations = [{
     desc: "O.K. Stojíš mezi patníky u kanálu. Není tu nic zvláštního. Dole jsou zátarasy.",
     // O.K. You're standing between traffic posts, right by a drain. There is nothing special here. There are roadblocks downward.
     hint: "Nemohl by ti pomoct kanál?",
+    // Could the drain be of any use?
     items: ["poldu"],
     exits: [{
         name: "doleva",
@@ -529,6 +530,7 @@ const locations = [{
     readInit: function(obj) {
         obj.killHero = function(game) {
             game.print("Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku.", "end-lose");
+            // As soon as the cop spotted you, he charged at you. You didn't even put up a fight. You loser.
             game.end("killed", false);
         };
         obj.beforeAction = function(game, action, params) {
@@ -563,6 +565,7 @@ const locations = [{
         obj.onEnter = function(game) {
             if (this.exploded) {
                 game.print("Neudržels' však rovnováhu a padáš dolů.", "end-lose");
+                // You couldn't keep balance and you're falling down.
                 game.end("killed", false);
             } else {
                 this.countDownTime = game.time;
@@ -591,14 +594,17 @@ const locations = [{
             if (!obj.explored) {
                 if (game.getInventoryItem("pistoli")) {
                     game.print("Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistoli, odprásknul tě.", "end-lose");
+                    // Suddenly, a cop charged at you. He frisked you, and as soon as he found the pistol on you, he shot you dead on the spot.
                     game.end("kill", false);
                 } else {
                     game.print("Najednou se na tebe vrhnul chlupatej, a když u tebe nic nenašel, zklamaně odešel.");
+                    // Suddenly, a cop charged at you, and having found nothing, he left in disappoinment.
                 }
             }
         };
         obj.killHero = function(game) {
             game.print("Policajta naštvalo, že u tebe nenašel, co hledal, a vrhnul se na tebe.", "end-lose");
+            // Not finding what he was looking for, the policeman lost his nerve and beat you up.
             game.end("killed", false);
         };
         obj.beforeAction = function(game, action, params) {
@@ -636,6 +642,7 @@ const locations = [{
             const uniform = game.getInventoryItem("uniformu");
             if (!uniform || !uniform.dressed) {
                 game.print("Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali si s tebou hrát.", "end-lose");
+                // A member of the Public Security tackled you and dragged you into an armed truck. Sitting here are some fine young men with iron bars in their hands. They start to play with you.
                 game.end("killed", false);
             }
         }
@@ -652,6 +659,7 @@ const locations = [{
     desc: "O.K. Stojíš před bankou. Nahoře jsou zátarasy.",
     // O.K. You're standing in front of a bank. There are roadblocks uphill.
     hint: "Cedulka nelže!",
+    // The note does not lie!
     items: ["oltář", "cedulku"],
     exits: [{
         name: "doleva",
@@ -667,6 +675,7 @@ const locations = [{
     readInit: function(obj) {
         obj.onEnter = function(game) {
             game.print("Uznal jsi, že veškerý odpor je marný a spáchal jsi sebevraždu.", "end-lose");
+            // You've concluded that resistance is futile and committed suicide.
             game.end("killed", false);
         }
     }
@@ -674,13 +683,14 @@ const locations = [{
     id: "m14",
     cops: true,
     hint: "Některému nebezpečí se stačí jen uhnout.",
-    // Some danger you can simply avoid.
+    // There are dangers that you can simply avoid.
         readInit: function(obj) {
         obj.desc = function(game) {
             let ret = "O.K. Sedíš na lavičce. (Už nemůžeš, co?) Kolem ucha ti hvízdla kulka. Nahoře jsou zátarasy.";
             // O.K. You're sitting on a bench. (You're out of breath, aren't you?) A bullet just swooshed past your ear. There are roadblocks up ahead.
             if (obj.cops) {
                 ret += " Blíží se k tobě řada policajtů.";
+                // A group of policemen are coming toward you.
             }
             return ret;
         };
@@ -692,6 +702,7 @@ const locations = [{
                 return;
             }
             game.print("Řada policajtů se přiblížila až k tobě. Než jsi stačil vstát, pustili se do tebe obušky.", "end-lose");
+            // A group of policemen has approached you. Before you managed to get up, they were already beating you with batons.
             game.end("killed", false);
         };
     },
@@ -717,6 +728,7 @@ const locations = [{
             const uniform = game.getInventoryItem("uniformu");
             if (uniform && uniform.dressed) {
                 game.print("Vrhnul se na tebe civilní občan pod dojmem, že jsi člen VB. Máš totiž ještě oblečenou uniformu.", "end-lose");
+                // A civilian charged at you thinking that you are with the Public Security. That's because you're still wearing the uniform.
                 game.end("killed", false);
             }
         };
@@ -745,6 +757,7 @@ const locations = [{
     readInit: function(obj) {
         obj.killHero = function(game) {
             game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end-lose");
+            // A member of the police charged at you and beat you up.
             game.end("killed", false);
         };
         obj.beforeAction = function(game, action, params) {
@@ -779,6 +792,7 @@ const locations = [{
             } else {
                 if (game.getLocationItem("mrtvolu milicionáře")) {
                     return "O.K. Sedíš v květináči mezi kytičkami.";
+                    // O.K. You're sitting in a flowerpot between flowers
                 } else {
                     return "O.K. Sedíš v květináči mezi kytičkami a nadává ti milicionář. Cituji: 'Já tě upozorňoval, ty hajzle.'";
                     // O.K. You're sitting in a flowerpot between flowers and the militia man is shouting at you. To quote: 'I've warned you, you fucker.'
@@ -788,6 +802,7 @@ const locations = [{
         obj.onEnter = function(game) {
             if (obj.explored && !game.getLocationItem("mrtvolu milicionáře")) {
                 game.print("Když se vypovídal, vrhnul se na tebe.", "end-lose");
+                // As soon as he was done talking, he charged at you.
                 game.end("killed", false);
             }
         }
@@ -822,6 +837,7 @@ const locations = [{
     readInit: function(obj) {
         obj.onEnter = function(game) {
             game.print("Je ho tu tolik, že ses udusil.", "end-lose");
+            // There's so much of it here that you've suffocated.
             game.end("killed", false);
         }
     }
@@ -1160,11 +1176,14 @@ function initState() {
         onEnd: function(endState) {
             if (endState === "killed") {
                 this.print("INDIANA JONES JE MRTEV!");
+                //INDIANA JONES IS DEAD!
                 this.print("ZPRÁVA Z AMERICKÉHO TISKU: Československá vláda oznámila, že náš drahý hrdina - INDIANA JONES - zemřel nešťastnou náhodou při autonehodě. Pokrač. na str. 54.");
+                // BREAKING NEWS FROM AMERICAN PRESS: The Czechoslovak government has announced that our dear hero - INDIANA JONES - died in an unforunate traffic accident. Continue reading on page 54.
                 this.print("Stiskni klávesu R pro RESTART nebo L a nahraje se poslední uložená pozice.", "intro-enter");
                 this.removeInputContainer();
             } else if (endState === "win") {
                 this.print("O.K. OBELSTIL JSI I TU NEJVĚTŠÍ FÍZLOVSKOU SVINI. ŠTASTNĚ JSI SE DOSTAL NA LETIŠTĚ A ODLETĚL DOMŮ. GRATULUJI K VÍTĚZSTVÍ!!!!!!!!!!", "end-win");
+                // O.K. YOU HAVE OUTSMARTED EVEN THE WORST POLICE SCUM. YOU HAVE SAFELY ARRIVED AT THE AIRPORT AND TOOK A PLANE HOME. CONGRATULATIONS!!!!!!!!!!
                 this.removeInputContainer();
                 this.print("Stiskni klávesu R pro RESTART", "intro-enter");
             }
