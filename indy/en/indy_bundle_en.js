@@ -128,8 +128,8 @@ const bundle = {
 
     location_m6_desc: "O.K. You're standing by the Fashion Building, next to the barricaded Krakovská street.",
     location_m6_hint: "This cop will be of no more use to you.",
-    location_m6_kill: "You see a cop. His face, which is getting closer and closer to you, is maniacal. There is no escaping him."  
-    
+    location_m6_kill: "You see a cop. His face, which is getting closer and closer to you, is maniacal. There is no escaping him.",
+
     location_m7_desc: "O.K. You're standing in front of a bookstore. You cannot hear anything, because a large crowd keeps chanting the slogan 'LONG LIVE KAREL!' To the left, you can see a blocked entrance into Opletalova street.",
     location_m7_hint: "A gun won't help you in Wencleslas Square.",
 
