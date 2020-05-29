@@ -104,13 +104,15 @@ const bundle = {
 
     // Decorate item names - if needed prefix the name with an article
     item_name_decorate: function (itemName) {
-        let article = "";
+        let article = "a ";
         switch (itemName) {
-            case this.item_tail_name:
-                article = "a ";
+            case this.item_spinach_name:
+            case this.item_diamonds_name:
+                article = "";
                 break;
             case this.item_axe_name:
             case this.item_altar_name:
+            case this.item_idcard_name:
                 article = "an ";
                 break;
         }
@@ -231,7 +233,7 @@ const bundle = {
     action_take: "take",
     action_take_aliases: ["pick up","get"],
     action_take_success: "You have picked up the ",
-    action_take_fail: "You can't pick this up.",
+    action_take_fail: "You can't pick that up.",
 
     action_inventory: "inventory",
     action_inventory_aliases: ["things", "i"],
@@ -253,7 +255,7 @@ const bundle = {
     conjunction_and: " and ",
     ignored_params: ["the"], 
 
-    start_hint: 'Enter a command, such as "examine tail". To auto-complete commands, try pressing TAB.',
+    start_hint: 'Enter a command, such as "examine tail". To auto-complete a command, try pressing TAB.',
 
     // Controls
     controls_autocomplete: "Special key - auto-complete command",
@@ -273,7 +275,7 @@ const bundle = {
     messages_gamePositions: "Following savegames are available: ",
     messages_gamePositionsEmpty: "No savegames available.",
     messages_gamePositionDoesNotExist: "Cannot load savegame: ",
-    messages_inventoryFull: "You cannot carry anything more!",
+    messages_inventoryFull: "You can't carry anything more!",
 
     // Intro
     intro_img_title_path: "../img/title.png",
