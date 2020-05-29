@@ -1133,15 +1133,23 @@ function initState() {
             }
         },
         adaptCommand: function (game, command) {
-            if (command && command.length > 0) {
-                if (command.startsWith("jdi na ") || command.startsWith("jit na ") || command.startsWith("jít na ")) {
-                    return command.substring(7, command.length);
-                }
-                if (command.startsWith("jdi ") || command.startsWith("jit ") || command.startsWith("jít ")) {
-                    return command.substring(4, command.length);
+            if (command && command.length > 0 && bundle.command_start_replacements) {
+                for (var i = 0; i < bundle.command_start_replacements.length; i++) {
+                    const replacement = bundle.command_start_replacements[i];
+                    const match = replacement.match.find(m => command.startsWith(m));
+                    if (match) {
+                        command = replacement.value + command.substring(match.length, command.length);
+                        break;
+                    }
                 }
             }
             return command;
+        },
+        parameterFilter: function(param) {
+            if(bundle.ignored_params) {
+                return !bundle.ignored_params.find(p => param === p);
+            }
+            return true;
         },
         isInputCaseSensitive: false,
         startLocation: "m2",
@@ -1160,7 +1168,7 @@ function buildExitsMessage(game, location) {
     const exitNames = location.exits.map(e => e.name);
     for (let idx = 0; idx < exitNames.length; idx++) {
         if (exitNames.length > 1 && idx === (exitNames.length - 1)) {
-            message += bundle.conjuction_and;
+            message += bundle.conjunction_and;
         }
         message += exitNames[idx];
         if (exitNames.length > 2 && idx < (exitNames.length - 2)) {
@@ -1188,7 +1196,7 @@ function buildItemsMessage(game, location) {
     });
     for (let idx = 0; idx < itemNames.length; idx++) {
         if (itemNames.length > 1 && idx === (itemNames.length - 1)) {
-            message += bundle.conjuction_and;
+            message += bundle.conjunction_and;
         }
         message += itemNames[idx];
         if (itemNames.length > 2 && idx < (itemNames.length - 2)) {

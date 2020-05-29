@@ -243,6 +243,14 @@ const bundle = {
     // Global
     // ======
 
+    // List of replacement objects - if the command starts with a value, the value is replaced with replacement
+    command_start_replacements: [
+        {
+            match: ["jdi na ", "jit na ", "jít na ", "jdi ", "jit ", "jít "],
+            value: ""
+        }
+    ],
+
     conjunction_and: " a ",
 
     start_hint: 'Zadej příkaz. Například "prozkoumej ocas". Pro automatické doplnění příkazu zkus klávesu TAB.',

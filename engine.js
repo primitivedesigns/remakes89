@@ -169,19 +169,25 @@ function createEngine(headless) {
         if (headless) {
             console.log(">> " + command);
         }
+        command = command.trim();
         if (game.adaptCommand) {
             command = game.adaptCommand(game, command);
         }
 
-        const parts = command.trim().split(/\s+/);
+        const parts = command.split(/\s+/);
         if (parts.length === 0) {
             return;
         }
         const params = [];
         if (parts.length > 1) {
             parts.slice(1).forEach(part => {
-                if (part && part.trim().length > 0) {
-                    params.push(part.trim());
+                if (part) {
+                    const param = part.trim();
+                    if (param.length > 0) {
+                        if (!game.parameterFilter || game.parameterFilter(part)) {
+                            params.push(param);    
+                        }
+                    }
                 }
             });
         }
@@ -499,6 +505,7 @@ function createGame(initialState, savedPosition, headless) {
     game.buildLocationMessage = initialState.buildLocationMessage;
     game.onLocationItemAdded = initialState.onLocationItemAdded;
     game.adaptCommand = initialState.adaptCommand;
+    game.parameterFilter = initialState.parameterFilter;
     game.onEnterLocation = initialState.onEnterLocation;
     game.onLoad = initialState.onLoad;
     game.headless = headless;

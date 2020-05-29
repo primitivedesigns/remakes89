@@ -103,9 +103,9 @@ const bundle = {
     item_can_desc: "It's a spinach can, licked completely clean.",
 
     // Decorate item names - if needed prefix the name with an article
-    item_name_decorate: function(itemName) {
+    item_name_decorate: function (itemName) {
         let article = "";
-        switch(itemName) {
+        switch (itemName) {
             case this.item_tail_name:
                 article = "a ";
                 break;
@@ -250,7 +250,8 @@ const bundle = {
     // Global
     // ======
 
-    conjuction_and: " and ",
+    conjunction_and: " and ",
+    ignored_params: ["the"], 
 
     start_hint: 'Enter a command, such as "examine tail". To auto-complete commands, try pressing TAB.',
 
@@ -299,3 +300,15 @@ const bundle = {
     end_win: "O.K. YOU HAVE OUTSMARTED EVEN THE WORST POLICE SCUM. YOU HAVE SAFELY ARRIVED AT THE AIRPORT AND TOOK A PLANE HOME. CONGRATULATIONS!!!!!!!!!!",
     end_win_restart: "Press R to RESTART",
 }
+
+// Define the replacements separately so that we can reference the messages from the bundle
+bundle.command_start_replacements = [
+    {
+        match: ["go "],
+        value: ""
+    },
+    {
+        match: ["pick up"],
+        value: bundle.action_take,
+    }
+];
