@@ -104,7 +104,7 @@ const bundle = {
 
     item_and: " and ",
 
-    // Decorate item names - if needed prefix the name with an articles
+    // Decorate item names - if needed prefix the name with an article
     item_name_decorate: function(itemName) {
         let article = "";
         switch(itemName) {
