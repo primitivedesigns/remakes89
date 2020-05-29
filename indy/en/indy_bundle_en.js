@@ -231,13 +231,13 @@ const bundle = {
     action_drop_fail: "You can't drop that.",
 
     action_take: "take",
-    action_take_aliases: ["pick up"],
+    action_take_aliases: ["pick up","get"],
     action_take_success: "You have picked up the ",
     action_take_fail: "You can't pick this up.",
 
     action_inventory: "inventory",
     action_inventory_aliases: ["things", "i"],
-    action_inventory_start: "You're holding ",
+    action_inventory_start: "You're carrying ",
     action_inventory_end: ", nothing more, nothing less.",
     action_inventory_empty: "You don't have shit.",
 
@@ -287,8 +287,8 @@ const bundle = {
     intro_text2: "This game is designed for advanced adventure game players.",
     intro_textAdd: "Yours sincerely,",
     intro_textAdd1: "Zuzan Znovuzrozený",
-    intro_textAdd2: "Zillion and One Overlooked Street",
-    intro_textAdd3: "Zero City",
+    intro_textAdd2: "Zero Unpleasant Street",
+    intro_textAdd3: "Zilch City",
     intro_textAdd4: "NOWHERELAND",
     intro_textPhone: "Phone no.: 16 1 1989",
     intro_textMilos: "BEAT 'EM UP!!!",
