@@ -389,13 +389,14 @@ const locations = [{
     }],
     readInit: function (obj) {
         obj.decorateItemName = function (itemName, game) {
+            let name = itemName;
             if (itemName === bundle.item_stone_name) {
                 const boulder = game.getLocationItem(bundle.item_stone_name);
                 if (boulder && boulder.unusable) {
-                    return bundle.location_m5_stone;
+                    name += bundle.location_m5_stone;
                 }
             }
-            return itemName;
+            return name;
         };
         obj.killHero = function (game) {
             game.print(bundle.location_m5_kill, "end-lose");
@@ -846,7 +847,16 @@ const actions = [{
     aliases: bundle.action_inventory_aliases,
     perform: function (game) {
         if (game.inventory && game.inventory.length > 0) {
-            game.print(bundle.action_inventory_start + game.inventory.join(", ") + bundle.action_inventory_end);
+            const itemNames = game.inventory.map(function(i) {
+                const item = game.mapItem(i);
+                let itemName = item.name;
+                // The bundle can define a function that decorates an item name
+                if (bundle.item_name_decorate) {
+                    itemName = bundle.item_name_decorate(itemName);
+                }
+                return itemName;
+            });
+            game.print(bundle.action_inventory_start + itemNames.join(", ") + bundle.action_inventory_end);
         } else {
             game.print(bundle.action_inventory_empty);
         }
@@ -1163,11 +1173,22 @@ function buildExitsMessage(game, location) {
 
 function buildItemsMessage(game, location) {
     let message = game.messages.locationItems + " ";
-    const itemNames = location.items.map(
-        i => location.decorateItemName ? location.decorateItemName(game.mapItem(i).name, game) : game.mapItem(i).name);
+    const itemNames = location.items.map(function(i) {
+        const item = game.mapItem(i);
+        let itemName = item.name;
+        // The bundle can define a function that decorates an item name
+        if (bundle.item_name_decorate) {
+            itemName = bundle.item_name_decorate(itemName);
+        }
+        // Locations can decorate items names too
+        if (location.decorateItemName) {
+            itemName = location.decorateItemName(itemName, game);
+        }
+        return itemName;
+    });
     for (let idx = 0; idx < itemNames.length; idx++) {
         if (itemNames.length > 1 && idx === (itemNames.length - 1)) {
-            message += " a ";
+            message += bundle.item_and;
         }
         message += itemNames[idx];
         if (itemNames.length > 2 && idx < (itemNames.length - 2)) {

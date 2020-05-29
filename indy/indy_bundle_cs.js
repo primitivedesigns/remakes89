@@ -110,6 +110,8 @@ const bundle = {
     item_can_name: "plechovku",
     item_can_desc: "Je to dočista vylízaná plechovka od špenátu.",
 
+    item_and: " a ",
+
     // =========
     // Locations
     // =========

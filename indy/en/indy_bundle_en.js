@@ -8,7 +8,7 @@ const bundle = {
 
     item_cop1_name: "cop",
     item_cop1_desc: "He's about to beat you up.",
-    
+
     item_corpse1_name: "dead cop",
     item_corpse1_desc: "The axe has cut down deep inside his skull (good job)! He's equipped with a shield.",
 
@@ -102,6 +102,23 @@ const bundle = {
     item_can_name: "can",
     item_can_desc: "It's a spinach can, licked completely clean.",
 
+    item_and: " and ",
+
+    // Decorate item names - if needed prefix the name with an articles
+    item_name_decorate: function(itemName) {
+        let article = "";
+        switch(itemName) {
+            case this.item_tail_name:
+                article = "a ";
+                break;
+            case this.item_axe_name:
+            case this.item_altar_name:
+                article = "an ";
+                break;
+        }
+        return article + itemName;
+    },
+
     // =========
     // Locations
     // =========
@@ -124,7 +141,7 @@ const bundle = {
     location_m5_desc: "O.K. You're taking a leak among the flowers in a big flowerpot.",
     location_m5_hint: "One of the cops is likely to have something that can deflect the rock. Such a rock can hit a fairly distant target.",
     location_m5_kill: "The stone is getting closer and closer to you. It keeps getting bigger and bigger and big-",
-    location_m5_stone: "stone that is about to hit you,",
+    location_m5_stone: " that is about to hit you,",
 
     location_m6_desc: "O.K. You're standing by the Fashion Building, next to the barricaded Krakovská street.",
     location_m6_hint: "This cop will be of no more use to you.",
