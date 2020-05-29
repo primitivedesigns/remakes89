@@ -102,8 +102,6 @@ const bundle = {
     item_can_name: "can",
     item_can_desc: "It's a spinach can, licked completely clean.",
 
-    item_and: " and ",
-
     // Decorate item names - if needed prefix the name with an article
     item_name_decorate: function(itemName) {
         let article = "";
@@ -251,6 +249,8 @@ const bundle = {
     // ======
     // Global
     // ======
+
+    conjuction_and: " and ",
 
     start_hint: 'Enter a command, such as "examine tail". To auto-complete commands, try pressing TAB.',
 

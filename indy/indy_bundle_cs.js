@@ -110,8 +110,6 @@ const bundle = {
     item_can_name: "plechovku",
     item_can_desc: "Je to dočista vylízaná plechovka od špenátu.",
 
-    item_and: " a ",
-
     // =========
     // Locations
     // =========
@@ -244,6 +242,8 @@ const bundle = {
     // ======
     // Global
     // ======
+
+    conjunction_and: " a ",
 
     start_hint: 'Zadej příkaz. Například "prozkoumej ocas". Pro automatické doplnění příkazu zkus klávesu TAB.',
 

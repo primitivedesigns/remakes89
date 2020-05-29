@@ -1160,7 +1160,7 @@ function buildExitsMessage(game, location) {
     const exitNames = location.exits.map(e => e.name);
     for (let idx = 0; idx < exitNames.length; idx++) {
         if (exitNames.length > 1 && idx === (exitNames.length - 1)) {
-            message += " a ";
+            message += bundle.conjuction_and;
         }
         message += exitNames[idx];
         if (exitNames.length > 2 && idx < (exitNames.length - 2)) {
@@ -1188,7 +1188,7 @@ function buildItemsMessage(game, location) {
     });
     for (let idx = 0; idx < itemNames.length; idx++) {
         if (itemNames.length > 1 && idx === (itemNames.length - 1)) {
-            message += bundle.item_and;
+            message += bundle.conjuction_and;
         }
         message += itemNames[idx];
         if (itemNames.length > 2 && idx < (itemNames.length - 2)) {
