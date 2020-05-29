@@ -23,7 +23,7 @@ const bundle = {
 
     item_tail_name: "tail",
     item_tail_desc: "It's the tail of St. Wenceslas' horse.",
-    item_tail_onExamine: "You've found an axe in a little crevice below the tail.",
+    item_tail_onExamine: " You've found an axe in a little crevice below the tail.",
 
     item_axe_name: "axe",
     item_axe_desc: "It would cut cops' stupid heads like butter.",
