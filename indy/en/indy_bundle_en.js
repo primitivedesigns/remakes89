@@ -19,7 +19,7 @@ const bundle = {
     item_stone_name: "stone",
     item_stone_aliases: ["rock"],
     item_stone_desc: "It's no ordinary rock, it's a cobblestone.",
-    item_stone_onUse: "You have cast the rock to the right. You have heard a scream (and that is intriguing) from the right.",
+    item_stone_onUse: "You have cast the stone to the right. You have heard a scream (and that is intriguing) from the right.",
 
     item_tail_name: "tail",
     item_tail_desc: "It's the tail of St. Wenceslas' horse.",
