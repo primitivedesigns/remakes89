@@ -14,7 +14,7 @@ const bundle = {
 
     item_shield_name: "shield",
     item_shield_desc: "It is designed to shield you from falling rocks.",
-    item_shield_onUse: "O.K. You have used the shield to deflect the rock.",
+    item_shield_onUse: "O.K. You have used the shield to deflect the stone.",
 
     item_stone_name: "stone",
     item_stone_aliases: ["rock"],
@@ -159,7 +159,7 @@ const bundle = {
     location_m9_hint: "Can you hear the ticking? Pick up what you can, and scram!",
     location_m9_kill: "You couldn't keep balance though, and you're falling down.",
     location_m9_bomb_kill: "You noticed a flash, followed by a massive explosion. Right before a shard hit you, you've realized what the ticking was.",
-    location_m9_bomb_exploded: "The spot that you've just left, has now exploded. Lucky you!",
+    location_m9_bomb_exploded: "The spot that you've just left has now exploded. Lucky you!",
     location_m9_bomb_hint: "The explosion destroyed an object that you required to finish the game. Type in RESTART to try again.",
 
     location_m10_desc: "O.K. You find yourself in front of the Luxol Club. The Jalta cinema is next door. You can see roadblocks further down.",
