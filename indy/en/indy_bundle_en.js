@@ -56,7 +56,7 @@ const bundle = {
     item_cop3_desc: "He's about to beat you up.",
 
     item_corpse3_name: "dead copper",
-    item_corpse3_desc: "A uniformed cop. Someone (guess who?) has split his skull with an iron rod.",
+    item_corpse3_desc: "Someone (guess who?) has split his skull with an iron rod. He's wearing a uniform.",
 
     item_uniform_name: "uniform",
     item_uniform_desc: "It's the uniform of a member of the Public Security, or the Czechoslovak police.",
@@ -132,7 +132,7 @@ const bundle = {
 
     location_m3_desc_ok: "O.K. You're standing at an unobstructed entrance into the subway. As soon as you showed up, an officer came to you and searched you. Having found the secret police ID card, he wished you good luck in your future endeavors, bowed, and left (the moron!).",
     location_m3_desc_nok: "O.K. You're standing at an unobstructed entrance into the subway. As soon as you showed up, an officer came to you and searched you. Having found nothing, he called on his “comrades” and they beat you senseless.",
-    location_m3_kill: "Když od tebe odbíhali na nějakou ženu s kočárkem, jednomu z nich vypadla z pouzdra mačeta. Doplazil ses pro ni a spáchals' HARAKIRI.",
+    location_m3_kill: "As they were running away to deal with some woman with a baby carriage, one of them lost a machete. You crawled for it and committed hara-kiri.",
     location_m3_hint: "Nothing keeps you from departing now.",
 
     location_m4_desc: "O.K. You're standing by the Supraphon record store. But before you could even look around, you have been hit by a water cannon.",
@@ -179,7 +179,7 @@ const bundle = {
     location_m13_kill: "You've concluded that resistance is futile and committed suicide.",
 
     location_m14_desc: "O.K. You're sitting on a bench. (You can't keep up, can you?) A bullet just swooshed past your ear. There are roadblocks up ahead.",
-    location_m14_desc_cops: "A group of policemen are coming toward you.",
+    location_m14_desc_cops: " A group of policemen are coming toward you.",
     location_m14_hint: "Some dangers you can simply avoid.",
     location_m14_kill: "The policemen approached you. Before you managed to get up, they were already beating you with batons.",
 
@@ -220,7 +220,7 @@ const bundle = {
     exit_inside_aliases: [],
 
     action_explore: "examine",
-    action_explore_aliases: ["look at"],
+    action_explore_aliases: ["inspect", "read", "explore"],
 
     action_use: "use",
     action_use_aliases: [],
@@ -231,7 +231,7 @@ const bundle = {
     action_drop_fail: "You can't drop that.",
 
     action_take: "take",
-    action_take_aliases: ["pick up","get"],
+    action_take_aliases: ["get"],
     action_take_success: "You have picked up the ",
     action_take_fail: "You can't pick that up.",
 
@@ -299,7 +299,7 @@ const bundle = {
     end_killed1: "INDIANA JONES IS DEAD!",
     end_killed2: "BREAKING NEWS FROM AMERICAN PRESS: The Czechoslovak government has announced that our dear hero - INDIANA JONES - died in a traffic accident with no signs of foul play. Continue reading on page 54.",
     end_killed3: "Press R to RESTART or L to LOAD the latest savegame.",
-    end_win: "O.K. YOU HAVE OUTSMARTED EVEN THE WORST POLICE SCUM. YOU HAVE SAFELY ARRIVED AT THE AIRPORT AND TOOK A PLANE HOME. CONGRATULATIONS!!!!!!!!!!",
+    end_win: "O.K. YOU HAVE OUTSMARTED EVEN THE WORST POLICE SCUM. YOU SAFELY ARRIVED AT THE AIRPORT AND TOOK A PLANE HOME. CONGRATULATIONS!!!!!!!!!!",
     end_win_restart: "Press R to RESTART",
 }
 
@@ -311,6 +311,11 @@ bundle.command_start_replacements = [
     },
     {
         match: ["pick up"],
-        value: bundle.action_take,
+        value: bundle.action_take
+    },
+    {
+        match: ["look at"],
+        value: bundle.action_explore,
     }
+
 ];
