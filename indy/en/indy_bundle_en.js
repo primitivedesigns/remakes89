@@ -3,14 +3,15 @@ const bundle = {
     // Items
     // =====
     item_diamonds_name: "diamonds",
-    item_diamonds_desc: "Four beautiful gems.",
+    item_diamonds_desc: "Four beautiful gegit ms.",
     item_diamonds_onDrop: "As soon as you put them down, someone has snatched them from the altar.",
 
     item_cop1_name: "cop",
     item_cop1_desc: "He's about to beat you up.",
 
     item_corpse1_name: "dead cop",
-    item_corpse1_desc: "The axe has cut down deep inside his skull (good job)! He's equipped with a shield.",
+    item_corpse1_desc: "The axe has cut down deep inside his skull (good job)!",
+    item_corpse1_desc_shield: " He's equipped with a shield.",
 
     item_shield_name: "shield",
     item_shield_desc: "It is designed to shield you from falling rocks.",
@@ -57,6 +58,8 @@ const bundle = {
 
     item_corpse3_name: "dead copper",
     item_corpse3_desc: "Someone (guess who?) has split his skull with an iron rod. He's wearing a uniform.",
+    item_corpse3_desc: "A dead cop. Someone (guess who?) has split his skull with an iron rod.",
+    item_corpse3_desc_uniform: " He's wearing a uniform.",
 
     item_uniform_name: "uniform",
     item_uniform_desc: "It's the uniform of a member of the Public Security, or the Czechoslovak police.",
@@ -253,7 +256,7 @@ const bundle = {
     // ======
 
     conjunction_and: " and ",
-    ignored_params: ["the"], 
+    ignored_params: ["the"],
 
     start_hint: 'Enter a command, such as "examine tail". To auto-complete a command, try pressing TAB.',
 

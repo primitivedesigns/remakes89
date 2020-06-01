@@ -185,7 +185,7 @@ function createEngine(headless) {
                     const param = part.trim();
                     if (param.length > 0) {
                         if (!game.parameterFilter || game.parameterFilter(part)) {
-                            params.push(param);    
+                            params.push(param);
                         }
                     }
                 }

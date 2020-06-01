@@ -12,7 +12,8 @@ const bundle = {
 
     item_corpse1_name: "mrtvolu fízla",
     item_corpse1_aliases: ["mrtvolu fizla"],
-    item_corpse1_desc: "Má hluboko v hlavě zaseklou sekeru (dobrá práce)! Našels' u něj štít.",
+    item_corpse1_desc: "Má hluboko v hlavě zaseklou sekeru (dobrá práce)!",
+    item_corpse1_desc_shield: "Našels' u něj štít.",
 
     item_shield_name: "štít",
     item_shield_aliases: ["stit"],
@@ -63,7 +64,8 @@ const bundle = {
 
     item_corpse3_name: "mrtvolu chlupatýho",
     item_corpse3_aliases: ["mrtvolu chlupatyho"],
-    item_corpse3_desc: "Někdo mu rozrazil tyči lebku (kdo asi?). Má na sobě uniformu.",
+    item_corpse3_desc: "Někdo mu rozrazil tyči lebku (kdo asi?).",
+    item_corpse3_desc_uniform: " Má na sobě uniformu.",
 
     item_uniform_name: "uniformu",
     item_uniform_desc: "Je to uniforma člena Veřejné bezpečnosti.",

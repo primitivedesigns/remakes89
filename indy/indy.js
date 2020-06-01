@@ -27,10 +27,18 @@ const items = [{
 }, {
     name: bundle.item_corpse1_name,
     aliases: bundle.item_corpse1_aliases,
-    desc: bundle.item_corpse1_desc,
     readInit: function (obj) {
+        obj.desc = function() {
+            let ret = bundle.item_corpse1_desc;
+            if(!obj.examined) {
+                ret += bundle.item_corpse1_desc_shield;
+            }
+            return ret;
+        };
         obj.onExamine = function (game) {
-            game.addLocationItem(bundle.item_shield_name);
+            if (!obj.examined) {
+               game.addLocationItem(bundle.item_shield_name);
+            }
         }
     },
     takeable: false
@@ -162,10 +170,18 @@ const items = [{
 }, {
     name: bundle.item_corpse3_name,
     aliases: bundle.item_corpse3_aliases,
-    desc: bundle.item_cop3_desc,
     readInit: function (obj) {
+        obj.desc = function() {
+            let ret = bundle.item_corpse3_desc;
+            if (!obj.examined) {
+                ret += bundle.item_corpse3_desc_uniform;
+            }
+            return ret;
+        };
         obj.onExamine = function (game) {
-            game.addLocationItem(bundle.item_uniform_name);
+            if (!obj.examined) {
+                game.addLocationItem(bundle.item_uniform_name);
+            }
         };
     },
     takeable: false,
@@ -411,7 +427,7 @@ const locations = [{
             return false;
         };
         obj.afterAction = function (game, action, params) {
-            if (obj.shieldUsed || isMovement(action) || game.actionMatches(action, params, "použij", bundle.item_shield_name)) {
+            if (obj.shieldUsed || isMovement(action) || game.actionMatches(action, params, bundle.action_use, bundle.item_shield_name)) {
                 // Shield was used, after-enter action or action matches
                 return;
             }
@@ -487,7 +503,7 @@ const locations = [{
             return false;
         };
         obj.afterAction = function (game, action, params) {
-            if (!game.getLocationItem(bundle.item_cop2_name) || isMovement(action) || game.actionMatches(action, params, "použij", bundle.item_rod_name)) {
+            if (!game.getLocationItem(bundle.item_cop2_name) || isMovement(action) || game.actionMatches(action, params, bundle.action_use, bundle.item_rod_name)) {
                 // Cop is dead, after-enter action or action matches
                 return;
             }
@@ -1125,6 +1141,7 @@ function initState() {
             if (!action.builtin) {
                 game.shiftTime(1);
             }
+            document.querySelector("#game-input").scrollIntoView();
         },
         onLocationItemAdded: function (game) {
             const location = game.location;
