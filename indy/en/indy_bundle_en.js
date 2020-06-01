@@ -20,7 +20,7 @@ const bundle = {
     item_stone_name: "stone",
     item_stone_aliases: ["rock"],
     item_stone_desc: "It's no ordinary rock, it's a cobblestone.",
-    item_stone_onUse: "You have cast the stone to the right. You have heard a scream (and that is intriguing) from the right.",
+    item_stone_onUse: "You have cast the stone to the right. You heard a scream (and that is intriguing) from the right.",
 
     item_tail_name: "tail",
     item_tail_desc: "It's the tail of St. Wenceslas' horse.",
@@ -34,8 +34,8 @@ const bundle = {
     item_dictionary_desc: "A comprehensive Czech-English dictionary.",
     item_dictionary_onUse: "O.K. You've translated the writing on the wall. It says that the General Secretary Jakeš 'is a dumbass'. It's signed KAREL.",
 
-    item_writing_name: "writing",
-    item_writing_aliases: ["writing on the wall"],
+    item_writing_name: "writing on the wall",
+    item_writing_aliases: ["writing"],
     item_writing_desc: "You won't decipher it without a dictionary.",
 
     item_gun_name: "pistol",
@@ -45,7 +45,7 @@ const bundle = {
     item_cop2_desc: "He's about to beat you up.",
 
     item_corpse2_name: "dead policeman",
-    item_corpse2_desc: "Apparatently, he has been hit by a cobblestone.",
+    item_corpse2_desc: "Apparently, he has been hit by a cobblestone.",
 
     item_rod_name: "rod",
     item_rod_desc: "It could come in handy.",
@@ -75,7 +75,7 @@ const bundle = {
     item_cop4_desc: "He's checking the passersby.",
 
     item_altar_name: "altar",
-    item_altar_desc: "As if something was telling you: Put the diamonds here.",
+    item_altar_desc: "As if something was telling you: 'Put the diamonds here.'",
 
     item_tag_name: "note",
     item_tag_desc: "It reads: 'Only the one who has four magic diamonds will make it out of here.'",
@@ -95,12 +95,11 @@ const bundle = {
     item_idcard_desc: "It belongs to the member of the secret police who looks very much like you.",
 
     item_militiaman_corpse_name: "dead militiaman",
-    item_militiaman_corpse_aliases: ["mrtvolu milicionare"],
     item_militiaman_corpse_desc: "Someone has thrown an iron bar at him, guessing from the fact that it is sticking out of his head.",
 
     item_spinach_name: "spinach",
     item_spinach_desc: "A can of spinach. It's still before its best before date.",
-    item_spinach_onUse: "O.K. You've eaten the spinach and you suddenly feel stronger - strong enough to throw javelin.",
+    item_spinach_onUse: "O.K. You've eaten the spinach and you suddenly feel strong enough to throw javelin.",
 
     item_can_name: "can",
     item_can_desc: "It's a spinach can, licked completely clean.",
@@ -126,7 +125,7 @@ const bundle = {
     // Locations
     // =========
 
-    location_m1_desc: "O.K. You're standing in front of the Grocery Store Building. The entrance into the subway is fortunately clear. An annoying man (probably a communist) is looking out of a balcony and happily watching the good work of the members of the Public Security.",
+    location_m1_desc: "O.K. You're standing in front of the Grocery Store Building. The entrance into the subway is fortunately clear. An annoying man (probably a Communist) is looking out of a balcony and happily watching the good work of the members of the Public Security.",
     location_m1_hint: "You will have to chop your way through.",
     location_m1_kill: "The bloodthirsty cop has grabbed you and started beating you up. And kept on beating and beating...",
 
