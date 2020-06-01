@@ -35,7 +35,7 @@ const fullPathCommands = [
     "DOVNITR"
 ];
 
-const testInventoryLimit = function(engine) {
+const testInventoryLimit = function (engine) {
     info("---- Inventory Limit Test ----");
     let failed = false;
     engine.processCommand("prozkoumej ocas");
@@ -57,7 +57,7 @@ const testInventoryLimit = function(engine) {
     success("Test passed");
 }
 
-const testUniform = function(engine) {
+const testUniform = function (engine) {
     info("---- Uniform Switch Test ----");
 
     const commands = [
@@ -107,7 +107,7 @@ const testUniform = function(engine) {
     success("Test passed");
 }
 
-const testM15InstantDeath = function(engine) {
+const testM15InstantDeath = function (engine) {
     info("---- M15 Instant Death Test ----");
 
     const commands = [ // m2
@@ -138,7 +138,7 @@ const testM15InstantDeath = function(engine) {
     success("Test passed");
 }
 
-const testM14InstantDeath = function(engine) {
+const testM14InstantDeath = function (engine) {
     info("---- M14 Instant Death Test ----");
 
     const commands = [
@@ -183,7 +183,7 @@ const testM14InstantDeath = function(engine) {
     success("Test passed");
 }
 
-const testM16InstantDeath = function(engine) {
+const testM16InstantDeath = function (engine) {
     info("---- M16 Instant Death Test ----");
 
     const commands = [
@@ -230,7 +230,7 @@ const testM16InstantDeath = function(engine) {
     success("Test passed");
 }
 
-const testM16 = function(engine) {
+const testM16 = function (engine) {
     info("---- M16 Test ----");
 
     const commands = [
@@ -277,7 +277,45 @@ const testM16 = function(engine) {
     success("Test passed");
 }
 
-const testFullPath = function(engine) {
+const testM10Corpse = function (engine) {
+    info("---- M10 Corpse Test ----");
+
+    const commands = [
+        // m2
+        "PROZKOUMEJ OCAS", "SEBER SEKERU", "L",
+        // m1
+        "POUZIJ SEKERU", "PROZKOUMEJ MRTVOLU FIZLA", "SEBER STIT", "P", "D",
+        // m5
+        "POUZIJ STIT", "POLOZ STIT", "POUZIJ KAMEN", "P", "D",
+        // m9
+        "SEBER TYC", "N", "L", "D",
+        // m8
+        "POUZIJ TYC", "L", "D",
+        // m10
+        "POUZIJ TYC",
+    ]
+
+    commands.forEach(command => {
+        if (engine.game.endState) {
+            return;
+        }
+        engine.processCommand(command);
+    });
+
+    const cop = engine.game.getLocationItem("chlupatýho");
+    const corpse = engine.game.getLocationItem("mrtvolu chlupatýho");
+    const corpseDesc = corpse.desc();
+
+    if (assertTrue(!cop && corpse && corpseDesc === "Někdo mu rozrazil tyči lebku (kdo asi?). Má na sobě uniformu.")) {
+        return;
+    }
+
+    engine.processCommand("PROZKOUMEJ mrtvolu chlupatýho");
+
+    success("Test passed");
+}
+
+const testFullPath = function (engine) {
     info("---- Full Path Test ----");
 
     fullPathCommands.forEach(command => {
@@ -294,8 +332,10 @@ const testFullPath = function(engine) {
     }
 }
 
+
+
 const testSuite = [
-    testFullPath, testInventoryLimit, testUniform, testM15InstantDeath, testM14InstantDeath, testM16InstantDeath, testM16,
+    testFullPath, testInventoryLimit, testUniform, testM15InstantDeath, testM14InstantDeath, testM16InstantDeath, testM16, testM10Corpse
 ]
 
 

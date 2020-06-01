@@ -258,7 +258,9 @@ const items = [{
     takeable: false,
     readInit: function (obj) {
         obj.onExamine = function (game) {
-            game.addLocationItem(bundle.item_idcard_name);
+            if (!obj.examined) {
+                game.addLocationItem(bundle.item_idcard_name);
+            }
         };
     }
 }, {
