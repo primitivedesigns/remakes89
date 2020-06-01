@@ -2,7 +2,7 @@
 <head>
     <!-- Google Analytics placeholder -->
     <meta charset="utf-8">
-    <title>DOBRODRUŽSTVÍ INDIANA JONESE NA VÁCLAVSKÉM NÁMĚSTÍ V PRAZE DNE 16.1.1989</title>
+    <title>THE ADVENTURES OF INDIANA JONES IN WENCESLAS SQUARE IN PRAGUE ON JANUARY 16, 1989</title>
     <link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet" />
     <link href="../indy.css" type="text/css" rel="stylesheet" />
 </head>
@@ -11,8 +11,28 @@
     <div id="game-sidebar">
         <a href="javascript:void(0)" id="game-sidebar-close" class="toggle-btn"
             onclick="closeSide()">&times;</a>
+
+        <h2>About the game</h2>
+
+            <p>This satirical game was released anonymously in 1989 as a response to police brutality during the <a href="https://nsarchive2.gwu.edu/NSAEBB/NSAEBB271/index.htm">Palach Week protests</a>. In January 1989, several opposition groups organized demonstrations to commemorate
+               the twentieth anniversary of the self-immolation of <a href="https://en.wikipedia.org/wiki/Jan_Palach">Jan Palach</a>, a student who set himself on fire to protest the post-1968 political developments in the country. On January 15, thousands of people gathered 
+               on <a href="https://en.wikipedia.org/wiki/Wenceslas_Square">Wenceslas Square</a>, a traditional site of public events. Citizens’ efforts to pay respects to Palach and protest the oppressive regime were
+               met with disproportionate police response, including the use of tear gas and water cannon against peaceful protesters and curious bystanders. Undeterred by the police, people continued to 
+               gather for the following four days. The game takes place on the second day of the protests.</p>
+            <p>By then, Indiana Jones had become a popular character in Czechoslovak text adventure games, in part thanks to the popular series of unlincesed homebrew titles by the influential programmer František Fuka.
+                While geographically faithful, the game portrays Wenceslas Square as a battlefield where every careless move is punished with death; where tear gas, water cannons and policemen await on every corner. 
+                The game revels in spectacular game over scenes, which serve to forefront and exaggerate police violence. The game was released for the ZX Spectrum platform in the Czech language and spread among the users on cassette tapes, then
+                the default storage medium for 8-bit computers. Although its author remains unknown, it is possible that they were a participant in the actual demonstration.</p>
+
+        <h2>About Wenceslas Square</h2>
+            <p>The square is in fact downtown Prague’s widest and most spacious boulevard, and has become a traditional site of protests, demonstrations, and other public events. 750 meters long, the boulevard slopes 
+                toward the southeast, with the National Museum at the top. The equestrian statue of St. Wenceslas, the patron saint of the Czech lands, stands below it, and is commonly used as a meeting point. 
+                The A subway line runs underneath the boulevard, with several entraces on each side.
+            <p>The game takes place in the top half of the Wenceslas Square. In accordance with common local usage, the directions used in the game are relative to the National Museum and the statue of St. Wenceslas, which are
+                considered the "top" of the square. Geographically, "up" stands for southeast, "left" for northwest etc. The game mentions several sites of commerce and entertainment that were staples of Prague' city life in the 1980s.</p>
+
         <h2>How to play a text adventure game</h2>
-        <p>Text adventures (sometimes also called "interactive fiction") describe the game world using text descriptions. Each location displays a its description, a list of objects that your character can interact with, 
+            <p>Text adventures (sometimes also called "interactive fiction") describe the game world using text descriptions. Each location displays a its description, a list of objects that your character can interact with, 
             and a list of exits. These games are usually controlled by typed-in commands addressed to the playable character. While playing text adventures, especially the ones from the 1980s, one would usually 
             take notes and draw a map on paper. In this particular game, you type in commands and confirm them with the Enter key, similarly to the use of command line in older operating systems. The game understands
             simple commands consisting of a verb and an object, such as:
@@ -30,78 +50,54 @@
             </p>
         <p>You can list all the verbs used by the game by typing "DICTIONARY" or "VERBS". 
             Please note that - as in the original - the dictionary of this game is quite limited, and you will have to use the generic verb USE to execute a wide range of actions. If you are stuck, the "HINT" command
-            will display a hint for the current location. This hint was, however, not featured in the original game.
+            will display a hint for the current location. This hint system was not featured in the original game and has only been added to this conversion.
         <p>You can save and load your game while playing, using the SAVE and LOAD commands in conjunction with a label, for example:
             <div class="command">SAVE HORSE</div>
             <div class="command">LOAD HORSE</div>
-        <p>If you don't use a label, the game will automatically call you savegame "SAVE". You can list all savegame labels by typing "GAMES". The savegames are being stored in the local storage of your web browser.
-            As such, they will persist even when you close the game window but will be deleted when the local storage is cleaned by the browser.</p>
-
-        <h2>O hře Indiana Jones na Václavském náměstí</h2>
-
-        <p>Díky neoficiálním textovkám Františka Fuky a dalších autorů se Indiana Jones stal
-            jedním z nejpopulárnějších hrdinů československých her. 
-            V tomto anonymně vydaném titulu z roku 1989 se americký archeolog překvapivě ocitá na Václavském náměstí v Praze
-            během Palachova týdne – série protirežimních demonstrací, jež byly brutálně potlačeny příslušníky 
-            Veřejné bezpečnosti a Lidových milicí. Indiana Jones se musí probít skrz náměstí a odjet na letiště,
-            což není vůbec snadné, protože na každém kroku čekají krvežízniví policisté a milicionáři.
-            Tato mimořádně násilná hra umožňuje hráči prožít trauma Palachova týdne z pohledu akčního hrdiny,
-            který se na rozdíl od skutečných demonstrantů mohl bránit. Autora či autorku skrývající se pod 
-            pseudonymem "Zuzan Znovuzrozený" neznáme, ale mimořádně vyhrocený tón i geograficky věrné zpracování 
-            napovídají, že se možná demonstrace zúčastnil/a.</p>
-
-        <h2>Jak jsme hru rekonstruovali</h2>
-        <p>V emulátoru ZX Spectra jsme analyzovali lokace a hádanky a z dochovaného binárního kódu hry jsme extrahovali veškeré texty.
-            Poté jsme hru přepsali pro webové technologie (JavaScript, HTML a CSS) za použití vlastního na míru naprogramovaného
-            enginu. Texty jsou původní, pouze s přidanou diakritikou a případnou opravou
-            překlepů. Hádanky a jednotlivé herní mechaniky jsme se snažili co nejvěrněji reprodukovat. Oproti původní verzi
-            jsou však v naší konverzi i následující změny:</p>
+        <p>If you don’t use a label, the game will automatically call you savegame "SAVE". You can list all savegame labels by typing "GAMES". The savegames are being stored in the local storage of your web browser.
+            As such, they will persist even when you close the game window - but will be deleted when the local storage is cleaned by the browser.</p>
+           
+        <h2>How we reconstructed the game</h2>
+        <p>As no source code for the game was preserved, we observed its run-time behavior and documented all its locations, objects, and events. 
+            Then we rewrote the game for web technologies (JavaScript, HTML, and CSS) using our own custom engine. All the texts in the game were extracted from the game's binaries and translated into English.
+            We aimed for a faithful reproduction of all the puzzles and mechanics. There are, however, a few changes, mostly to make the game more accessible and user-friendly:</p>         
         <ul>
-            <li>Úvodní obrázek byl nakreslen pro potřeby remaku v rozlišení a
-                paletě odpovídajícím grafickým možnostem původní platformy (ZX Spectrum).
-                Původní verze žádný obrázek neměla.</li>
-            <li>Konverze umožňuje použití některých synonym (VEZMI
-                místo SEBER apod.)</li>
-            <li>Konverze obsahuje nápovědy (přes příkaz POMOC), které nebyly v
-                původní hře přítomny.</li>
-            <li>Konverze umožňuje uložit a nahrát pozici ve hře (SAVE
-                a LOAD).</li>
-            <li>Konverze používá čitelnější písmo a má přívětivější a rychlejší uživatelské rozhraní.
-                Umožňuje například opakovat předchozí příkazy pomocí kurzorových šipek, případně klávesy TAB.</li>
-            <li>Interface remaku umožňuje opakovat příkazy pomocí
-                šipek nahoru a dolů, případně klávesy TAB.</li>
-            <li>Z konverze jsme vypustili úvodní instrukce, které vysvětlují, jak zadávat příkazy.
-                Instrukce jsou nahrazeny touto nápovědou a funkcí SLOVNÍK.</li>
+            <li>The original version did not contain intro graphics. The conversion's graphic was created in the resolution and palette of the ZX Spectrum platform, 
+                although we did not conform to its limitation of 2 colors per 8x8 square.</li>
+            <li>The conversion allows for the use of synonyms (PICK UP or GET instead of TAKE etc.)</li>
+            <li>The conversion contains hints (using the HINT command), which were not present in the original.</li>
+            <li>The conversion enables saving and loading the game using the SAVE and LOAD commands.</li>
+            <li>The conversion uses a more readable font and a more user-friendly interface. It allows, for example, to repeat commands using the cursor keys or auto-complete commands using TAB.</li>
+            <li>As opposed to the original, we have removed the screen that explains the game's controls. We replaced it with this help and the DICTIONARY command.</li>
         </ul>
-        <h2>Často kladené otázky (FAQ)</h2>
-        <p><b>Zasekl/a jsem se a nevím, jak dál. Co mám dělat?</b><br>
-            Zkuste použít příkaz POMOC. V případě největší nouze najdete kompletní návod na konci této stránky.</p>
-        <p><b>Hra nerozumí mým příkazům. Co s tím?</b><br>
-           Tento titul má poměrně omezený slovník. Namísto specifických sloves jako "hoď" nebo "sekej" napište příkaz "POUŽIJ". 
-           Názvy předmětů pište od začátku. Tj. místo "MRTVOLU POLICAJTA" můžete napsat "MRTVOLU" nebo "MRT", ale nikoli "POLICAJTA".</p>
-        <p><b>Proč nedostanu čas na to zneškodnit nepřátele, i když vím jak?</b><br>
-           Zkuste je zneškodnit z jiné lokace. Použití některých předmětů může mít dopad na jiném místě.</p>
-        <p><b>Je možné dostat se do stavu, kdy už hru nejde dohrát?</b><br>
-            Ano, je to možné. V takovém případě se objeví zpráva, která vám to sdělí. Potom můžete nahrát pozici nebo 
-            hru spustit znovu pomocí příkazů LOAD a RESTART.</p>
+        <h2>Frequently Asked Questions</h2>
+        <p><b>I'm stuck. What should I do?</b><br>
+            Try typing HINT. If it comes to worst, you will find a complete walkthrough at the bottom of this page.</p>
+        <p><b>The game doesn't understand my commands. What should I do?</b><br>
+           This title has a limited vocabulary. Instead of specific verbs such as "throw" or "chop", use the generic verb "USE". 
+           Type all the object names from the beginning. I.e. when referring to a "DEAD COP", you can type "DEAD" or even "DEA", but not "COP".</p>
+        <p><b>Why can't I defeat my opponents even when I know how?</b><br>
+           Try defeating them from another location. Using some objects in one location can have repercussions elsewhere.</p>
+        <p><b>Can I get to a point when the game can no longer be finished?</b><br>
+            Yes, it is possible. The game will notify you if that happens. You can load a savegame or use the RESTART command to try again.</p>
     
-         <h2>Titulky</h2>
+         <h2>Credits</h2>
         <ul>
-            <li><b>Zuzan Znovuzrozený (pseudonym)</b> - autor původní hry</li>
-            <li><b>Jaroslav Švelch</b> - produkce a design konverze, analýza herních mechanik</li>
-            <li><b>Martin Kouba</b> - program a design konverze</li>
+            <li><b>Zuzan Znovuzrozený (pseudonym)</b> - original author(s)</li>
+            <li><b>Jaroslav Švelch</b> - game mechanics analysis; production, design, and translation of the conversion</li>
+            <li><b>Martin Kouba</b> - programming and design of the conversion</li>
             <li><b>Jana „Yuffie“ Kilianová</b> - pixel art</li>                        
         </ul>
 
-            <h2>Návod</h2>
-        <p>Pokud nutně potřebuješ vidět návod, označ kliknutím a přetažením myši následující odstavec:</p>
-        <p class="walkthrough">PROZKOUMEJ OCAS, SEBER SEKERU, L, POUZIJ SEKERU, PROZKOUMEJ MRTVOLU FIZLA, SEBER STIT, P, D, POUZIJ STIT,
-            POLOZ STIT, SEBER KAMEN, POUZIJ KAMEN, P, D, SEBER TYC, N, L, D, POUZIJ TYC, L, D, POUZIJ TYC, POLOZ TYC,
-            PROZKOUMEJ MRTVOLU CHLUPATYHO, SEBER UNIFORMU, POUZIJ UNIFORMU, P, P, POLOZ UNIFORMU, D, POLOZ DIAMANTY,
-            N, SEBER UNIFORMU, POUZIJ UNIFORMU, L, L, SEBER TYC, P, P, POLOZ UNIFORMU, D, SEBER DIAMANTY,
-            L, P, L, D, P, POLOZ DIAMANTY, SEBER SPENAT, POUZIJ SPENAT, POUZIJ TYC, SEBER DIAMANTY, L, L,
-            POLOZ DIAMANTY, POLOZ PLECHOVKU, PROZKOUMEJ MRTVOLU CIVILA, SEBER LEGITIMACI, P, N, P, N,
-            SEBER UNIFORMU, POUZIJ UNIFORMU, L, L, N, P, N, N, P, DOVNITR.</p>        
+            <h2>Walkthrough</h2>
+        <p>When in dire need of a walkthrough, select the following paragraph by clicking and dragging your mouse cursor:</p>
+        <p class="walkthrough">EXAMINE TAIL, TAKE AXE, L, USE AXE, EXAMINE DEAD COP, TAKE SHIELD, R, D, USE SHIELD,
+            DROP SHIELD, TAKE STONE, USE STONE, R, D, TAKE ROD, U, L, D, USE ROD, L, D, USE ROD, DROP ROD,
+            EXAMINE DEAD COPPER, TAKE UNIFORM, USE UNIFORM, R, R, DROP UNIFORM, D, DROP DIAMONDS,
+            U, TAKE UNIFORM, USE UNIFORM, L, L, TAKE ROD, R, R, DROP UNIFORMU, D, TAKE DIAMONDS,
+            L, R, L, D, R, DROP DIAMONDS, TAKE SPINACH, USE SPINACH, USE ROD, TAKE DIAMONDS, L, L,
+            DROP DIAMONDS, DROP CAN, EXAMINE DEAD CIVILIAN, TAKE ID CARD, R, U, R, U,
+            TAKE UNIFORM, USE UNIFORM, L, L, U, R, U, U, R, INSIDE.</p>        
     </div>
     <div id="game-sidebar-open">
         <a href="javascript:void(0)" class="toggle-btn"
