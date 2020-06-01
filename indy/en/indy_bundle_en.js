@@ -88,7 +88,7 @@ const bundle = {
     item_civilian_corpse_desc: "He looks very much like you. He's got an ID card on him.",
 
     item_idcard_name: "ID card",
-    item_idcard_aliases: ["card"],
+    item_idcard_aliases: ["card", "id"],
     item_idcard_desc: "It belongs to the member of the secret police who looks very much like you.",
 
     item_militiaman_corpse_name: "dead militiaman",

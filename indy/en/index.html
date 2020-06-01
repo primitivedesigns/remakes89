@@ -11,46 +11,31 @@
     <div id="game-sidebar">
         <a href="javascript:void(0)" id="game-sidebar-close" class="toggle-btn"
             onclick="closeSide()">&times;</a>
-        <h2>Jak hrát textovku</h2>
-        <p>Textovky (někdy také nazývané "interaktivní fikce")
-            popisují herní svět pomocí psaného textu. V každé lokaci v
-            rámci herního světa si můžete přečíst její popis, seznam
-            věcí, které vaše postava vidí, a seznam možných východů.
-            Tyto hry se zpravidla ovládají pomocí psaných příkazů, které
-            jsou adresované hlavní postavě hry. Textovky se obvykle hrají s tužkou a papírem, aby si hráči
-            mohli kreslit mapu místností a zapisovat lokace jednotlivých předmětů
-            a řešení hádanek.
-            V tomto konkrétním tituly se příkazy píšou na
-            klávesnici a odesílají se klávesou Enter - podobně jako na příkazové řádce
-            ve starších i současných operačních systémech. Hra rozumí jednoduchým příkazům
-            skládajícím se ze slovesa a předmětu, jako například:</p>
-        <div class="command">PROZKOUMEJ OCAS</div>
-        <div class="command">SEBER SEKERU</div>
-        <p>Naše verze hry dovoluje psát příkazy s diakritikou i
-            bez, a navíc zkracovat příkazy na tři první písmena.
-            Výše uvedené příkazy tedy můžete napsat i jako:</p>
-        <div class="command">PRO OCA</div>
-        <div class="command">SEB SEK</div>
-        <p>Mezi místnostmi se pohybujete pomocí slov nebo písmen
-            označujících směr, kterým se chcete vydat, jako například:</p>
-        <div class="command">DOLEVA (nebo L)</div>
-        <div class="command">DOPRAVA (nebo P)</div>
-        <p>Většinu hádanek ve hře vyřešíte použitím správného předmětu na správném místě. Manipulovat 
-           můžete jen s předměty, které hlavní postava vidí nebo nese. Současně můžete nést jen dvě věci, a proto budete
-            muset pokládat věci, které v danou chvíli nepotřebujete. Seznam předmětů, které
-           má u sebe, vyvoláte příkazem "INVENTÁŘ" (nebo "I").</p>
-        <p>Seznam všech podporovaných sloves můžete vypsat příkazem
-            "SLOVNÍK". Pokud si nevíte rady, příkaz "POMOC" zobrazí
-            nápovědu k dané místnosti. V originálních verzích her však
-            tato nápověda nebyla, přidali jsme ji až do naší konverze.</p>
-        <p>Pozici ve hře lze uložit a nahrát pomocí příkazů "SAVE" a "LOAD",
-            případně také "ULOŽ" a "NAHRAJ". Za příkaz je třeba napsat název pozice, například:</p>
-            <div class="command">SAVE KUN</div>
-            <div class="command">LOAD KUN</div>
-        <p>Pokud nepoužijete název, uloží se pozice s názvem "SAVE". Seznam všech pozic vypíšete příkazem "POZICE". 
-            Pozice se ukládají na pevný disk vašeho počítače do lokálního úložiště webového prohlížeče.
-            Zůstanou vám tedy i poté, co hru vypnete, avšak smažou se ve chvíli, kdy budete
-            mazat soubory prohlížeče.</p>
+        <h2>How to play a text adventure game</h2>
+        <p>Text adventures (sometimes also called "interactive fiction") describe the game world using text descriptions. Each location displays a its description, a list of objects that your character can interact with, 
+            and a list of exits. These games are usually controlled by typed-in commands addressed to the playable character. While playing text adventures, especially the ones from the 1980s, one would usually 
+            take notes and draw a map on paper. In this particular game, you type in commands and confirm them with the Enter key, similarly to the use of command line in older operating systems. The game understands
+            simple commands consisting of a verb and an object, such as:
+        <div class="command">EXAMINE TAIL</div>
+        <div class="command">TAKE AXE</div>
+        <p>You may but do not have to type articles. You can shorten commands to the first three letters, using, for example, the following versions of the commands:          
+        <div class="command">EXA TAI</div>
+        <div class="command">TAK AXE</div>
+        <p>To move between locations, type in the direction you want to go. You can shorten the directions to just the first letter, such as:</p>
+        <div class="command">LEFT (or L)</div>
+        <div class="command">RIGHT (or R)</div>
+        <p>The exception is the direction INSIDE, which cannot be shortened to I, because this command is reserved for the INVENTORY.</p>
+        <p>Most puzzles within the game can be solved by using the right object in the right location. You can only manipulate with objects that you can see or that you are carrying. 
+            You can carry up to two things at once, making it necessary to drop items that you are not going to need at the moment. You can list the items you are carrying by typing "INVENTORY" or "I".
+            </p>
+        <p>You can list all the verbs used by the game by typing "DICTIONARY" or "VERBS". 
+            Please note that - as in the original - the dictionary of this game is quite limited, and you will have to use the generic verb USE to execute a wide range of actions. If you are stuck, the "HINT" command
+            will display a hint for the current location. This hint was, however, not featured in the original game.
+        <p>You can save and load your game while playing, using the SAVE and LOAD commands in conjunction with a label, for example:
+            <div class="command">SAVE HORSE</div>
+            <div class="command">LOAD HORSE</div>
+        <p>If you don't use a label, the game will automatically call you savegame "SAVE". You can list all savegame labels by typing "POZICE". The savegames are being stored in the local storage of your web browser.
+            As such, they will persist even when you close the game window but will be deleted when the local storage is cleaned by the browser.</p>
 
         <h2>O hře Indiana Jones na Václavském náměstí</h2>
 
