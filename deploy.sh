@@ -21,11 +21,15 @@ cp engine.js $DEPLOY_DIR
 mkdir $DEPLOY_DIR/indy
 mkdir $DEPLOY_DIR/indy/img
 mkdir $DEPLOY_DIR/indy/snd
+mkdir $DEPLOY_DIR/indy/en
 cp indy/index.html $DEPLOY_DIR/indy/index.html
 cp indy/indy.js $DEPLOY_DIR/indy/indy.js
+cp indy/indy_bundle_cs.js $DEPLOY_DIR/indy/indy_bundle_cs.js
 cp indy/indy.css $DEPLOY_DIR/indy/indy.css
 cp indy/img/* $DEPLOY_DIR/indy/img
 cp indy/snd/* $DEPLOY_DIR/indy/snd
+cp indy/en/index.html $DEPLOY_DIR/indy/en/index.html
+cp indy/en/indy_bundle_en.js $DEPLOY_DIR/indy/en/indy_bundle_en.js
 # Prestavba
 mkdir $DEPLOY_DIR/prestavba
 mkdir $DEPLOY_DIR/prestavba/img

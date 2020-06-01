@@ -2,11 +2,11 @@
 * DOBRODRUŽSTVÍ INDIANA JONESE NA VÁCLAVSKÉM NÁMĚSTÍ V PRAZE DNE 16.1.1989
 */
 
+// NOTE: the global context must define a "bundle" object that contains various localization stuff
+
 let sideOpen = false;
 let beepOn = true;
-const beep = new Audio("snd/beep.wav");
-
-// NOTE: the global context must define a "bundle" object that contains various localization stuff
+const beep = new Audio(bundle.snd_beep_path);
 
 const items = [{
     name: bundle.item_diamonds_name,

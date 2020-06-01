@@ -255,6 +255,8 @@ const bundle = {
     // Global
     // ======
 
+    snd_beep_path: "../snd/beep.wav",
+
     conjunction_and: " and ",
     ignored_params: ["the"],
 

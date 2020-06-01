@@ -245,6 +245,8 @@ const bundle = {
     // Global
     // ======
 
+    snd_beep_path: "snd/beep.wav",
+
     // List of replacement objects - if the command starts with a value, the value is replaced with replacement
     command_start_replacements: [
         {
