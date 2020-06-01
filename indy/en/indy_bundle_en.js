@@ -275,7 +275,7 @@ const bundle = {
     messages_inputHelpPrefix: "Continue: ",
     messages_gameSaved: "Game saved.",
     messages_gameLoaded: "Savegame loaded.",
-    messages_gamePositions: "Following savegames are available: ",
+    messages_gamePositions: "The following savegames are available: ",
     messages_gamePositionsEmpty: "No savegames available.",
     messages_gamePositionDoesNotExist: "Cannot load savegame: ",
     messages_inventoryFull: "You can't carry anything more!",
