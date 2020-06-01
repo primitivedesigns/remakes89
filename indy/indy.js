@@ -27,10 +27,18 @@ const items = [{
 }, {
     name: bundle.item_corpse1_name,
     aliases: bundle.item_corpse1_aliases,
-    desc: bundle.item_corpse1_desc,
     readInit: function (obj) {
+        obj.desc = function () {
+            let ret = bundle.item_corpse1_desc;
+            if (!obj.examined) {
+                ret += bundle.item_corpse1_desc_shield;
+            }
+            return ret;
+        };
         obj.onExamine = function (game) {
-            game.addLocationItem(bundle.item_shield_name);
+            if (!obj.examined) {
+                game.addLocationItem(bundle.item_shield_name);
+            }
         }
     },
     takeable: false
@@ -88,7 +96,6 @@ const items = [{
 }, {
     name: bundle.item_stone_name,
     aliases: bundle.item_stone_aliases,
-    desc: bundle.item_stone_desc,
     takeable: false,
     unusable: true,
     readInit: function (obj) {
@@ -101,7 +108,7 @@ const items = [{
                 game.addLocationItem(bundle.item_corpse2_name, "m6", true);
                 return true;
             }
-        }
+        };
     }
 }, {
     name: bundle.item_dictionary_name,
@@ -162,10 +169,18 @@ const items = [{
 }, {
     name: bundle.item_corpse3_name,
     aliases: bundle.item_corpse3_aliases,
-    desc: bundle.item_cop3_desc,
     readInit: function (obj) {
+        obj.desc = function () {
+            let ret = bundle.item_corpse3_desc;
+            if (!obj.examined) {
+                ret += bundle.item_corpse3_desc_uniform;
+            }
+            return ret;
+        };
         obj.onExamine = function (game) {
-            game.addLocationItem(bundle.item_uniform_name);
+            if (!obj.examined) {
+                game.addLocationItem(bundle.item_uniform_name);
+            }
         };
     },
     takeable: false,
@@ -297,6 +312,9 @@ const locations = [{
             return false;
         };
         obj.afterAction = function (game, action, params) {
+            if (action.builtin) {
+                return;
+            }
             if (!game.getLocationItem(bundle.item_cop1_name) || isMovement(action) || game.actionMatches(action, params, bundle.action_use, bundle.item_axe_name)) {
                 // Cop is dead, after-enter action or action matches
                 return;
@@ -388,15 +406,15 @@ const locations = [{
         location: "m8"
     }],
     readInit: function (obj) {
-        obj.decorateItemName = function (itemName, game) {
-            let name = itemName;
-            if (itemName === bundle.item_stone_name) {
-                const boulder = game.getLocationItem(bundle.item_stone_name);
-                if (boulder && boulder.unusable) {
-                    name += bundle.location_m5_stone;
+        obj.decorateItemName = function (name, item, game) {
+            let decoratedName = name;
+            if (name === bundle.item_stone_name) {
+                const stone = game.getLocationItem(bundle.item_stone_name);
+                if (stone && stone.unusable) {
+                    decoratedName += bundle.location_m5_stone;
                 }
             }
-            return name;
+            return decoratedName;
         };
         obj.killHero = function (game) {
             game.print(bundle.location_m5_kill, "end-lose");
@@ -411,7 +429,10 @@ const locations = [{
             return false;
         };
         obj.afterAction = function (game, action, params) {
-            if (obj.shieldUsed || isMovement(action) || game.actionMatches(action, params, "použij", bundle.item_shield_name)) {
+            if (action.builtin) {
+                return;
+            }
+            if (obj.shieldUsed || isMovement(action) || game.actionMatches(action, params, bundle.action_use, bundle.item_shield_name)) {
                 // Shield was used, after-enter action or action matches
                 return;
             }
@@ -487,7 +508,10 @@ const locations = [{
             return false;
         };
         obj.afterAction = function (game, action, params) {
-            if (!game.getLocationItem(bundle.item_cop2_name) || isMovement(action) || game.actionMatches(action, params, "použij", bundle.item_rod_name)) {
+            if (action.builtin) {
+                return;
+            }
+            if (!game.getLocationItem(bundle.item_cop2_name) || isMovement(action) || game.actionMatches(action, params, bundle.action_use, bundle.item_rod_name)) {
                 // Cop is dead, after-enter action or action matches
                 return;
             }
@@ -552,6 +576,9 @@ const locations = [{
             return false;
         };
         obj.afterAction = function (game, action, params) {
+            if (action.builtin) {
+                return;
+            }
             if (!game.getLocationItem(bundle.item_cop3_name) || isMovement(action)) {
                 // Cop is dead or after-enter action
                 return;
@@ -624,7 +651,7 @@ const locations = [{
             obj.cops = false;
         };
         obj.afterAction = function (game, action, params) {
-            if (!obj.cops || isMovement(action)) {
+            if (action.builtin || !obj.cops || isMovement(action)) {
                 return;
             }
             game.print(bundle.location_m14_kill, "end-lose");
@@ -688,7 +715,7 @@ const locations = [{
             return false;
         };
         obj.afterAction = function (game, action, params) {
-            if (!game.getLocationItem(bundle.item_cop5_name) || isMovement(action)) {
+            if (action.builtin || !game.getLocationItem(bundle.item_cop5_name) || isMovement(action)) {
                 // Cop is dead or after-enter action
                 return;
             }
@@ -787,31 +814,41 @@ const actions = [{
     name: bundle.exit_down,
     aliases: bundle.exit_down_aliases,
     perform: function (game, params) {
-        game.goToLocation(bundle.exit_down);
+        if (!game.goToLocation(bundle.exit_down)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
     name: bundle.exit_up,
     aliases: bundle.exit_up_aliases,
     perform: function (game, params) {
-        game.goToLocation(bundle.exit_up);
+        if (!game.goToLocation(bundle.exit_up)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
     name: bundle.exit_left,
     aliases: bundle.exit_left_aliases,
     perform: function (game, params) {
-        game.goToLocation(bundle.exit_left);
+        if (!game.goToLocation(bundle.exit_left)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
     name: bundle.exit_right,
     aliases: bundle.exit_right_aliases,
     perform: function (game, params) {
-        game.goToLocation(bundle.exit_right);
+        if (!game.goToLocation(bundle.exit_right)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
     name: bundle.exit_inside,
     aliases: bundle.exit_inside_aliases,
     perform: function (game, params) {
-        game.goToLocation(bundle.exit_inside);
+        if (!game.goToLocation(bundle.exit_inside)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
     name: bundle.action_drop,
@@ -847,7 +884,7 @@ const actions = [{
     aliases: bundle.action_inventory_aliases,
     perform: function (game) {
         if (game.inventory && game.inventory.length > 0) {
-            const itemNames = game.inventory.map(function(i) {
+            const itemNames = game.inventory.map(function (i) {
                 const item = game.mapItem(i);
                 let itemName = item.name;
                 // The bundle can define a function that decorates an item name
@@ -1125,6 +1162,10 @@ function initState() {
             if (!action.builtin) {
                 game.shiftTime(1);
             }
+            const gameInput = document.querySelector("#game-input")
+            if (gameInput) {
+                gameInput.scrollIntoView();
+            }
         },
         onLocationItemAdded: function (game) {
             const location = game.location;
@@ -1145,8 +1186,8 @@ function initState() {
             }
             return command;
         },
-        parameterFilter: function(param) {
-            if(bundle.ignored_params) {
+        parameterFilter: function (param) {
+            if (bundle.ignored_params) {
                 return !bundle.ignored_params.find(p => param === p);
             }
             return true;
@@ -1181,18 +1222,19 @@ function buildExitsMessage(game, location) {
 
 function buildItemsMessage(game, location) {
     let message = game.messages.locationItems + " ";
-    const itemNames = location.items.map(function(i) {
+    const itemNames = location.items.map(function (i) {
         const item = game.mapItem(i);
-        let itemName = item.name;
-        // The bundle can define a function that decorates an item name
-        if (bundle.item_name_decorate) {
-            itemName = bundle.item_name_decorate(itemName);
-        }
-        // Locations can decorate items names too
+        let name = item.name;
+        // Locations can decorate items names
         if (location.decorateItemName) {
-            itemName = location.decorateItemName(itemName, game);
+            name = location.decorateItemName(name, item, game);
         }
-        return itemName;
+        // The bundle can define a function that decorates an item name too
+        if (bundle.item_name_decorate) {
+            name = bundle.item_name_decorate(name, item);
+        }
+
+        return name;
     });
     for (let idx = 0; idx < itemNames.length; idx++) {
         if (itemNames.length > 1 && idx === (itemNames.length - 1)) {
