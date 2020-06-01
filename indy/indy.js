@@ -803,31 +803,41 @@ const actions = [{
     name: bundle.exit_down,
     aliases: bundle.exit_down_aliases,
     perform: function (game, params) {
-        game.goToLocation(bundle.exit_down);
+        if (!game.goToLocation(bundle.exit_down)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
     name: bundle.exit_up,
     aliases: bundle.exit_up_aliases,
     perform: function (game, params) {
-        game.goToLocation(bundle.exit_up);
+        if (!game.goToLocation(bundle.exit_up)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
     name: bundle.exit_left,
     aliases: bundle.exit_left_aliases,
     perform: function (game, params) {
-        game.goToLocation(bundle.exit_left);
+        if (!game.goToLocation(bundle.exit_left)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
     name: bundle.exit_right,
     aliases: bundle.exit_right_aliases,
     perform: function (game, params) {
-        game.goToLocation(bundle.exit_right);
+        if (!game.goToLocation(bundle.exit_right)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
     name: bundle.exit_inside,
     aliases: bundle.exit_inside_aliases,
     perform: function (game, params) {
-        game.goToLocation(bundle.exit_inside);
+        if (!game.goToLocation(bundle.exit_inside)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
     name: bundle.action_drop,
