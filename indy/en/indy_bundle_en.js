@@ -212,18 +212,18 @@ const bundle = {
     // =======
 
     exit_up: "up",
-    exit_up_aliases: ["u"],
+    exit_up_aliases: ["go up", "u"],
     exit_down: "down",
-    exit_down_aliases: ["d"],
+    exit_down_aliases: ["go down", "d"],
     exit_right: "right",
-    exit_right_aliases: ["r"],
+    exit_right_aliases: ["go right", "r"],
     exit_left: "left",
-    exit_left_aliases: ["l"],
+    exit_left_aliases: ["go left", "l"],
     exit_inside: "inside",
-    exit_inside_aliases: [],
+    exit_inside_aliases: ["go inside"],
 
     action_explore: "examine",
-    action_explore_aliases: ["inspect", "read", "explore"],
+    action_explore_aliases: ["inspect", "read", "explore", "look at"],
 
     action_use: "use",
     action_use_aliases: [],
@@ -234,7 +234,7 @@ const bundle = {
     action_drop_fail: "You can't drop that.",
 
     action_take: "take",
-    action_take_aliases: ["get"],
+    action_take_aliases: ["pick up", "get"],
     action_take_success: "You have picked up the ",
     action_take_fail: "You can't pick that up.",
 
@@ -305,20 +305,3 @@ const bundle = {
     end_win: "O.K. YOU HAVE OUTSMARTED EVEN THE WORST POLICE SCUM. YOU SAFELY ARRIVED AT THE AIRPORT AND TOOK A PLANE HOME. CONGRATULATIONS!!!!!!!!!!",
     end_win_restart: "Press R to RESTART",
 }
-
-// Define the replacements separately so that we can reference the messages from the bundle
-bundle.command_start_replacements = [
-    {
-        match: ["go "],
-        value: ""
-    },
-    {
-        match: ["pick up", "pick"],
-        value: bundle.action_take
-    },
-    {
-        match: ["look at"],
-        value: bundle.action_explore,
-    }
-
-];
