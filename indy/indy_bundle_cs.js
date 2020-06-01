@@ -134,7 +134,7 @@ const bundle = {
     location_m5_desc: "O.K. Ulevuješ si mezi kytičky ve velkém květináči.",
     location_m5_hint: "Jeden z policajtů jistě bude mít něco, čím jde kámen odrazit. S takovým kamenem pak jde zasáhnout i celkem vzdálený cíl.",
     location_m5_kill: "Kámen se přibližuje víc a víc. Pořád se zvětšuje a zvětšuje a zvětšuje a zvětšu-",
-    location_m5_stone: "kámen, který padá na tebe,",
+    location_m5_stone: ", který padá na tebe,",
 
     location_m6_desc: "O.K. Nacházíš se u domu módy v ústí do zatarasené Krakovské ulice.",
     location_m6_hint: "Tenhle policajt už ti k ničemu nebude.",

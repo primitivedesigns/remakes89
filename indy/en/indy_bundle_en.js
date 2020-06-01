@@ -313,7 +313,7 @@ bundle.command_start_replacements = [
         value: ""
     },
     {
-        match: ["pick up"],
+        match: ["pick up", "pick"],
         value: bundle.action_take
     },
     {
