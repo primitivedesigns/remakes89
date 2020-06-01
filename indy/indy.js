@@ -312,6 +312,9 @@ const locations = [{
             return false;
         };
         obj.afterAction = function (game, action, params) {
+            if (action.builtin) {
+                return;
+            }
             if (!game.getLocationItem(bundle.item_cop1_name) || isMovement(action) || game.actionMatches(action, params, bundle.action_use, bundle.item_axe_name)) {
                 // Cop is dead, after-enter action or action matches
                 return;
@@ -426,6 +429,9 @@ const locations = [{
             return false;
         };
         obj.afterAction = function (game, action, params) {
+            if (action.builtin) {
+                return;
+            }
             if (obj.shieldUsed || isMovement(action) || game.actionMatches(action, params, bundle.action_use, bundle.item_shield_name)) {
                 // Shield was used, after-enter action or action matches
                 return;
@@ -502,6 +508,9 @@ const locations = [{
             return false;
         };
         obj.afterAction = function (game, action, params) {
+            if (action.builtin) {
+                return;
+            }
             if (!game.getLocationItem(bundle.item_cop2_name) || isMovement(action) || game.actionMatches(action, params, bundle.action_use, bundle.item_rod_name)) {
                 // Cop is dead, after-enter action or action matches
                 return;
@@ -567,6 +576,9 @@ const locations = [{
             return false;
         };
         obj.afterAction = function (game, action, params) {
+            if (action.builtin) {
+                return;
+            }
             if (!game.getLocationItem(bundle.item_cop3_name) || isMovement(action)) {
                 // Cop is dead or after-enter action
                 return;
@@ -639,7 +651,7 @@ const locations = [{
             obj.cops = false;
         };
         obj.afterAction = function (game, action, params) {
-            if (!obj.cops || isMovement(action)) {
+            if (action.builtin || !obj.cops || isMovement(action)) {
                 return;
             }
             game.print(bundle.location_m14_kill, "end-lose");
@@ -703,7 +715,7 @@ const locations = [{
             return false;
         };
         obj.afterAction = function (game, action, params) {
-            if (!game.getLocationItem(bundle.item_cop5_name) || isMovement(action)) {
+            if (action.builtin || !game.getLocationItem(bundle.item_cop5_name) || isMovement(action)) {
                 // Cop is dead or after-enter action
                 return;
             }
@@ -1150,7 +1162,10 @@ function initState() {
             if (!action.builtin) {
                 game.shiftTime(1);
             }
-            document.querySelector("#game-input").scrollIntoView();
+            const gameInput = document.querySelector("#game-input")
+            if (gameInput) {
+                gameInput.scrollIntoView();
+            }
         },
         onLocationItemAdded: function (game) {
             const location = game.location;
@@ -1218,7 +1233,7 @@ function buildItemsMessage(game, location) {
         if (bundle.item_name_decorate) {
             name = bundle.item_name_decorate(name, item);
         }
-        
+
         return name;
     });
     for (let idx = 0; idx < itemNames.length; idx++) {
