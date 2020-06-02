@@ -947,7 +947,7 @@ const initControls = function (gameContainer, game) {
 function initState() {
 
     const game = {
-        savedPositionPrefix: "indy",
+        savedPositionPrefix: bundle.save_position_prefix,
         messages: {
             locationItems: bundle.messages_locationItems,
             noLocationItems: "",

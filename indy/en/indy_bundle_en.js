@@ -255,6 +255,9 @@ const bundle = {
     // ======
 
     snd_beep_path: "../snd/beep.wav",
+    // The prefix is used to distinguish saved games on localhost - not all browsers keep a separate local storage per page 
+    // This one starts with "en_" to retain backward compatibility for cs version
+    save_position_prefix: "en_indy",
 
     conjunction_and: " and ",
     ignored_params: ["the"],

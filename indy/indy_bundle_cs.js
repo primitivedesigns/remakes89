@@ -246,6 +246,7 @@ const bundle = {
     // ======
 
     snd_beep_path: "snd/beep.wav",
+    save_position_prefix: "indy",
 
     // List of replacement objects - if the command starts with a value, the value is replaced with replacement
     command_start_replacements: [
