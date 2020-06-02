@@ -3,7 +3,7 @@ const bundle = {
     // Items
     // =====
     item_diamonds_name: "diamonds",
-    item_diamonds_desc: "Four beautiful gegit ms.",
+    item_diamonds_desc: "Four beautiful gems.",
     item_diamonds_onDrop: "As soon as you put them down, someone has snatched them from the altar.",
 
     item_cop1_name: "cop",
