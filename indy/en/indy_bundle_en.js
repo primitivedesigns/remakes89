@@ -57,7 +57,6 @@ const bundle = {
     item_cop3_desc: "He's about to beat you up.",
 
     item_corpse3_name: "dead copper",
-    item_corpse3_desc: "Someone (guess who?) has split his skull with an iron rod. He's wearing a uniform.",
     item_corpse3_desc: "A dead cop. Someone (guess who?) has split his skull with an iron rod.",
     item_corpse3_desc_uniform: " He's wearing a uniform.",
 
