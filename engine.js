@@ -9,7 +9,7 @@ function createEngine(headless) {
 
     const engine = {};
 
-    engine.run = function() {
+    engine.run = function () {
         if (headless) {
             engine.initGame();
             engine.start();
@@ -20,7 +20,7 @@ function createEngine(headless) {
                 gameContainerDiv.removeChild(gameContainerDiv.firstChild);
             }
             if (engine.initState.intro) {
-                intro(0, engine.initState.intro, function() {
+                intro(0, engine.initState.intro, function () {
                     engine.initGame();
                     engine.start();
                 });
@@ -33,7 +33,7 @@ function createEngine(headless) {
         }
     }
 
-    const printPositions = function(game, params) {
+    const printPositions = function (game, params) {
         const limit = 20;
         let positions = engine.getPositions(game);
         let shortened = false;
@@ -57,14 +57,14 @@ function createEngine(headless) {
     engine.actions = [{
         name: "restart",
         builtin: true,
-        perform: function() {
+        perform: function () {
             location.reload();
         }
     }, {
         name: "save",
         aliases: ["uloz", "ulož"],
         builtin: true,
-        perform: function(game, params) {
+        perform: function (game, params) {
             const positionName = engine.save(params);
             if (game.messages.gameSaved) {
                 game.print(game.messages.gameSaved + " [" + positionName + "]", "hint");
@@ -82,7 +82,7 @@ function createEngine(headless) {
         name: "load",
         aliases: ["nahrat", "nahraj"],
         builtin: true,
-        perform: function(game, params) {
+        perform: function (game, params) {
             // If no param and save does not exist - print positions
             const positionName = engine.load(params);
             if (!positionName && params.length === 0) {
@@ -107,7 +107,7 @@ function createEngine(headless) {
                 }
             }
         },
-        autocomplete: function(game, str) {
+        autocomplete: function (game, str) {
             const limit = 10;
             let positions = engine.getPositions(game);
             if (positions.length === 0) {
@@ -119,13 +119,13 @@ function createEngine(headless) {
                 positions = positions.slice(0, limit);
             }
             if (!str || str.length === 0) {
-                return positions.map(function(p) {
+                return positions.map(function (p) {
                     const ret = {};
                     ret.name = p[0];
                     return ret;
                 });
             } else {
-                return positions.filter(p => p[0].startsWith(str)).map(function(p) {
+                return positions.filter(p => p[0].startsWith(str)).map(function (p) {
                     const ret = {};
                     ret.name = p[0];
                     return ret;
@@ -134,19 +134,19 @@ function createEngine(headless) {
         }
     }];
 
-    engine.initGame = function(position) {
+    engine.initGame = function (position) {
         engine.game = createGame(this.initState, position, headless);
         // A game should be able to load the last position
-        engine.game.loadLastPosition = function() {
+        engine.game.loadLastPosition = function () {
             return engine.loadLastPosition();
         };
-        engine.game.load = function(params) {
+        engine.game.load = function (params) {
             return engine.load(params);
         };
-        engine.game.save = function(params) {
+        engine.game.save = function (params) {
             return engine.save(params);
         };
-        engine.game.getPositions = function() {
+        engine.game.getPositions = function () {
             return engine.getPositions(engine.game);
         }
         engine.game.clearAll();
@@ -154,13 +154,18 @@ function createEngine(headless) {
     }
 
     // For debug only
-    engine.processCommands = function(commands) {
+    engine.processCommands = function (commands) {
         commands.forEach(cmd => {
             engine.processCommand(cmd);
         });
     }
 
-    engine.processCommand = function(command) {
+    engine.processCommand = function (command) {
+        if (!command || command.length === 0) {
+            // Empty command - do nothing
+            return;
+        }
+
         const game = engine.game;
         if (game.endState) {
             console.log("Game is over!");
@@ -169,31 +174,34 @@ function createEngine(headless) {
         if (headless) {
             console.log(">> " + command);
         }
+        command = command.trim();
         if (game.adaptCommand) {
             command = game.adaptCommand(game, command);
         }
 
-        const parts = command.trim().split(/\s+/);
+        const parts = command.split(/\s+/);
         if (parts.length === 0) {
             return;
         }
-        const params = [];
-        if (parts.length > 1) {
-            parts.slice(1).forEach(part => {
-                if (part && part.trim().length > 0) {
-                    params.push(part.trim());
-                }
-            });
-        }
 
+        // The action if only one matches the command
         let action = null;
-        const actionName = parts[0];
-        if (actionName.length === 0) {
-            return;
-        }
-        const actions = game.getActions().filter(action => game.aliasObjectMatchesName(action, actionName));
+        // "use" -> 1
+        // "look at" -> 2
+        let actionPartsLength = 1;
+
+        // Find all matching actions
+        const actions = game.getActions().filter(function (action) {
+            const matching = game.getMatchingNameOrAlias(action, parts);
+            if (matching) {
+                actionPartsLength = matching.split(/\s+/).length;
+                return true;
+            }
+            return false;
+        });
         // Add built-in actions
-        engine.actions.filter(action => engine.game.aliasObjectMatchesName(action, actionName)).forEach(action => actions.push(action));
+        // Multi-word built-in actions are not supported!
+        engine.actions.filter(action => engine.game.aliasObjectMatchesName(action, parts[0])).forEach(action => actions.push(action));
 
         if (actions.length === 0) {
             // Uknown command
@@ -222,6 +230,20 @@ function createEngine(headless) {
         }
 
         if (action) {
+            const params = [];
+            if (parts.length > 1) {
+                parts.slice(actionPartsLength).forEach(part => {
+                    if (part) {
+                        const param = part.trim();
+                        if (param.length > 0) {
+                            if (!game.parameterFilter || game.parameterFilter(part)) {
+                                params.push(param);
+                            }
+                        }
+                    }
+                });
+            }
+
             // First invoke location callback
             let skipAction = false;
             if (game.location.beforeAction) {
@@ -241,7 +263,7 @@ function createEngine(headless) {
         }
     }
 
-    engine.start = function() {
+    engine.start = function () {
         const game = engine.game;
 
         let inputBox, historyLimit, lineLimit, inputs;
@@ -320,8 +342,9 @@ function createEngine(headless) {
         }
 
         function autocomplete() {
-            const inputValue = inputBox.value;
-            if (inputValue.trim().length === 0) {
+            const inputValue = inputBox.value.trim();
+            if (inputValue.length === 0) {
+                // No input - list all actions
                 const actions = engine.game.getActions();
                 engine.actions.forEach(action => actions.push(action));
                 engine.game.clearInputHelp();
@@ -329,42 +352,43 @@ function createEngine(headless) {
                 engine.game.printInputHelp(prefix + actions.map(action => action.name).join(", "));
                 return;
             }
-            const parts = inputValue.split(/\s+/);
-            if (parts.length == 1) {
-                const actions = engine.game.getActions().filter(action => engine.game.aliasObjectNameStartsWith(action, inputValue));
-                // Add built-in actions
-                engine.actions.filter(action => engine.game.aliasObjectNameStartsWith(action, inputValue)).forEach(action => actions.push(action));
 
-                if (actions.length === 0) {
-                    engine.game.clearInputHelp();
-                    engine.game.printInputHelp("\xa0");
-                } else if (actions.length === 1) {
-                    let val = actions[0].name;
-                    if (!val.startsWith(inputValue)) {
-                        val = actions[0].aliases.find(alias => alias.startsWith(inputValue));
-                    }
-                    inputBox.value = val + " ";
-                } else {
-                    engine.game.clearInputHelp();
-                    const prefix = engine.game.messages.inputHelpPrefix ? engine.game.messages.inputHelpPrefix : "";
-                    engine.game.printInputHelp(prefix + actions.map(action => {
-                        let val = action.name;
-                        if (!val.startsWith(inputValue)) {
-                            val = action.aliases.find(alias => alias.startsWith(inputValue));
-                        }
-                        return val;
-                    }).join(", "));
+            // Find matching actions:
+            // (a) Single action found - try to autocomplete parameters
+            // (b) Multiple actions found - list actions
+            // (c) No action found - do nothing
+            const inputParts = inputValue.split(/\s+/);
+            let actionMatch;
+
+            const actions = game.getActions().filter(function (action) {
+                const match = game.getMatchingNameOrAlias(action, inputParts);
+                if(match) {
+                    actionMatch = match;
+                    return true;
                 }
-            } else if (parts.length == 2) {
-                let action = engine.actions.find(a => engine.game.aliasObjectMatchesName(a, parts[0]));
-                if (!action) {
-                    action = engine.game.getAction(parts[0]);
+                return false;
+            });
+            // Add built-in actions
+            // Multi-word built-in actions are not supported!
+            engine.actions.filter(action => engine.game.aliasObjectMatchesName(action, inputParts[0])).forEach(action => actions.push(action));
+
+            if (actions.length === 0) {
+                // No action found
+                engine.game.clearInputHelp();
+                engine.game.printInputHelp("\xa0");
+            } else if (actions.length === 1) {
+                // One action matches -> complete the action name/alias or call action.autocomplete()
+                const action = actions[0];
+                if (!actionMatch) {
+                    actionMatch = action.name;
                 }
-                if (action && action.autocomplete) {
-                    const results = action.autocomplete(engine.game, parts[1]);
+                inputBox.value = actionMatch + " ";
+                const actionMatchLength = actionMatch.split(/\s+/).length;
+                if (((inputParts.length - actionMatchLength) <= 1) && action.autocomplete) {
+                    const results = action.autocomplete(engine.game, inputParts[actionMatchLength]);
                     if (results) {
                         if (results.length === 1) {
-                            inputBox.value = parts[0] + " " + results[0].name + " ";
+                            inputBox.value = inputBox.value + results[0].name + " ";
                         } else if (results.length > 1) {
                             engine.game.clearInputHelp();
                             const prefix = engine.game.messages.inputHelpPrefix ? engine.game.messages.inputHelpPrefix : "";
@@ -372,6 +396,17 @@ function createEngine(headless) {
                         }
                     }
                 }
+            } else {
+                // Miltiple actions match - list the actions
+                engine.game.clearInputHelp();
+                const prefix = engine.game.messages.inputHelpPrefix ? engine.game.messages.inputHelpPrefix : "";
+                engine.game.printInputHelp(prefix + actions.map(action => {
+                    let val = action.name;
+                    if (!val.startsWith(inputValue)) {
+                        val = action.aliases.find(alias => alias.startsWith(inputValue));
+                    }
+                    return val;
+                }).join(", "));
             }
         }
 
@@ -379,7 +414,7 @@ function createEngine(headless) {
         this.game.enterLocation(this.game.getLocation(this.game.startLocation));
     }
 
-    engine.save = function(params) {
+    engine.save = function (params) {
         const position = {};
         position.locations = this.game.locations;
         position.items = this.game.items;
@@ -393,7 +428,7 @@ function createEngine(headless) {
         return params && params.length > 0 ? params[0] : "save";
     }
 
-    engine.load = function(params) {
+    engine.load = function (params) {
         const positionName = getPositionName(params);
         const position = localStorage.getItem(positionName);
         if (position) {
@@ -411,7 +446,7 @@ function createEngine(headless) {
     }
 
     // Returns positions - [name, data, timestamp] - sorted by timestamp (lifo)
-    engine.getPositions = function(game, sortFun) {
+    engine.getPositions = function (game, sortFun) {
         const prefix = buildPositionPrefix(game);
         const positions = [];
         for (var i = 0; i < localStorage.length; i++) {
@@ -427,7 +462,7 @@ function createEngine(headless) {
         }
         if (positions.length != 0) {
             if (!sortFun) {
-                sortFun = function(a, b) {
+                sortFun = function (a, b) {
                     const ts1 = a[2];
                     const ts2 = b[2];
                     if (ts1 && ts2) {
@@ -445,7 +480,7 @@ function createEngine(headless) {
         return positions;
     }
 
-    engine.loadLastPosition = function() {
+    engine.loadLastPosition = function () {
         const positions = engine.getPositions(engine.game);
         if (positions.length === 0) {
             return false;
@@ -499,6 +534,7 @@ function createGame(initialState, savedPosition, headless) {
     game.buildLocationMessage = initialState.buildLocationMessage;
     game.onLocationItemAdded = initialState.onLocationItemAdded;
     game.adaptCommand = initialState.adaptCommand;
+    game.parameterFilter = initialState.parameterFilter;
     game.onEnterLocation = initialState.onEnterLocation;
     game.onLoad = initialState.onLoad;
     game.headless = headless;
@@ -564,20 +600,20 @@ function createGame(initialState, savedPosition, headless) {
     }
 
     // Re-init locations and items
-    game.locations.forEach(function(location) {
+    game.locations.forEach(function (location) {
         const initialLoc = initialState.locations.find(loc => loc.id === location.id);
         if (initialLoc && initialLoc.readInit) {
             initialLoc.readInit(location);
         }
     });
-    game.items.forEach(function(item) {
+    game.items.forEach(function (item) {
         const initialItem = initialState.items.find(it => it.name === item.name);
         if (initialItem && initialItem.readInit) {
             initialItem.readInit(item);
         }
     });
 
-    game.removeInputContainer = function() {
+    game.removeInputContainer = function () {
         if (headless) {
             return;
         }
@@ -593,7 +629,7 @@ function createGame(initialState, savedPosition, headless) {
 
     // Get all available actions: global + location + inventory and location
     // items actions
-    game.getActions = function(includeSystem) {
+    game.getActions = function (includeSystem) {
         const actions = [];
         // First global actions
         game.actions.forEach(action => {
@@ -607,7 +643,7 @@ function createGame(initialState, savedPosition, headless) {
             location.actions.forEach(action => actions.push(action));
         }
         // Inventory + location items actions
-        this.getItems().forEach(function(item) {
+        this.getItems().forEach(function (item) {
             if (item.actions) {
                 item.actions.forEach(action => actions.push(action));
             }
@@ -616,7 +652,7 @@ function createGame(initialState, savedPosition, headless) {
     };
 
     // Returns an action whose name or alias matches the specified name
-    game.getAction = function(name, includeSystem) {
+    game.getAction = function (name, includeSystem) {
         let action = this.getActions(includeSystem).find(action => this.aliasObjectMatchesName(action, name));
         if (!action) {
             console.log("No action found for: " + name);
@@ -624,7 +660,27 @@ function createGame(initialState, savedPosition, headless) {
         return action;
     }
 
-    game.actionMatches = function(action, params, actionName, itemName) {
+    // Returns true if the specified action name/alias matches the command
+    // Multi-word action names and aliases with ASCII space as a separator are supported
+    game.actionNameMatchesCommand = function (name, commandParams) {
+        // "use" -> ["use"]
+        // "look at" -> ["look","at"]
+        const parts = name.split(/\s+/);
+        const command = parts.length == 1 ? commandParams[0] : commandParams.slice(0, parts.length).join(" ");
+        return game.matchName(command, name);
+    }
+
+    game.getMatchingNameOrAlias = function (action, commandParams) {
+        if (game.actionNameMatchesCommand(action.name, commandParams)) {
+            return action.name;
+        }
+        if (action.aliases) {
+            return action.aliases.find(alias => game.actionNameMatchesCommand(alias, commandParams));
+        }
+        return undefined;
+    }
+
+    game.actionMatches = function (action, params, actionName, itemName) {
         if (action.name === actionName) {
             if (itemName) {
                 if (params && params.length > 0) {
@@ -640,22 +696,22 @@ function createGame(initialState, savedPosition, headless) {
     };
 
     // Returns an item for the specified name or undefined
-    game.mapItem = function(name) {
+    game.mapItem = function (name) {
         return game.items.find(item => item.name === name);
     };
 
     // Returns an item whose name or alias matches the specified name, false
     // otherwise
-    game.getItem = function(items, name) {
+    game.getItem = function (items, name) {
         if (items) {
             return items.find(item => this.aliasObjectMatchesName(item, name));
         }
         return null;
     };
 
-    // Returns true if an object"s name or alias matches the specified name,
+    // Returns true if a name or alias matches the specified name,
     // false otherwise
-    game.aliasObjectMatchesName = function(obj, name) {
+    game.aliasObjectMatchesName = function (obj, name) {
         if (!obj || !name) {
             return false;
         }
@@ -668,7 +724,7 @@ function createGame(initialState, savedPosition, headless) {
         return false;
     };
 
-    game.aliasObjectNameStartsWith = function(obj, str) {
+    game.aliasObjectNameStartsWith = function (obj, str) {
         if (!obj || !str) {
             return false;
         }
@@ -682,16 +738,16 @@ function createGame(initialState, savedPosition, headless) {
     };
 
     // Returns an inventory item for the specified name or undefined
-    game.getInventoryItem = function(name) {
+    game.getInventoryItem = function (name) {
         return game.inventory ? game.getItem(game.inventory.map(item => game.mapItem(item)), name) : undefined;
     };
 
-    game.getInventoryItems = function() {
+    game.getInventoryItems = function () {
         return game.inventory ? game.inventory.map(item => game.mapItem(item)) : undefined;
     };
 
     // Remove an inventory item of the specified name if present
-    game.removeInventoryItem = function(name) {
+    game.removeInventoryItem = function (name) {
         const idx = game.inventory.findIndex(item => item === name);
         if (idx != -1) {
             game.inventory.splice(idx, 1);
@@ -699,7 +755,7 @@ function createGame(initialState, savedPosition, headless) {
     }
 
     // Returns a location item for the specified name or undefined
-    game.getLocationItem = function(name, location) {
+    game.getLocationItem = function (name, location) {
         const loc = location ? location : game.location;
         if (loc.items) {
             return game.getItem(loc.items.map(item => game.mapItem(item)), name);
@@ -708,7 +764,7 @@ function createGame(initialState, savedPosition, headless) {
     };
 
     // Remove an item
-    game.removeItem = function(name) {
+    game.removeItem = function (name) {
         const itemRet = game.findItem(name);
         if (itemRet.location) {
             game.removeLocationItem(name, itemRet.location);
@@ -719,7 +775,7 @@ function createGame(initialState, savedPosition, headless) {
     }
 
     // Remove an item from the specified/current location
-    game.removeLocationItem = function(name, location) {
+    game.removeLocationItem = function (name, location) {
         const loc = location ? location : game.location;
         const idx = loc.items.findIndex(item => item === name);
         if (idx != -1) {
@@ -727,7 +783,7 @@ function createGame(initialState, savedPosition, headless) {
         }
     }
 
-    game.addLocationItem = function(itemName, locationId, skipNotification) {
+    game.addLocationItem = function (itemName, locationId, skipNotification) {
         const location = locationId ? game.getLocation(locationId) : game.location;
         if (location) {
             if (!location.items) {
@@ -743,7 +799,7 @@ function createGame(initialState, savedPosition, headless) {
     }
 
     // Attempts to find an inventory/location item
-    game.findItem = function(name) {
+    game.findItem = function (name) {
         let item = null;
         item = this.getInventoryItem(name);
         if (item) {
@@ -755,7 +811,7 @@ function createGame(initialState, savedPosition, headless) {
         return this.findLocationItem(name);
     };
 
-    game.findLocationItem = function(name) {
+    game.findLocationItem = function (name) {
         for (index = 0; index < this.locations.length; index++) {
             const locItems = this.locations[index].items;
             const item = locItems ? this.getItem(locItems.map(item => game.mapItem(item)), name) : null;
@@ -770,7 +826,7 @@ function createGame(initialState, savedPosition, headless) {
     };
 
     // Return all available items (inventory + location)
-    game.getItems = function() {
+    game.getItems = function () {
         const items = [];
         if (game.inventory) {
             game.inventory.forEach(i => items.push(i));
@@ -781,18 +837,18 @@ function createGame(initialState, savedPosition, headless) {
         return items.map(item => game.mapItem(item));
     };
 
-    game.getUsableItems = function() {
+    game.getUsableItems = function () {
         return this.getItems().filter(item => !item.unusable);
     }
 
     // Return all takeable items in the current location
-    game.getTakeableItems = function() {
+    game.getTakeableItems = function () {
         if (game.location.items) {
             return game.location.items.map(item => game.mapItem(item)).filter(item => item.takeable === undefined || item.takeable || item.maybeTakeable);
         }
     };
 
-    game.removeLocationExit = function(name, location) {
+    game.removeLocationExit = function (name, location) {
         const loc = location ? location : game.location;
         const idx = loc.exits.findIndex(e => e.name === name);
         if (idx != -1) {
@@ -800,7 +856,7 @@ function createGame(initialState, savedPosition, headless) {
         }
     }
 
-    game.enterLocation = function(location) {
+    game.enterLocation = function (location) {
         const lastLocation = game.location;
         if (lastLocation && lastLocation.onLeave) {
             lastLocation.onLeave(game);
@@ -818,7 +874,7 @@ function createGame(initialState, savedPosition, headless) {
         }
     };
 
-    game.printLocationInfo = function(useTypewriter) {
+    game.printLocationInfo = function (useTypewriter) {
         game.clearLocation();
 
         if (game.onLocationInfo && !game.onLocationInfo(game)) {
@@ -884,7 +940,7 @@ function createGame(initialState, savedPosition, headless) {
     };
 
     // Clear location info
-    game.clearLocation = function() {
+    game.clearLocation = function () {
         if (headless) {
             return;
         }
@@ -893,7 +949,7 @@ function createGame(initialState, savedPosition, headless) {
         }
     };
 
-    game.printLocation = function(text, cssClass, skipTypewriter) {
+    game.printLocation = function (text, cssClass, skipTypewriter) {
         if (headless) {
             console.log(text);
             return;
@@ -906,27 +962,27 @@ function createGame(initialState, savedPosition, headless) {
                 line.className = cssClass;
             }
         } else {
-            const before = cssClass ? function() {
+            const before = cssClass ? function () {
                 line.className = cssClass;
             } : undefined;
             queueOutput(line, text, before);
         }
     };
 
-    game.print = function(text, cssClass, after) {
+    game.print = function (text, cssClass, after) {
         if (headless) {
             console.log(text);
             return;
         }
         const line = document.createElement("div");
-        const before = cssClass ? function() {
+        const before = cssClass ? function () {
             line.className = cssClass;
         } : null;
         outputDiv.insertBefore(line, null)
         queueOutput(line, text, before, after);
     };
 
-    game.printInputHelp = function(str, cssClass) {
+    game.printInputHelp = function (str, cssClass) {
         if (headless) {
             return;
         }
@@ -938,7 +994,7 @@ function createGame(initialState, savedPosition, headless) {
     };
 
     // Clear input help div
-    game.clearInputHelp = function() {
+    game.clearInputHelp = function () {
         if (headless || game.skipInputBox) {
             return;
         }
@@ -948,7 +1004,7 @@ function createGame(initialState, savedPosition, headless) {
     };
 
     // Clear output div
-    game.clearOutput = function() {
+    game.clearOutput = function () {
         if (headless) {
             return;
         }
@@ -957,7 +1013,7 @@ function createGame(initialState, savedPosition, headless) {
         }
     };
 
-    game.goToLocation = function(exitName) {
+    game.goToLocation = function (exitName) {
         this.clearOutput();
         const location = game.location;
         const exit = location.exits.find(exit => exit.name === exitName);
@@ -971,19 +1027,19 @@ function createGame(initialState, savedPosition, headless) {
     };
 
     // Prints all available actions
-    game.printActions = function(prefix) {
+    game.printActions = function (prefix) {
         print(prefix + getActions().map(action => action.name).join(", "));
     };
 
     // Shift the time
-    game.shiftTime = function(amount) {
+    game.shiftTime = function (amount) {
         this.time = this.time + amount;
         if (this.onShiftTime) {
             this.onShiftTime(this);
         }
     };
 
-    game.takeItem = function(name, updateLocationInfo = true) {
+    game.takeItem = function (name, updateLocationInfo = true) {
         const ret = {};
         if (game.inventoryLimit && game.inventory.length >= game.inventoryLimit) {
             if (game.messages.inventoryFull) {
@@ -1013,7 +1069,7 @@ function createGame(initialState, savedPosition, headless) {
         return ret;
     };
 
-    game.dropItem = function(name, updateLocationInfo = true) {
+    game.dropItem = function (name, updateLocationInfo = true) {
         const item = this.getInventoryItem(name);
         if (item) {
             const location = this.location;
@@ -1033,7 +1089,7 @@ function createGame(initialState, savedPosition, headless) {
         return null;
     };
 
-    game.useItem = function(name) {
+    game.useItem = function (name) {
         const item = this.getItem(this.getItems(), name);
         var ret = false;
         if (item && !item.unusable && item.onUse) {
@@ -1043,7 +1099,7 @@ function createGame(initialState, savedPosition, headless) {
         return ret;
     };
 
-    game.examineItem = function(name) {
+    game.examineItem = function (name) {
         const item = this.getItem(this.getItems(), name);
         if (item) {
             game.printItemInfo(item);
@@ -1056,14 +1112,14 @@ function createGame(initialState, savedPosition, headless) {
         return false;
     };
 
-    game.printItemInfo = function(item) {
+    game.printItemInfo = function (item) {
         const foundItem = item instanceof Object ? item : this.getItem(this.getItems(), item);
         if (item) {
             this.print(item.desc instanceof Function ? item.desc(game) : item.desc);
         }
     };
 
-    game.runOutro = function() {
+    game.runOutro = function () {
         if (headless) {
             return;
         }
@@ -1075,7 +1131,7 @@ function createGame(initialState, savedPosition, headless) {
         }
     }
 
-    game.end = function(endState, clearAll = true) {
+    game.end = function (endState, clearAll = true) {
         if (clearAll) {
             this.clearOutput();
             this.clearLocation();
@@ -1090,7 +1146,7 @@ function createGame(initialState, savedPosition, headless) {
 
     // Debug function - try to find a way from one location to the other
     // location
-    game.findWay = function(from, to) {
+    game.findWay = function (from, to) {
         const fromLocation = this.locations.find(loc => loc.id === from);
         const toLocation = this.locations.find(loc => loc.id === to);
         if (fromLocation && toLocation) {
@@ -1130,7 +1186,7 @@ function createGame(initialState, savedPosition, headless) {
         }
     };
 
-    game.nextStep = function(step, paths, startId, targetId) {
+    game.nextStep = function (step, paths, startId, targetId) {
         const newPathsFound = [];
         for (i = 0; i < paths.length; i++) {
             const path = paths[i];
@@ -1154,7 +1210,7 @@ function createGame(initialState, savedPosition, headless) {
 
     // val - input
     // name - property to match
-    game.matchName = function(val, name) {
+    game.matchName = function (val, name) {
         if (!val || !name) {
             return false;
         }
@@ -1179,13 +1235,13 @@ function createGame(initialState, savedPosition, headless) {
         }
     };
 
-    game.clearAll = function() {
+    game.clearAll = function () {
         this.clearLocation();
         this.clearOutput();
         this.clearInputHelp();
     }
 
-    game.setFailState = function(msg) {
+    game.setFailState = function (msg) {
         if (game.failState) {
             return;
         }
@@ -1209,7 +1265,7 @@ function createGame(initialState, savedPosition, headless) {
 function intro(index, introFuns, startFun) {
     const gameContainerDiv = document.querySelector("#game-container");
     introFuns[index](gameContainerDiv);
-    document.onkeydown = function(e) {
+    document.onkeydown = function (e) {
         if (e.key === "Enter") {
             document.onkeydown = null;
 
@@ -1230,7 +1286,7 @@ function intro(index, introFuns, startFun) {
 function outro(index, outroFuns) {
     const gameContainerDiv = document.querySelector("#game-container");
     outroFuns[index](gameContainerDiv);
-    document.onkeydown = function(e) {
+    document.onkeydown = function (e) {
         if (e.key === "Enter") {
             document.onkeydown = null;
 
@@ -1243,7 +1299,7 @@ function outro(index, outroFuns) {
             if (outroFuns.length > (index + 1)) {
                 intro(index + 1, outroFuns);
             } else {
-                document.onkeydown = function(e) {
+                document.onkeydown = function (e) {
                     if (event.key === "r") {
                         // Restart game
                         location.reload();
@@ -1276,7 +1332,7 @@ function queueOutput(element, text, before, after, htmlContent) {
 }
 
 function initOutputQueue() {
-    setInterval(function() {
+    setInterval(function () {
         // console.log("Process queue [" + outputQueue.length + "]");
         if (currentOutput) {
             return;
@@ -1298,7 +1354,7 @@ function initOutputQueue() {
                 }
                 resetOutputQueueStatus();
             } else {
-                typewriter(next.element, next.text, 0, function() {
+                typewriter(next.element, next.text, 0, function () {
                     if (next.after) {
                         next.after();
                     }
@@ -1336,7 +1392,7 @@ function typewriter(element, text, idx, followup) {
             element.textContent = text;
             followup();
         } else {
-            const next = function() {
+            const next = function () {
                 typewriter(element, text, indexVal, followup);
             }
             setTimeout(next, 10);

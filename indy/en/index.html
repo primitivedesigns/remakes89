@@ -1,0 +1,115 @@
+<html>
+<head>
+    <!-- Google Analytics placeholder -->
+    <meta charset="utf-8">
+    <title>THE ADVENTURES OF INDIANA JONES IN WENCESLAS SQUARE IN PRAGUE ON JANUARY 16, 1989</title>
+    <link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet" />
+    <link href="../indy.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+    <div id="game-container"></div>
+    <div id="game-sidebar">
+        <a href="javascript:void(0)" id="game-sidebar-close" class="toggle-btn"
+            onclick="closeSide()">&times;</a>
+
+        <h2>About the game</h2>
+
+            <p>This satirical game was released anonymously in 1989 as a response to police brutality during the <a href="https://nsarchive2.gwu.edu/NSAEBB/NSAEBB271/index.htm">Palach Week protests</a>. In January 1989, several opposition groups organized demonstrations to commemorate
+               the twentieth anniversary of the self-immolation of <a href="https://en.wikipedia.org/wiki/Jan_Palach">Jan Palach</a>, a student who set himself on fire to protest the post-1968 political developments in the country. On January 15, thousands of people gathered 
+               on <a href="https://en.wikipedia.org/wiki/Wenceslas_Square">Wenceslas Square</a>, a traditional site of public events. Citizens’ efforts to pay respects to Palach and protest the oppressive regime were
+               met with disproportionate police response, including the use of tear gas and water cannon against peaceful protesters and curious bystanders. Undeterred by the police, people continued to 
+               gather for the following four days. The game takes place on the second day of the protests.</p>
+            <p>By 1989, Indiana Jones had become a popular character in Czechoslovak text adventure games, in part thanks to the popular series of unlincesed homebrew titles by the influential programmer 
+                <a href="https://www.fuxoft.cz/">František Fuka</a>. As a result, the famous archeologist appeared even in this activist title. While geographically faithful, the game portrays Wenceslas Square as a battlefield 
+                where every careless move is punished with death; where tear gas, water cannons and policemen await on every corner. 
+                The game revels in spectacular game over scenes, which serve to forefront and exaggerate police violence. The game was released for the ZX Spectrum platform in the Czech language and spread among the users on cassette tapes, then
+                the default storage medium for 8-bit computers. Although its author remains unknown, it is possible that they were a participant in the actual demonstration. 
+                You can read more about the game and about computer games in Czechoslovakia in general in <a href="http://ironcurtain.svelch.com/">this book</a></a>.</p>
+
+        <h2>About Wenceslas Square</h2>
+            <p>The square is in fact downtown Prague’s widest and most spacious boulevard, and a traditional site of protests, demonstrations, and other public events. 750 meters long, the boulevard slopes 
+                slightly toward the southeast, with the National Museum at the top. The equestrian statue of <a href="https://en.wikipedia.org/wiki/Wenceslaus_I,_Duke_of_Bohemia">St. Wenceslas</a>, the patron saint of the Czech lands, stands below it, and is commonly used as a meeting point. 
+                The "A" subway line runs underneath the boulevard, with several entrances on each side.
+            <p>The game takes place in the top half of the Wenceslas Square. In accordance with common local usage, the directions used in the game are relative to the National Museum and the statue of St. Wenceslas, which are
+                considered the "top" of the square. Geographically, "up" stands for southeast, "left" for northeast etc. The game mentions several sites of commerce and entertainment that were staples of Prague’s city life in the 1980s.</p>
+
+        <h2>How to play a text adventure game</h2>
+            <p>Text adventures (sometimes also called "interactive fiction") describe the game world using text descriptions. Each location displays a its description, a list of objects that your character can interact with, 
+            and a list of exits. These games are usually controlled by typed-in commands addressed to the playable character. While playing text adventures, especially the ones from the 1980s, one would usually 
+            take notes and draw a map on paper. In this particular game, you type in commands and confirm them with the Enter key, similarly to the use of command line in older operating systems. The game understands
+            simple commands consisting of a verb and an object, such as:
+        <div class="command">EXAMINE TAIL</div>
+        <div class="command">TAKE AXE</div>
+        <p>You may but do not have to type articles. You can shorten commands to the first three letters, using, for example, the following versions of the commands:          
+        <div class="command">EXA TAI</div>
+        <div class="command">TAK AXE</div>
+        <p>To move between locations, type in the direction you want to go. You can shorten the directions to just the first letter, such as:</p>
+        <div class="command">LEFT (or L)</div>
+        <div class="command">RIGHT (or R)</div>
+        <p>The exception is the direction INSIDE, which cannot be shortened to I, because this command is reserved for the INVENTORY.</p>
+        <p>Most puzzles within the game can be solved by using the right object in the right location. You can only manipulate with objects that you can see or that you are carrying. 
+            You can carry up to two things at once, making it necessary to drop items that you are don’t need at the moment. You can list the items you are carrying by typing "INVENTORY" or "I".
+            </p>
+        <p>You can list all the verbs used by the game by typing "DICTIONARY" or "VERBS". 
+            Please note that - as in the original - the dictionary of this game is quite limited, and you will have to use the generic verb USE to execute a wide range of actions. If you are stuck, the "HINT" command
+            will display a hint for the current location. This hint system was not featured in the original game and has only been added to this conversion.
+        <p>You can save and load your game while playing, using the SAVE and LOAD commands in conjunction with a label, for example:
+            <div class="command">SAVE HORSE</div>
+            <div class="command">LOAD HORSE</div>
+        <p>If you don’t use a label, the game will automatically call you savegame "SAVE". You can list all savegame labels by typing "GAMES". The savegames are being stored in the local storage of your web browser.
+            As such, they will persist even when you close the game window - but will be deleted when the local storage is cleaned by the browser.</p>
+           
+        <h2>How we reconstructed the game</h2>
+        <p>As no source code for the game had been preserved, we observed its run-time behavior and documented all its locations, objects, and events. 
+            Then we rewrote the game for web technologies (JavaScript, HTML, and CSS) using our own custom engine. All the texts in the game were extracted from the game’s binaries and translated into English.
+            We aimed for a faithful reproduction of all the puzzles and mechanics. There are, however, a few changes, for the sake of accessibility and user-friendliness:</p>         
+        <ul>
+            <li>The original version did not contain intro graphics. The conversion’s graphic was created in the resolution and palette of the ZX Spectrum platform, 
+                although we did not conform to its limitation of 2 colors per 8x8 square.</li>
+            <li>The conversion allows for the use of synonyms (PICK UP or GET instead of TAKE etc.)</li>
+            <li>The conversion contains hints (using the HINT command), which were not present in the original.</li>
+            <li>The conversion enables saving and loading the game using the SAVE and LOAD commands.</li>
+            <li>The conversion uses a more readable font and a more user-friendly interface. It allows, for example, to repeat commands using the cursor keys or auto-complete commands using TAB.</li>
+            <li>As opposed to the original, we have removed the screen that explains the game’s controls. We replaced it with this help and the DICTIONARY command.</li>
+        </ul>
+        <h2>Frequently Asked Questions</h2>
+        <p><b>I’m stuck. What should I do?</b><br>
+            Try typing HINT. If it comes to worst, you will find a complete walkthrough at the bottom of this page.</p>
+        <p><b>The game doesn’t understand my commands. What should I do?</b><br>
+           This title has a limited vocabulary. Instead of specific verbs such as "throw" or "chop", use the generic verb "USE". 
+           Type all the object names from the beginning. I.e. when referring to a "DEAD COP", you can type "DEAD" or even "DEA", but not "COP".</p>
+        <p><b>Why can’t I defeat my opponents even when I know how?</b><br>
+           Try defeating them from another location. Using some objects in one location can have repercussions elsewhere.</p>
+        <p><b>Can I get to a point when the game can no longer be finished?</b><br>
+            Yes, it is possible. The game will notify you if that happens. You can load a savegame or use the RESTART command to try again.</p>
+    
+         <h2>Credits</h2>
+        <ul>
+            <li><b>Zuzan Znovuzrozený (pseudonym)</b> - original author(s)</li>
+            <li><b>Jaroslav Švelch</b> - game mechanics analysis; production, design, and translation of the conversion</li>
+            <li><b>Martin Kouba</b> - programming and design of the conversion</li>
+            <li><b>Jana „Yuffie“ Kilianová</b> - pixel art</li>                        
+        </ul>
+
+            <h2>Walkthrough</h2>
+        <p>When in dire need of a walkthrough, select the following paragraph by clicking and dragging your mouse cursor:</p>
+        <p class="walkthrough">EXAMINE TAIL, TAKE AXE, L, USE AXE, EXAMINE DEAD COP, TAKE SHIELD, R, D, USE SHIELD,
+            DROP SHIELD, TAKE STONE, USE STONE, R, D, TAKE ROD, U, L, D, USE ROD, L, D, USE ROD, DROP ROD,
+            EXAMINE DEAD COPPER, TAKE UNIFORM, USE UNIFORM, R, R, DROP UNIFORM, D, DROP DIAMONDS,
+            U, TAKE UNIFORM, USE UNIFORM, L, L, TAKE ROD, R, R, DROP UNIFORMU, D, TAKE DIAMONDS,
+            L, R, L, D, R, DROP DIAMONDS, TAKE SPINACH, USE SPINACH, USE ROD, TAKE DIAMONDS, L, L,
+            DROP DIAMONDS, DROP CAN, EXAMINE DEAD CIVILIAN, TAKE ID CARD, R, U, R, U,
+            TAKE UNIFORM, USE UNIFORM, L, L, U, R, U, U, R, INSIDE.</p>        
+    </div>
+    <div id="game-sidebar-open">
+        <a href="javascript:void(0)" class="toggle-btn"
+            onclick="openSide()">?</a>
+    </div>
+    <script src="indy_bundle_en.js"></script>
+    <script src="../indy.js"></script>
+    <script src="../../engine.js"></script>
+    <script>
+                    const engine = runGame(initState());
+                </script>
+</body>
+</html>

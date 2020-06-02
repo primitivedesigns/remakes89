@@ -1,301 +1,320 @@
-/*
-* DOBRODRUŽSTVÍ INDIANA JONESE NA VÁCLAVSKÉM NÁMĚSTÍ V PRAZE DNE 16.1.1989
-*/
+// DOBRODRUŽSTVÍ INDIANA JONESE NA VÁCLAVSKÉM NÁMĚSTÍ V PRAZE DNE 16.1.1989
+// NOTE: the global context must define a "bundle" object that contains various localization stuff
 
 let sideOpen = false;
 let beepOn = true;
-const beep = new Audio("snd/beep.wav");
+const beep = new Audio(bundle.snd_beep_path);
 
 const items = [{
-    name: "diamanty",
-    desc: "Jsou to čtyři nádherné drahokamy.",
-    readInit: function(obj) {
-        obj.onDrop = function(game) {
+    name: bundle.item_diamonds_name,
+    desc: bundle.item_diamonds_desc,
+    readInit: function (obj) {
+        obj.onDrop = function (game) {
             if (game.location.id === "m12") {
-                game.print("Jakmile jsi je položil, někdo je z oltáře ukradl.");
-                game.removeItem("diamanty");
+                game.print(bundle.item_diamonds_onDrop);
+                game.removeItem(bundle.item_diamonds_name);
             }
         }
     }
 }, {
-    name: "fízla",
-    aliases: ["fizla"],
-    desc: "Chystá se zmlátit tě.",
+    name: bundle.item_cop1_name,
+    aliases: bundle.item_cop1_aliases,
+    desc: bundle.item_cop1_desc,
     takeable: false
 }, {
-    name: "mrtvolu fízla",
-    aliases: ["mrtvolu fizla"],
-    desc: "Má hluboko v hlavě zaseklou sekeru (dobrá práce)! Našels' u něj štít.",
-    readInit: function(obj) {
-        obj.onExamine = function(game) {
-            game.addLocationItem("štít");
+    name: bundle.item_corpse1_name,
+    aliases: bundle.item_corpse1_aliases,
+    readInit: function (obj) {
+        obj.desc = function () {
+            let ret = bundle.item_corpse1_desc;
+            if (!obj.examined) {
+                ret += bundle.item_corpse1_desc_shield;
+            }
+            return ret;
+        };
+        obj.onExamine = function (game) {
+            if (!obj.examined) {
+                game.addLocationItem(bundle.item_shield_name);
+            }
         }
     },
     takeable: false
 }, {
-    name: "štít",
-    aliases: ["stit"],
-    desc: "Je vhodně upraven proti padajícímu kamení.",
-    readInit: function(obj) {
-        obj.onUse = function(game) {
+    name: bundle.item_shield_name,
+    aliases: bundle.item_shield_aliases,
+    desc: bundle.item_shield_desc,
+    readInit: function (obj) {
+        obj.onUse = function (game) {
             if (game.location.id === "m5" && !game.location.shieldUsed) {
                 game.location.shieldUsed = true;
-                const boulder = game.getLocationItem("kámen");
+                const boulder = game.getLocationItem(bundle.item_stone_name);
                 if (boulder) {
                     boulder.takeable = true;
                     boulder.unusable = false;
                 }
-                game.print("O.K. Odrazil jsi kámen štítem.");
+                game.print(bundle.item_shield_onUse);
                 game.onLocationItemAdded(game, boulder.name);
                 return true;
             }
         }
     }
 }, {
-    name: "ocas",
-    readInit: function(obj) {
-        obj.onExamine = function(game) {
+    name: bundle.item_tail_name,
+    readInit: function (obj) {
+        obj.onExamine = function (game) {
             if (!this.examined) {
-                game.addLocationItem("sekeru")
+                game.addLocationItem(bundle.item_axe_name)
             }
         };
-        obj.desc = function() {
-            let ret = "Je to ocas koně, na kterém sedí svatý Václav.";
+        obj.desc = function () {
+            let ret = bundle.item_tail_desc;
             if (!this.examined) {
-                ret += " Ve skulince pod ocasem jsi našel sekeru.";
+                ret += bundle.item_tail_onExamine;
             }
             return ret;
         };
     },
     takeable: false
 }, {
-    name: "sekeru",
-    desc: "Do tupé policajtské hlavy by zajela jako po másle.",
-    readInit: function(obj) {
-        obj.onUse = function(game) {
-            const cop = game.getLocationItem("fízla");
+    name: bundle.item_axe_name,
+    desc: bundle.item_axe_desc,
+    readInit: function (obj) {
+        obj.onUse = function (game) {
+            const cop = game.getLocationItem(bundle.item_cop1_name);
             if (cop) {
-                game.print("O.K. Zasekl jsi mu sekeru do hlavy tak hluboko, že nejde vytáhnout.");
-                game.removeItem("sekeru");
+                game.print(bundle.item_axe_onUse);
+                game.removeItem(bundle.item_axe_name);
                 game.removeLocationItem(cop.name);
-                game.addLocationItem("mrtvolu fízla");
+                game.addLocationItem(bundle.item_corpse1_name);
                 return true;
             }
         }
     }
 }, {
-    name: "kámen",
-    aliases: ["kamen"],
-    desc: "Není to obyčejný kámen, je to dlažební kostka.",
+    name: bundle.item_stone_name,
+    aliases: bundle.item_stone_aliases,
     takeable: false,
     unusable: true,
-    readInit: function(obj) {
-        obj.onUse = function(game) {
+    readInit: function (obj) {
+        obj.onUse = function (game) {
             if (!this.used && game.location.id === "m5") {
-                game.print("O.K. Vrhnul jsi kámen napravo. Zprava (a to je pozoruhodné) jsi zaslechl výkřik.");
+                game.print(bundle.item_stone_onUse);
                 // Set m6 property
                 game.getLocation("m6").shouldFail = false;
                 game.removeItem(obj.name);
-                game.addLocationItem("mrtvolu policajta", "m6", true);
+                game.addLocationItem(bundle.item_corpse2_name, "m6", true);
                 return true;
             }
-        }
+        };
     }
 }, {
-    name: "slovník",
-    aliases: ["slovnik"],
-    desc: "Podrobný česko-anglicky slovník.",
-    readInit: function(obj) {
-        obj.onUse = function(game) {
+    name: bundle.item_dictionary_name,
+    aliases: bundle.item_dictionary_aliases,
+    desc: bundle.item_dictionary_desc,
+    readInit: function (obj) {
+        obj.onUse = function (game) {
             if (game.location.id === "m7") {
-                game.print("O.K. Přeložil sis nápis na zdi. Cituji: Jakeš je vůl, KAREL.");
+                game.print(bundle.item_dictionary_onUse);
                 return true;
             }
         }
     }
 }, {
-    name: "mrtvolu policajta",
-    desc: "Byl nepochybně zasažen dlažební kostkou.",
+    name: bundle.item_corpse2_name,
+    desc: bundle.item_corpse2_desc,
     takeable: false
 }, {
-    name: "nápis na zdi",
-    aliases: ["napis na zdi"],
-    desc: "Bez slovníku jej nerozluštíš.",
+    name: bundle.item_writing_name,
+    aliases: bundle.item_writing_aliases,
+    desc: bundle.item_writing_desc,
     takeable: false
 }, {
-    name: "pistoli",
-    desc: "Bohužel v ní nejsou náboje.",
+    name: bundle.item_gun_name,
+    desc: bundle.item_gun_desc,
 }, {
-    name: "poldu",
-    desc: "Chystá se zmlátit tě.",
+    name: bundle.item_cop2_name,
+    desc: bundle.item_cop2_desc,
     takeable: false
 }, {
-    name: "tyč",
-    aliases: ["tyc"],
-    desc: "Na ledacos by se hodila.",
-    readInit: function(obj) {
-        obj.onUse = function(game) {
-            if (game.location.id === "m8" && game.getLocationItem("poldu")) {
-                game.print("O.K. Vypáčil jsi poklop kanálu. Poklop spadnul do šachty. Polda se na tebe s řevem vrhnul, ale v okamžiku, kdy tě chtěl udeřit, zahučel přímo před tebou do kanálu.");
-                game.removeLocationItem("poldu");
+    name: bundle.item_rod_name,
+    aliases: bundle.item_rod_aliases,
+    desc: bundle.item_rod_desc,
+    readInit: function (obj) {
+        obj.onUse = function (game) {
+            if (game.location.id === "m8" && game.getLocationItem(bundle.item_cop2_name)) {
+                game.print(bundle.item_rod_onUse_cop2);
+                game.removeLocationItem(bundle.item_cop2_name);
                 return true;
-            } else if (game.location.id === "m10" && game.getLocationItem("chlupatýho")) {
-                game.print("O.K. Praštil jsi chlupatýho tyčí přes hlavu.");
-                game.removeLocationItem("chlupatýho");
-                game.addLocationItem("mrtvolu chlupatýho");
+            } else if (game.location.id === "m10" && game.getLocationItem(bundle.item_cop3_name)) {
+                game.print(bundle.item_rod_onUse_cop3);
+                game.removeLocationItem(bundle.item_cop3_name);
+                game.addLocationItem(bundle.item_corpse3_name);
                 return true;
             } else if (game.location.id === "m18" && obj.throwable) {
-                game.print("O.K. Mrštil jsi tyčí nalevo a uslyšel jsi zasténání. Cha, cha, cha, cha.");
+                game.print(bundle.item_rod_onUse_throw);
                 game.removeItem(obj.name);
-                game.addLocationItem("mrtvolu milicionáře", "m17");
+                game.addLocationItem(bundle.item_militiaman_corpse_name, "m17");
                 return true;
             }
         }
     }
 }, {
-    name: "chlupatýho",
-    aliases: ["chlupatyho"],
-    desc: "Chystá se zmlátit tě.",
+    name: bundle.item_cop3_name,
+    aliases: bundle.item_cop3_aliases,
+    desc: bundle.item_cop3_aliases,
     takeable: false,
 }, {
-    name: "mrtvolu chlupatýho",
-    aliases: ["mrtvolu chlupatyho"],
-    desc: "Někdo mu rozrazil tyči lebku (kdo asi?). Má na sobě uniformu.",
-    readInit: function(obj) {
-        obj.onExamine = function(game) {
-            game.addLocationItem("uniformu");
+    name: bundle.item_corpse3_name,
+    aliases: bundle.item_corpse3_aliases,
+    readInit: function (obj) {
+        obj.desc = function () {
+            let ret = bundle.item_corpse3_desc;
+            if (!obj.examined) {
+                ret += bundle.item_corpse3_desc_uniform;
+            }
+            return ret;
+        };
+        obj.onExamine = function (game) {
+            if (!obj.examined) {
+                game.addLocationItem(bundle.item_uniform_name);
+            }
         };
     },
     takeable: false,
 }, {
-    name: "uniformu",
-    desc: "Je to uniforma člena Veřejné bezpečnosti.",
-    readInit: function(obj) {
+    name: bundle.item_uniform_name,
+    desc: bundle.item_uniform_desc,
+    readInit: function (obj) {
         const dressAction = {
-            name: "obleč",
-            aliases: ["oblec", "oblekni", "oblékni", "obleknout", "obléknout"],
-            perform: function(game, params) {
-                const uniform = game.findItem("uniformu").item;
+            name: bundle.item_uniform_dress_action_name,
+            aliases: bundle.item_uniform_dress_action_aliases,
+            perform: function (game, params) {
+                const uniform = game.findItem(bundle.item_uniform_name).item;
                 if (uniform && game.aliasObjectNameStartsWith(uniform, params.join(" "))) {
-                    let uniform = game.getInventoryItem("uniformu");
+                    let uniform = game.getInventoryItem(bundle.item_uniform_name);
                     if (!uniform) {
-                        uniform = game.takeItem("uniformu", false);
+                        uniform = game.takeItem(bundle.item_uniform_name, false);
                     }
                     if (uniform && !uniform.dressed) {
                         obj.dressed = true;
-                        game.print("O.K. Oblékl sis uniformu člena Veřejné bezpečnosti.");
+                        game.print(bundle.item_uniform_dress_action_perform);
                     }
                 }
             }
         };
         const undressAction = {
-            name: "svleč",
-            aliases: ["svlec", "svlekni", "svlékni"],
-            perform: function(game, params) {
-                const uniform = game.findItem("uniformu").item;
+            name: bundle.item_uniform_undress_action_name,
+            aliases: bundle.item_uniform_undress_action_aliases,
+            perform: function (game, params) {
+                const uniform = game.findItem(bundle.item_uniform_name).item;
                 if (obj.dressed && uniform && game.aliasObjectNameStartsWith(uniform, params.join(" "))) {
                     obj.dressed = false;
-                    game.print("O.K. Svlékl sis uniformu.");
+                    game.print(bundle.item_uniform_undress_action_perform);
                 }
             }
         };
-        obj.onUse = function(game) {
+        obj.onUse = function (game) {
             if (obj.dressed) {
-                undressAction.perform(game, ["uniformu"]);
+                undressAction.perform(game, [bundle.item_uniform_name]);
             } else {
-                dressAction.perform(game, ["uniformu"]);
+                dressAction.perform(game, [bundle.item_uniform_name]);
             }
             return true;
         };
         obj.actions = [undressAction, dressAction];
-        obj.onDrop = function(game) {
+        obj.onDrop = function (game) {
             obj.dressed = false;
         };
     }
 }, {
-    name: "člena VB",
-    aliases: ["clena VB"],
-    desc: "Kontroluje kolemjdoucí.",
+    name: bundle.item_cop4_name,
+    aliases: bundle.item_cop4_aliases,
+    desc: bundle.item_cop4_desc,
     takeable: false
 }, {
-    name: "oltář",
-    aliases: ["oltar"],
-    desc: "Jako by ti něco říkalo: Polož sem diamanty.",
+    name: bundle.item_altar_name,
+    aliases: bundle.item_altar_aliases,
+    desc: bundle.item_altar_desc,
     takeable: false
 }, {
-    name: "cedulku",
-    desc: "Je na ní napsáno: 'A ven se dostane jen ten, kdo má čtyři magické diamanty.'",
+    name: bundle.item_tag_name,
+    desc: bundle.item_tag_desc,
     takeable: false
 }, {
-    name: "civila",
-    desc: "Je na něm vidět, že nemá v lásce komunisty.",
+    name: bundle.item_civilian_name,
+    desc: bundle.item_civilian_desc,
     takeable: false
 }, {
-    name: "příslušníka",
-    aliases: ["prislusnika"],
-    desc: "Chystá se zmlátit tě.",
+    name: bundle.item_cop5_name,
+    aliases: bundle.item_cop5_aliases,
+    desc: bundle.item_cop5_desc,
     takeable: false
 }, {
-    name: "mrtvolu civila",
-    desc: "Je ti velice podobný. Má u sebe legitimaci.",
+    name: bundle.item_civilian_corpse_name,
+    desc: bundle.item_civilian_corpse_desc,
     takeable: false,
-    readInit: function(obj) {
-        obj.onExamine = function(game) {
-            game.addLocationItem("legitimaci");
+    readInit: function (obj) {
+        obj.onExamine = function (game) {
+            if (!obj.examined) {
+                game.addLocationItem(bundle.item_idcard_name);
+            }
         };
     }
 }, {
-    name: "legitimaci",
-    desc: "Patří členu tajné policie, který je ti velice podobný.",
+    name: bundle.item_idcard_name,
+    desc: bundle.item_idcard_desc,
 }, {
-    name: "mrtvolu milicionáře",
-    aliases: ["mrtvolu milicionare"],
-    desc: "Někdo po něm mrštil tyči. Hádám tak dle toho, že ji má zaraženou v hlavě.",
+    name: bundle.item_militiaman_corpse_name,
+    aliases: bundle.item_militiaman_corpse_aliases,
+    desc: bundle.item_militiaman_corpse_desc,
     takeable: false,
 }, {
-    name: "špenát",
-    aliases: ["spenat"],
-    desc: "Ještě je v záruční lhůtě.",
-    readInit: function(obj) {
-        obj.onUse = function(game) {
-            game.print("O.K. Snědl jsi špenát a hned se cítíš silnější, že bys mohl tyčí házet.");
-            const rodRet = game.findItem("tyč");
+    name: bundle.item_spinach_name,
+    aliases: bundle.item_spinach_aliases,
+    desc: bundle.item_spinach_desc,
+    readInit: function (obj) {
+        obj.onUse = function (game) {
+            game.print(bundle.item_spinach_onUse);
+            const rodRet = game.findItem(bundle.item_rod_name);
             if (rodRet.item) {
                 rodRet.item.throwable = true;
             }
             const location = game.removeItem(obj.name);
             if (location) {
-                location.items.push("plechovku");
+                location.items.push(bundle.item_can_name);
             } else {
-                game.inventory.push("plechovku");
+                game.inventory.push(bundle.item_can_name);
             }
             return true;
         }
     }
 }, {
-    name: "plechovku",
-    desc: "Je to dočista vylízaná plechovka od špenátu."
+    name: bundle.item_can_name,
+    desc: bundle.item_can_desc
 }];
 
 const locations = [{
     id: "m1",
-    desc: "O.K. Stojíš před domem potravin. Vchod do metra je naštěstí volný. Z balkónu v domě se pobaveně dívá nepříjemný člověk (zřejmě komunista) na poctivě odváděnou práci členů VB.",
-    items: ["fízla"],
-    readInit: function(obj) {
-        obj.killHero = function(game) {
-            game.print("Fízl se na tebe krvežíznivě vrhnul a začal tě mlátit. A mlátil a mlátil...", "end-lose");
+    desc: bundle.location_m1_desc,
+    items: [bundle.item_cop1_name],
+    readInit: function (obj) {
+        obj.killHero = function (game) {
+            game.print(bundle.location_m1_kill, "end-lose");
             game.end("killed", false);
         };
-        obj.beforeAction = function(game, action, params) {
-            if (game.getLocationItem("fízla") && isMovement(action)) {
+        obj.beforeAction = function (game, action, params) {
+            if (game.getLocationItem(bundle.item_cop1_name) && isMovement(action)) {
                 // Trying to escape...
                 obj.killHero(game);
                 return true;
             }
             return false;
         };
-        obj.afterAction = function(game, action, params) {
-            if (!game.getLocationItem("fízla") || isMovement(action) || game.actionMatches(action, params, "použij", "sekeru")) {
+        obj.afterAction = function (game, action, params) {
+            if (action.builtin) {
+                return;
+            }
+            if (!game.getLocationItem(bundle.item_cop1_name) || isMovement(action) || game.actionMatches(action, params, bundle.action_use, bundle.item_axe_name)) {
                 // Cop is dead, after-enter action or action matches
                 return;
             }
@@ -303,103 +322,104 @@ const locations = [{
         };
     },
     exits: [{
-        name: "dolů",
+        name: bundle.exit_down,
         location: "m4"
     }, {
-        name: "doprava",
+        name: bundle.exit_right,
         location: "m2"
     }, {
-        name: "dovnitř",
+        name: bundle.exit_inside,
         location: "m19"
     }],
-    hint: "Bude třeba se nějak prosekat dál."
+    hint: bundle.location_m1_hint
 }, {
     id: "m2",
-    desc: "O.K. Jsi pod sochou svatého Václava. Vidíš zatarasený vchod do metra. Nahoře je muzeum, ale přístup k němu je zatarasený.",
-    items: ["ocas"],
+    desc: bundle.location_m2_desc,
+    items: [bundle.item_tail_name],
     exits: [{
-        name: "doleva",
+        name: bundle.exit_left,
         location: "m1"
     }, {
-        name: "doprava",
+        name: bundle.exit_right,
         location: "m3"
     }, {
-        name: "dolů",
+        name: bundle.exit_down,
         location: "m5"
     }],
-    hint: "Pořádně se rozhlédni kolem sebe."
+    hint: bundle.location_m2_hint
 }, {
     id: "m3",
-    readInit: function(obj) {
-        obj.onEnter = function(game) {
-            if (!game.getInventoryItem("legitimaci")) {
-                game.print("Když od tebe odbíhali na nějakou ženu s kočárkem, jednomu z nich vypadla z pouzdra mačeta. Doplazil ses pro ni a spáchals' HARAKIRI.", "end-lose");
+    readInit: function (obj) {
+        obj.onEnter = function (game) {
+            if (!game.getInventoryItem(bundle.item_idcard_name)) {
+                game.print(bundle.location_m3_kill, "end-lose");
                 game.end("killed", false);
             }
         };
-        obj.desc = function(game) {
-            if (game.getInventoryItem("legitimaci")) {
-                return "O.K. Stojíš u volného vstupu u metra. Jakmile ses ukázal, přiběhl policajt, prošacoval tě, a když u tebe našel legitimaci člena tajné policie, popřál mnoho štěstí v další práci, lehce se uklonil a odešel (hlupák).";
+        obj.desc = function (game) {
+            if (game.getInventoryItem(bundle.item_idcard_name)) {
+                return bundle.location_m3_desc_ok;
             } else {
                 this.exits = [];
                 this.items = [];
-                return "O.K. Stojíš u volného vstupu u metra. Jakmile ses ukázal, přiběhl policajt, prošacoval tě, a když u tebe nic nenašel, zavolal si na pomoc 'kamarády' a zmlátili tě do němoty."
+                return bundle.location_m3_desc_nok;
             }
         }
     },
     exits: [{
-        name: "doleva",
+        name: bundle.exit_left,
         location: "m2"
     }, {
-        name: "dovnitř",
+        name: bundle.exit_inside,
         location: "m20"
     }, {
-        name: "dolů",
+        name: bundle.exit_down,
         location: "m6"
     }],
-    hint: "Nic už ti nebrání vydat se na cestu."
+    hint: bundle.location_m3_hint
 }, {
     id: "m4",
-    desc: "O.K. Stojíš u prodejny Supraphon. Než ses však stačil rozhlédnout, pokropila tě sprška vodního děla.",
-    readInit: function(obj) {
-        obj.onEnter = function(game) {
-            game.print("Spadl jsi na zem a rozbil sis hlavu.", "end-lose");
+    desc: bundle.location_m4_desc,
+    readInit: function (obj) {
+        obj.onEnter = function (game) {
+            game.print(bundle.location_m4_kill, "end-lose");
             game.end("killed", false);
         }
     }
 }, {
     id: "m5",
-    desc: "O.K. Ulevuješ si mezi kytičky ve velkém květináči.",
-    hint: "Jeden z policajtů jistě bude mít něco, čím jde kámen odrazit. S takovým kamenem pak jde zasáhnout i celkem vzdálený cíl.",
-    items: ["kámen", "slovník"],
+    desc: bundle.location_m5_desc,
+    hint: bundle.location_m5_hint,
+    items: [bundle.item_stone_name, bundle.item_dictionary_name],
     exits: [{
-        name: "doleva",
+        name: bundle.exit_left,
         location: "m4"
     }, {
-        name: "doprava",
+        name: bundle.exit_right,
         location: "m6"
     }, {
-        name: "nahoru",
+        name: bundle.exit_up,
         location: "m2"
     }, {
-        name: "dolů",
+        name: bundle.exit_down,
         location: "m8"
     }],
-    readInit: function(obj) {
-        obj.decorateItemName = function(itemName, game) {
-            if (itemName === "kámen") {
-                const boulder = game.getLocationItem("kámen");
-                if (boulder && boulder.unusable) {
-                    return "kámen, který padá na tebe,";
+    readInit: function (obj) {
+        obj.decorateItemName = function (name, item, game) {
+            let decoratedName = name;
+            if (name === bundle.item_stone_name) {
+                const stone = game.getLocationItem(bundle.item_stone_name);
+                if (stone && stone.unusable) {
+                    decoratedName += bundle.location_m5_stone;
                 }
             }
-            return itemName;
+            return decoratedName;
         };
-        obj.killHero = function(game) {
-            game.print("Kámen se přibližuje víc a víc. Pořád se zvětšuje a zvětšuje a zvětšuje a zvětšu-", "end-lose");
+        obj.killHero = function (game) {
+            game.print(bundle.location_m5_kill, "end-lose");
             game.end("killed", false);
         };
-        obj.beforeAction = function(game, action, params) {
+        obj.beforeAction = function (game, action, params) {
             if (!obj.shieldUsed && isMovement(action)) {
                 // Trying to escape...
                 obj.killHero(game);
@@ -407,8 +427,11 @@ const locations = [{
             }
             return false;
         };
-        obj.afterAction = function(game, action, params) {
-            if (obj.shieldUsed || isMovement(action) || game.actionMatches(action, params, "použij", "štít")) {
+        obj.afterAction = function (game, action, params) {
+            if (action.builtin) {
+                return;
+            }
+            if (obj.shieldUsed || isMovement(action) || game.actionMatches(action, params, bundle.action_use, bundle.item_shield_name)) {
                 // Shield was used, after-enter action or action matches
                 return;
             }
@@ -417,74 +440,77 @@ const locations = [{
     }
 }, {
     id: "m6",
-    desc: "O.K. Nacházíš se u domu módy v ústí do zatarasené Krakovské ulice.",
-    hint: "Tenhle policajt už ti k ničemu nebude.",
-    // see item "kámen"
+    desc: bundle.location_m6_desc,
+    hint: bundle.location_m6_hint,
+    // see item_stone
     shouldFail: true,
-    readInit: function(obj) {
-        obj.onEnter = function(game) {
+    readInit: function (obj) {
+        obj.onEnter = function (game) {
             if (this.shouldFail) {
-                game.print("Vidíš policajta. Na tváři, která se k tobě víc a více přibližuje, je vidět, že je to maniak. Už mu neunikneš.", "end-lose");
+                game.print(bundle.location_m6_kill, "end-lose");
                 game.end("killed", false);
             }
         }
     },
     items: [],
     exits: [{
-        name: "nahoru",
+        name: bundle.exit_up,
         location: "m3"
     }, {
-        name: "dolů",
+        name: bundle.exit_down,
         location: "m9"
     }, {
-        name: "doleva",
+        name: bundle.exit_left,
         location: "m5"
     }]
 }, {
     id: "m7",
-    desc: "O.K. Stojíš před prodejnou knihy. Není nic slyšet, protože veliký dav tu skanduje heslo 'AŤ ŽIJE KAREL!' Vlevo je zatarasený vchod do Opletalky.",
-    items: ["nápis na zdi", "pistoli"],
-    hint: "Václavák není místo, kde by tě pomohla pistole.",
+    desc: bundle.location_m7_desc,
+    items: [bundle.item_writing_name, bundle.item_gun_name],
+    hint: bundle.location_m7_hint,
     exits: [{
-        name: "nahoru",
+        name: bundle.exit_up,
         location: "m4"
     }, {
-        name: "doprava",
+        name: bundle.exit_right,
         location: "m8"
     }, {
-        name: "dolů",
+        name: bundle.exit_down,
         location: "m10"
     }]
 }, {
     id: "m8",
-    desc: "O.K. Stojíš mezi patníky u kanálu. Není tu nic zvláštního. Dole jsou zátarasy.",
-    hint: "Nemohl by ti pomoct kanál?",
-    items: ["poldu"],
+    desc: bundle.location_m8_desc,
+    hint: bundle.location_m8_hint,
+    items: [bundle.item_cop2_name],
     exits: [{
-        name: "doleva",
+        name: bundle.exit_left,
         location: "m7"
     }, {
-        name: "doprava",
+        name: bundle.exit_right,
         location: "m9"
     }, {
-        name: "nahoru",
+        name: bundle.exit_up,
         location: "m5"
     }],
-    readInit: function(obj) {
-        obj.killHero = function(game) {
-            game.print("Jakmile tě polda zmerčil, vrhnul se na tebe. Nevzmohl jsi se ani na obranu. Chudáku.", "end-lose");
+    readInit: function (obj) {
+        obj.killHero = function (game) {
+            game.print(bundle.location_m8_kill, "end-lose");
             game.end("killed", false);
         };
-        obj.beforeAction = function(game, action, params) {
-            if (game.getLocationItem("poldu") && isMovement(action)) {
+        obj.beforeAction = function (game, action, params) {
+            if (game.getLocationItem(bundle.item_cop2_name) && isMovement(action)) {
                 // Trying to escape...
                 obj.killHero(game);
                 return true;
             }
             return false;
         };
-        obj.afterAction = function(game, action, params) {
-            if (!game.getLocationItem("poldu") || isMovement(action) || game.actionMatches(action, params, "použij", "tyč")) {
+        obj.afterAction = function (game, action, params) {
+            if (action.builtin) {
+                return;
+            }
+            if (!game.getLocationItem(bundle.item_cop2_name) || isMovement(action) || game.actionMatches(action, params, bundle.action_use, bundle.item_rod_name)) {
                 // Cop is dead, after-enter action or action matches
                 return;
             }
@@ -494,62 +520,65 @@ const locations = [{
 }, {
     id: "m9",
     exploded: false,
-    readInit: function(obj) {
-        obj.desc = function() {
+    readInit: function (obj) {
+        obj.desc = function () {
             if (this.exploded) {
-                return "O.K. Balancuješ na kraji obrovského kráteru. Na dně vidíš ceduli 'Dům módy'.";
+                return bundle.location_m9_desc_exploded;
             } else {
-                return "O.K. Stojíš pod lešením. Dole jsou zátarasy. Slyšíš tichý, leč podezřelý tikot. Vidíš do ústí zatarasené ulice Ve Smečkách.";
+                return bundle.location_m9_desc;
             }
         };
-        obj.onEnter = function(game) {
+        obj.onEnter = function (game) {
             if (this.exploded) {
-                game.print("Neudržels' však rovnováhu a padáš dolů.", "end-lose");
+                game.print(bundle.location_m9_kill, "end-lose");
                 game.end("killed", false);
             } else {
                 this.countDownTime = game.time;
             }
         }
     },
-    hint: "Slyšíš ten tikot? Seber, co jde, a rychle pryč!",
-    items: ["tyč"],
+    hint: bundle.location_m9_hint,
+    items: [bundle.item_rod_name],
     exits: [{
-        name: "doleva",
+        name: bundle.exit_left,
         location: "m8"
     }, {
-        name: "nahoru",
+        name: bundle.exit_up,
         location: "m6"
     }],
 }, {
     id: "m10",
-    desc: "O.K. Nacházíš se před LUXOL CLUBEM. Vedle je kino Jalta. Dole vidíš zátarasy.",
-    hint: "Některé předměty ti pomůžou víckrát. A pak nezapomeň, že šaty dělají člověka!",
-    items: ["chlupatýho"],
-    readInit: function(obj) {
-        obj.onEnter = function(game) {
+    desc: bundle.location_m10_desc,
+    hint: bundle.location_m10_hint,
+    items: [bundle.item_cop3_name],
+    readInit: function (obj) {
+        obj.onEnter = function (game) {
             if (!obj.explored) {
-                if (game.getInventoryItem("pistoli")) {
-                    game.print("Najednou se na tebe vrhnul chlupatej. Prošacoval tě, a když u tebe našel pistoli, odprásknul tě.", "end-lose");
+                if (game.getInventoryItem(bundle.item_gun_name)) {
+                    game.print(bundle.location_m10_enter_kill, "end-lose");
                     game.end("kill", false);
                 } else {
-                    game.print("Najednou se na tebe vrhnul chlupatej, a když u tebe nic nenašel, zklamaně odešel.");
+                    game.print(bundle.location_m10_enter_ok);
                 }
             }
         };
-        obj.killHero = function(game) {
-            game.print("Policajta naštvalo, že u tebe nenašel, co hledal, a vrhnul se na tebe.", "end-lose");
+        obj.killHero = function (game) {
+            game.print(bundle.location_m10_kill, "end-lose");
             game.end("killed", false);
         };
-        obj.beforeAction = function(game, action, params) {
-            if (game.getLocationItem("chlupatýho") && isMovement(action)) {
+        obj.beforeAction = function (game, action, params) {
+            if (game.getLocationItem(bundle.item_cop3_name) && isMovement(action)) {
                 // Trying to escape...
                 obj.killHero(game);
                 return true;
             }
             return false;
         };
-        obj.afterAction = function(game, action, params) {
-            if (!game.getLocationItem("chlupatýho") || isMovement(action)) {
+        obj.afterAction = function (game, action, params) {
+            if (action.builtin) {
+                return;
+            }
+            if (!game.getLocationItem(bundle.item_cop3_name) || isMovement(action)) {
                 // Cop is dead or after-enter action
                 return;
             }
@@ -557,142 +586,142 @@ const locations = [{
         };
     },
     exits: [{
-        name: "nahoru",
+        name: bundle.exit_up,
         location: "m7"
     }, {
-        name: "doprava",
+        name: bundle.exit_right,
         location: "m11"
     }]
 }, {
     id: "m11",
-    desc: "O.K. Jsi v křoví.",
-    hint: "Někdo má uniformy rád, jiný zase nerad.",
-    items: ["člena VB"],
-    readInit: function(obj) {
-        obj.onEnter = function(game) {
-            const uniform = game.getInventoryItem("uniformu");
+    desc: bundle.location_m11_desc,
+    hint: bundle.location_m11_hint,
+    items: [bundle.item_cop4_name],
+    readInit: function (obj) {
+        obj.onEnter = function (game) {
+            const uniform = game.getInventoryItem(bundle.item_uniform_name);
             if (!uniform || !uniform.dressed) {
-                game.print("Vrhnul se na tebe člen VB a odtáhnul tě do antona. Sedí tu pár milých tváří s železnými tyčemi v rukách. Začali si s tebou hrát.", "end-lose");
+                game.print(bundle.location_m11_kill, "end-lose");
                 game.end("killed", false);
             }
         }
     },
     exits: [{
-        name: "doleva",
+        name: bundle.exit_left,
         location: "m10"
     }, {
-        name: "doprava",
+        name: bundle.exit_right,
         location: "m12"
     }]
 }, {
     id: "m12",
-    desc: "O.K. Stojíš před bankou. Nahoře jsou zátarasy.",
-    hint: "Cedulka nelže!",
-    items: ["oltář", "cedulku"],
+    desc: bundle.location_m12_desc,
+    hint: bundle.location_m12_hint,
+    items: [bundle.item_altar_name, bundle.item_tag_name],
     exits: [{
-        name: "doleva",
+        name: bundle.exit_left,
         location: "m11"
     }, {
-        name: "dolů",
+        name: bundle.exit_down,
         location: "m15"
     }]
 }, {
     id: "m13",
-    desc: "O.K. Jsi před grandhotelem EVROPA. Zahlédl jsi však videokameru zamířenou přímo na tebe.",
-    readInit: function(obj) {
-        obj.onEnter = function(game) {
-            game.print("Uznal jsi, že veškerý odpor je marný a spáchal jsi sebevraždu.", "end-lose");
+    desc: bundle.location_m13_desc,
+    readInit: function (obj) {
+        obj.onEnter = function (game) {
+            game.print(bundle.location_m13_kill, "end-lose");
             game.end("killed", false);
         }
     }
 }, {
     id: "m14",
     cops: true,
-    hint: "Některému nebezpečí se stačí jen uhnout.",
-        readInit: function(obj) {
-        obj.desc = function(game) {
-            let ret = "O.K. Sedíš na lavičce. (Už nemůžeš, co?) Kolem ucha ti hvízdla kulka. Nahoře jsou zátarasy.";
+    hint: bundle.location_m14_hint,
+    readInit: function (obj) {
+        obj.desc = function (game) {
+            let ret = bundle.location_m14_desc;
             if (obj.cops) {
-                ret += " Blíží se k tobě řada policajtů.";
+                ret += bundle.location_m14_desc_cops;
             }
             return ret;
         };
-        obj.onLeave = function() {
+        obj.onLeave = function () {
             obj.cops = false;
         };
-        obj.afterAction = function(game, action, params) {
-            if (!obj.cops || isMovement(action)) {
+        obj.afterAction = function (game, action, params) {
+            if (action.builtin || !obj.cops || isMovement(action)) {
                 return;
             }
-            game.print("Řada policajtů se přiblížila až k tobě. Než jsi stačil vstát, pustili se do tebe obušky.", "end-lose");
+            game.print(bundle.location_m14_kill, "end-lose");
             game.end("killed", false);
         };
     },
     exits: [{
-        name: "doleva",
+        name: bundle.exit_left,
         location: "m13"
     }, {
-        name: "doprava",
+        name: bundle.exit_right,
         location: "m15"
     }, {
-        name: "dolů",
+        name: bundle.exit_down,
         location: "m17"
     }],
 }, {
     id: "m15",
-    desc: "O.K. Stojíš pod lešením. Napravo je ústí do zatarasené Štěpánské ulice. Dole jsou také zátarasy.",
-    hint: "Kdo má málo místa v kapsách, musí se často převlékat!",
-    items: ["civila"],
-    readInit: function(obj) {
-        obj.onEnter = function(game) {
-            const uniform = game.getInventoryItem("uniformu");
+    desc: bundle.location_m15_desc,
+    hint: bundle.location_m15_hint,
+    items: [bundle.item_civilian_name],
+    readInit: function (obj) {
+        obj.onEnter = function (game) {
+            const uniform = game.getInventoryItem(bundle.item_uniform_name);
             if (uniform && uniform.dressed) {
-                game.print("Vrhnul se na tebe civilní občan pod dojmem, že jsi člen VB. Máš totiž ještě oblečenou uniformu.", "end-lose");
+                game.print(bundle.location_m15_kill, "end-lose");
                 game.end("killed", false);
             }
         };
     },
     exits: [{
-        name: "doleva",
+        name: bundle.exit_left,
         location: "m14"
     }, {
-        name: "nahoru",
+        name: bundle.exit_up,
         location: "m12"
     }],
 }, {
     id: "m16",
-    desc: "O.K. Ležíš před obchodním domem DRUŽBA. Praštil tě totiž příslušník. Vchod do metra je zatarasen. Dole za zátarasy je tramvajové koleje.",
-    items: ["příslušníka", "mrtvolu civila"],
-    hint: "Neber úplatky - dávej je!",
+    desc: bundle.location_m16_desc,
+    items: [bundle.item_cop5_name, bundle.item_civilian_corpse_name],
+    hint: bundle.location_m16_hint,
     exits: [{
-        name: "doprava",
+        name: bundle.exit_right,
         location: "m17"
     }, {
-        name: "nahoru",
+        name: bundle.exit_up,
         location: "m13"
     }],
-    readInit: function(obj) {
-        obj.killHero = function(game) {
-            game.print("Příslušník se na tebe vrhnul a zmlátil tě.", "end-lose");
+    readInit: function (obj) {
+        obj.killHero = function (game) {
+            game.print(bundle.location_m16_kill, "end-lose");
             game.end("killed", false);
         };
-        obj.beforeAction = function(game, action, params) {
-            if (game.getLocationItem("příslušníka") && isMovement(action)) {
+        obj.beforeAction = function (game, action, params) {
+            if (game.getLocationItem(bundle.item_cop5_name) && isMovement(action)) {
                 // Trying to escape...
                 obj.killHero(game);
                 return true;
             }
             return false;
         };
-        obj.afterAction = function(game, action, params) {
-            if (!game.getLocationItem("příslušníka") || isMovement(action)) {
+        obj.afterAction = function (game, action, params) {
+            if (action.builtin || !game.getLocationItem(bundle.item_cop5_name) || isMovement(action)) {
                 // Cop is dead or after-enter action
                 return;
             }
-            if (game.getLocationItem("diamanty")) {
-                game.print("Příslušník správně pochopil a diskrétně odešel.");
-                game.removeLocationItem("příslušníka");
-                game.removeItem("diamanty");
+            if (game.getLocationItem(bundle.item_diamonds_name)) {
+                game.print(bundle.location_m16_cop_left);
+                game.removeLocationItem(bundle.item_cop5_name);
+                game.removeItem(bundle.item_diamonds_name);
                 return;
             }
             obj.killHero(game);
@@ -700,165 +729,184 @@ const locations = [{
     }
 }, {
     id: "m17",
-    readInit: function(obj) {
-        obj.desc = function(game) {
+    readInit: function (obj) {
+        obj.desc = function (game) {
             if (!obj.explored) {
-                return "O.K. Sedíš v květináči mezi kytičkami a nadává ti milicionář. Cituji: 'Jestli tě tu uvidím ještě jednou, tak uvidíš.'";
+                return bundle.location_m17_desc_unexplored;
             } else {
-                if (game.getLocationItem("mrtvolu milicionáře")) {
-                    return "O.K. Sedíš v květináči mezi kytičkami.";
+                if (game.getLocationItem(bundle.item_militiaman_corpse_name)) {
+                    return bundle.location_m17_desc_explored_ok;
                 } else {
-                    return "O.K. Sedíš v květináči mezi kytičkami a nadává ti milicionář. Cituji: 'Já tě upozorňoval, ty hajzle.'";
+                    return bundle.location_m17_desc_explored_nok;
                 }
             }
         };
-        obj.onEnter = function(game) {
-            if (obj.explored && !game.getLocationItem("mrtvolu milicionáře")) {
-                game.print("Když se vypovídal, vrhnul se na tebe.", "end-lose");
+        obj.onEnter = function (game) {
+            if (obj.explored && !game.getLocationItem(bundle.item_militiaman_corpse_name)) {
+                game.print(bundle.location_m17_kill, "end-lose");
                 game.end("killed", false);
             }
         }
     },
-    hint: "Milicionář to myslí vážně!",
+    hint: bundle.location_m17_hint,
     exits: [{
-        name: "doleva",
+        name: bundle.exit_left,
         location: "m16"
     }, {
-        name: "doprava",
+        name: bundle.exit_right,
         location: "m18"
     }, {
-        name: "nahoru",
+        name: bundle.exit_up,
         location: "m14"
     }],
 }, {
     id: "m18",
-    desc: "O.K. Stojíš u zataraseného vchodu do metra. Dole a nahoře jsou zátarasy.",
-    hint: "Na hod do dálky se budeš potřebovat posilnit.",
-    items: ["špenát"],
+    desc: bundle.location_m18_desc,
+    hint: bundle.location_m18_hint,
+    items: [bundle.item_spinach_name],
     exits: [{
-        name: "doleva",
+        name: bundle.exit_left,
         location: "m17"
     }],
 }, {
     id: "m19",
-    desc: "O.K. Dostal ses do metra. Všude je tu rozšířen slzný plyn.",
-    readInit: function(obj) {
-        obj.onEnter = function(game) {
-            game.print("Je ho tu tolik, že ses udusil.", "end-lose");
+    desc: bundle.location_m19_desc,
+    readInit: function (obj) {
+        obj.onEnter = function (game) {
+            game.print(bundle.location_m19_kill, "end-lose");
             game.end("killed", false);
         }
     }
 }, {
     id: "m20",
     desc: "",
-    readInit: function(obj) {
-        obj.onEnter = function(game) {
+    readInit: function (obj) {
+        obj.onEnter = function (game) {
             game.end("win");
         }
     }
 }];
 
 const actions = [{
-    name: "prozkoumej",
-    aliases: ["prozkoumat"],
-    perform: function(game, params) {
+    name: bundle.action_explore,
+    aliases: bundle.action_explore_aliases,
+    perform: function (game, params) {
         if (!game.examineItem(params.join(" "))) {
             game.print(game.messages.unknownCommand);
         }
     },
-    autocomplete: function(game, str) {
+    autocomplete: function (game, str) {
         return (!str || str.length === 0) ? game.getItems() : game.getItems().filter(item => game.aliasObjectNameStartsWith(item, str));
     }
 }, {
-    name: "použij",
-    aliases: ["pouzij", "pouzit", "použít"],
-    perform: function(game, params) {
+    name: bundle.action_use,
+    aliases: bundle.action_use_aliases,
+    perform: function (game, params) {
         if (!game.useItem(params.join(" "))) {
             game.print(game.messages.unknownCommand);
         }
     },
-    autocomplete: function(game, str) {
+    autocomplete: function (game, str) {
         return (!str || str.length === 0) ? game.getUsableItems() : game.getUsableItems().filter(item => game.aliasObjectNameStartsWith(item, str));
     }
 }, {
-    name: "dolů",
-    aliases: ["dolu", "d"],
-    perform: function(game, params) {
-        game.goToLocation("dolů");
+    name: bundle.exit_down,
+    aliases: bundle.exit_down_aliases,
+    perform: function (game, params) {
+        if (!game.goToLocation(bundle.exit_down)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
-    name: "nahoru",
-    aliases: ["n"],
-    perform: function(game, params) {
-        game.goToLocation("nahoru");
+    name: bundle.exit_up,
+    aliases: bundle.exit_up_aliases,
+    perform: function (game, params) {
+        if (!game.goToLocation(bundle.exit_up)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
-    name: "doleva",
-    aliases: ["vlevo", "l"],
-    perform: function(game, params) {
-        game.goToLocation("doleva");
+    name: bundle.exit_left,
+    aliases: bundle.exit_left_aliases,
+    perform: function (game, params) {
+        if (!game.goToLocation(bundle.exit_left)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
-    name: "doprava",
-    aliases: ["vpravo", "p"],
-    perform: function(game, params) {
-        game.goToLocation("doprava");
+    name: bundle.exit_right,
+    aliases: bundle.exit_right_aliases,
+    perform: function (game, params) {
+        if (!game.goToLocation(bundle.exit_right)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
-    name: "dovnitř",
-    aliases: ["dovnitr"],
-    perform: function(game, params) {
-        game.goToLocation("dovnitř");
+    name: bundle.exit_inside,
+    aliases: bundle.exit_inside_aliases,
+    perform: function (game, params) {
+        if (!game.goToLocation(bundle.exit_inside)) {
+            game.print(game.messages.unknownCommand);
+        }
     }
 }, {
-    name: "polož",
-    aliases: ["poloz", "polozit", "položit", "zahodit", "zahoď"],
-    perform: function(game, params) {
+    name: bundle.action_drop,
+    aliases: bundle.action_drop_aliases,
+    perform: function (game, params) {
         const item = game.dropItem(params.join(" "), false);
         if (item) {
-            game.print("Položil jsi " + item.name + ".");
+            game.print(bundle.action_drop_success + item.name + ".");
         } else {
-            game.print("Tohle nejde položit.");
+            game.print(bundle.action_drop_fail);
         }
     },
-    autocomplete: function(game, str) {
+    autocomplete: function (game, str) {
         const items = game.inventory.map(item => game.mapItem(item));
         return (!str || str.length === 0) ? items : items.filter(item => game.aliasObjectNameStartsWith(item, str));
     }
 }, {
-    name: "vezmi",
-    aliases: ["seber", "vzít", "vzit", "vem"],
-    perform: function(game, params) {
+    name: bundle.action_take,
+    aliases: bundle.action_take_aliases,
+    perform: function (game, params) {
         const ret = game.takeItem(params.join(" "), false);
         if (ret.item) {
-            game.print("Vzal jsi " + ret.item.name + ".");
+            game.print(bundle.action_take_success + ret.item.name + ".");
         } else if (!ret.full) {
-            game.print("Tohle nejde vzít.");
+            game.print(bundle.action_take_fail);
         }
     },
-    autocomplete: function(game, str) {
+    autocomplete: function (game, str) {
         return (!str || str.length === 0) ? game.getTakeableItems() : game.getTakeableItems().filter(item => game.aliasObjectNameStartsWith(item, str));
     }
 }, {
-    name: "inventář",
-    aliases: ["věci", "veci", "i"],
-    perform: function(game) {
+    name: bundle.action_inventory,
+    aliases: bundle.action_inventory_aliases,
+    perform: function (game) {
         if (game.inventory && game.inventory.length > 0) {
-            game.print("Máš u sebe " + game.inventory.join(", ") + " a víc už ani >p<.");
+            const itemNames = game.inventory.map(function (i) {
+                const item = game.mapItem(i);
+                let itemName = item.name;
+                // The bundle can define a function that decorates an item name
+                if (bundle.item_name_decorate) {
+                    itemName = bundle.item_name_decorate(itemName);
+                }
+                return itemName;
+            });
+            game.print(bundle.action_inventory_start + itemNames.join(", ") + bundle.action_inventory_end);
         } else {
-            game.print("Máš u sebe hovno.");
+            game.print(bundle.action_inventory_empty);
         }
     }
 }, {
-    name: "slovník",
-    aliases: ["slovnik", "akce"],
-    perform: function(game) {
-        game.print("Můžeš zadat příkazy: " + game.getActions().map(action => action.name).join(", "));
+    name: bundle.action_dict,
+    aliases: bundle.action_dict_aliases,
+    perform: function (game) {
+        game.print(bundle.action_dict_prefix + game.getActions().map(action => action.name).join(", "));
     }
 }, {
-    name: "pomoc",
-    aliases: ["help"],
-    perform: function(game) {
+    name: bundle.action_help,
+    aliases: bundle.action_help_aliases,
+    perform: function (game) {
         if (game.location && game.location.hint) {
             game.print(game.location.hint, "hint");
         }
@@ -866,32 +914,32 @@ const actions = [{
 }, {
     name: "unknownCommand",
     system: true,
-    perform: function(game) {
+    perform: function (game) {
         game.print(game.messages.unknownCommand);
     }
 }];
 
-const initControls = function(gameContainer, game) {
+const initControls = function (gameContainer, game) {
     // Input tips
     const inputTips = document.querySelector("#game-input-tip");
     const tip1 = document.createElement("span");
-    tip1.title = "Speciální klávesa - doplň příkaz";
+    tip1.title = bundle.controls_autocomplete;
     tip1.innerHTML = "&nbsp;&#8633; TAB&nbsp;";
     inputTips.appendChild(tip1);
     const tip2 = document.createElement("span");
-    tip2.title = "Speciální klávesa - starší příkazy z historie";
+    tip2.title = bundle.controls_history_old;
     tip2.innerHTML = "&nbsp;&uparrow;&nbsp;";
     inputTips.appendChild(tip2);
     const tip3 = document.createElement("span");
-    tip3.title = "Speciální klávesa - novější příkazy z historie";
+    tip3.title = bundle.controls_history_new;
     tip3.innerHTML = "&nbsp;&downarrow;&nbsp;";
     inputTips.appendChild(tip3);
     const tip4 = document.createElement("span");
-    tip4.title = "Příkaz - ulož hru";
+    tip4.title = bundle.controls_save;
     tip4.innerHTML = "&nbsp;SAVE&nbsp;";
     inputTips.appendChild(tip4);
     const tip5 = document.createElement("span");
-    tip5.title = "Příkaz - nahraj hru";
+    tip5.title = bundle.controls_load;
     tip5.innerHTML = "&nbsp;LOAD&nbsp;";
     inputTips.appendChild(tip5);
 }
@@ -899,41 +947,41 @@ const initControls = function(gameContainer, game) {
 function initState() {
 
     const game = {
-        savedPositionPrefix: "indy",
+        savedPositionPrefix: bundle.save_position_prefix,
         messages: {
-            locationItems: "Vidíš",
+            locationItems: bundle.messages_locationItems,
             noLocationItems: "",
-            locationExits: "Můžeš jít",
-            unknownCommand: "To bohužel nejde!!!",
-            multipleActionsMatch: "Vstupu odpovídá více příkazů: ",
+            locationExits: bundle.messages_locationExits,
+            unknownCommand: bundle.messages_unknownCommand,
+            multipleActionsMatch: bundle.messages_multipleActionsMatch,
             inputHelpTip: "\xa0",
-            inputHelpPrefix: "Pokračuj: ",
-            gameSaved: "Hra uložena.",
-            gameLoaded: "Uložená pozice nahrána.",
-            gamePositions: "Uložené pozice: ",
-            gamePositionsEmpty: "Nemáš žádnou uloženou pozici.",
-            gamePositionDoesNotExist: "Nelze nahrát pozici: ",
-            inventoryFull: "Víc už toho neuneseš!",
+            inputHelpPrefix: bundle.messages_inputHelpPrefix,
+            gameSaved: bundle.messages_gameSaved,
+            gameLoaded: bundle.messages_gameLoaded,
+            gamePositions: bundle.messages_gamePositions,
+            gamePositionsEmpty: bundle.messages_gamePositionsEmpty,
+            gamePositionDoesNotExist: bundle.messages_gamePositionDoesNotExist,
+            inventoryFull: bundle.messages_inventoryFull,
         },
-        intro: [function(gameContainer) {
+        intro: [function (gameContainer) {
             // Image
             const title = document.createElement("div");
             gameContainer.appendChild(title);
             title.className = "intro-title";
 
             const img = document.createElement("img");
-            img.src = "img/title.png";
+            img.src = bundle.intro_img_title_path;
             img.className = "intro-img";
             title.appendChild(img);
 
             const textEnter = document.createElement("div");
             title.appendChild(textEnter);
 
-            queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
+            queueOutput(textEnter, bundle.intro_enter, function () {
                 textEnter.className = "intro-enter";
             });
 
-        }, function(gameContainer) {
+        }, function (gameContainer) {
             // Title
             while (gameContainer.firstChild) {
                 gameContainer.removeChild(gameContainer.firstChild);
@@ -958,18 +1006,18 @@ function initState() {
             const textEnter = document.createElement("div");
             gameContainer.appendChild(textEnter);
 
-            queueOutput(text1_a, "DOBRODRUŽSTVÍ INDIANA JONESE");
-            queueOutput(text1_b, "NA VÁCLAVSKÉM NÁMĚSTÍ");
-            queueOutput(text1_c, "V PRAZE");
-            queueOutput(text1_d, "DNE 16.1. 1989");
+            queueOutput(text1_a, bundle.intro_text1_a);
+            queueOutput(text1_b, bundle.intro_text1_b);
+            queueOutput(text1_c, bundle.intro_text1_c);
+            queueOutput(text1_d, bundle.intro_text1_d);
 
             queueOutput(text2, "&copy; 1989", undefined, undefined, true);
 
-            queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
+            queueOutput(textEnter, bundle.intro_enter, function () {
                 textEnter.className = "intro-enter";
             });
 
-        }, function(gameContainer) {
+        }, function (gameContainer) {
             // Story
             while (gameContainer.firstChild) {
                 gameContainer.removeChild(gameContainer.firstChild);
@@ -1010,43 +1058,43 @@ function initState() {
             const textEnter = document.createElement("div");
             gameContainer.appendChild(textEnter);
 
-            queueOutput(text1, "Jste Indiana Jones a vaším úkolem je dostat se do vaší rodné země, do Ameriky. Jste totiž na Václavském náměstí pod sochou svatého Václava. Je 16. 1. 1989.");
-            queueOutput(text2, "Tato hra je určena pro pokročilejší hráče textových her.");
+            queueOutput(text1, bundle.intro_text1);
+            queueOutput(text2, bundle.intro_text2);
 
-            queueOutput(textAdd, "S úctou");
-            queueOutput(textAdd1, "Zuzan Znovuzrozený");
-            queueOutput(textAdd2, "Ztracená bez čísla");
-            queueOutput(textAdd3, "Zapadákov City");
-            queueOutput(textAdd4, "TRAMTÁRIE");
+            queueOutput(textAdd, bundle.intro_textAdd);
+            queueOutput(textAdd1, bundle.intro_textAdd1);
+            queueOutput(textAdd2, bundle.intro_textAdd2);
+            queueOutput(textAdd3, bundle.intro_textAdd3);
+            queueOutput(textAdd4, bundle.intro_textAdd4);
 
-            queueOutput(textPhone, "Telefon: 16 1 1989");
-            queueOutput(textMilos, "BIJTE MILOŠE !!!");
+            queueOutput(textPhone, bundle.intro_textPhone);
+            queueOutput(textMilos, bundle.intro_textMilos);
 
-            queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
+            queueOutput(textEnter, bundle.intro_enter, function () {
                 textEnter.className = "intro-enter";
             });
         }],
         onInitControls: initControls,
-        onShiftTime: function(game) {
+        onShiftTime: function (game) {
             const m9 = game.getLocation("m9");
             if (m9.countDownTime && !m9.exploded) {
                 const bombTime = game.time - m9.countDownTime;
                 if (bombTime > 2) {
                     if (game.location.id === "m9") {
-                        game.print("Zahlédl jsi záblesk, po kterém následuje ohromný výbuch. Než tě zasáhla střepina, došlo ti,co znamenal ten tikot.", "end-lose");
+                        game.print(bundle.location_m9_bomb_kill, "end-lose");
                         game.end("killed", false);
                     } else {
                         m9.exploded = true;
-                        game.print("Místo, ze kterého jsi právě vyšel, vyletělo do povětří. Tys měl ale štěstí.");
-                        if (game.getLocationItem("tyč", m9)) {
-                            game.print("Výbuch zničil předmět, který jsi potřeboval k dohrání hry. Napiš RESTART a začni znovu.", "hint");
+                        game.print(bundle.location_m9_bomb_exploded);
+                        if (game.getLocationItem(bundle.item_rod_name, m9)) {
+                            game.print(bundle.location_m9_bomb_hint, "hint");
                         }
                     }
                 }
             }
         },
-        onStart: function(game) {
-            document.onkeydown = function(event) {
+        onStart: function (game) {
+            document.onkeydown = function (event) {
                 if (event.key === "F1") {
                     event.preventDefault();
                     if (sideOpen) {
@@ -1078,21 +1126,21 @@ function initState() {
             if (sidebarOpen) {
                 sidebarOpen.style.display = "block";
             }
-            this.printInputHelp('Zadej příkaz. Například "prozkoumej ocas". Pro automatické doplnění příkazu zkus klávesu TAB.');
+            this.printInputHelp(bundle.start_hint);
         },
-        onEnd: function(endState) {
+        onEnd: function (endState) {
             if (endState === "killed") {
-                this.print("INDIANA JONES JE MRTEV!");
-                this.print("ZPRÁVA Z AMERICKÉHO TISKU: Československá vláda oznámila, že náš drahý hrdina - INDIANA JONES - zemřel nešťastnou náhodou při autonehodě. Pokrač. na str. 54.");
-                this.print("Stiskni klávesu R pro RESTART nebo L a nahraje se poslední uložená pozice.", "intro-enter");
+                this.print(bundle.end_killed1);
+                this.print(bundle.end_killed2);
+                this.print(bundle.end_killed3, "intro-enter");
                 this.removeInputContainer();
             } else if (endState === "win") {
-                this.print("O.K. OBELSTIL JSI I TU NEJVĚTŠÍ FÍZLOVSKOU SVINI. ŠTASTNĚ JSI SE DOSTAL NA LETIŠTĚ A ODLETĚL DOMŮ. GRATULUJI K VÍTĚZSTVÍ!!!!!!!!!!", "end-win");
+                this.print(bundle.end_win, "end-win");
                 this.removeInputContainer();
-                this.print("Stiskni klávesu R pro RESTART", "intro-enter");
+                this.print(bundle.end_win_restart, "intro-enter");
             }
         },
-        buildLocationMessage: function(location, game) {
+        buildLocationMessage: function (location, game) {
             let message = "";
             if (location.desc) {
                 message += location.desc instanceof Function ? location.desc(game) : location.desc;
@@ -1109,34 +1157,46 @@ function initState() {
             }
             return message;
         },
-        afterAction: function(game, action, params) {
+        afterAction: function (game, action, params) {
             if (!action.builtin) {
                 game.shiftTime(1);
             }
+            const gameInputTip = document.querySelector("#game-input-tip")
+            if (gameInputTip) {
+                gameInputTip.scrollIntoView();
+            }
         },
-        onLocationItemAdded: function(game) {
+        onLocationItemAdded: function (game) {
             const location = game.location;
             if (location.items && location.items.length > 0) {
                 game.print(buildItemsMessage(game, location));
             }
         },
-        adaptCommand: function(game, command) {
-            if (command && command.length > 0) {
-                if (command.startsWith("jdi na ") || command.startsWith("jit na ") || command.startsWith("jít na ")) {
-                    return command.substring(7, command.length);
-                }
-                if (command.startsWith("jdi ") || command.startsWith("jit ") || command.startsWith("jít ")) {
-                    return command.substring(4, command.length);
+        adaptCommand: function (game, command) {
+            if (command && command.length > 0 && bundle.command_start_replacements) {
+                for (var i = 0; i < bundle.command_start_replacements.length; i++) {
+                    const replacement = bundle.command_start_replacements[i];
+                    const match = replacement.match.find(m => command.startsWith(m));
+                    if (match) {
+                        command = replacement.value + command.substring(match.length, command.length);
+                        break;
+                    }
                 }
             }
             return command;
+        },
+        parameterFilter: function (param) {
+            if (bundle.ignored_params) {
+                return !bundle.ignored_params.find(p => param === p);
+            }
+            return true;
         },
         isInputCaseSensitive: false,
         startLocation: "m2",
         partialMatchLimit: 2,
         inventoryLimit: 2,
         items: items,
-        inventory: ["diamanty"],
+        inventory: [bundle.item_diamonds_name],
         locations: locations,
         actions: actions
     }
@@ -1148,7 +1208,7 @@ function buildExitsMessage(game, location) {
     const exitNames = location.exits.map(e => e.name);
     for (let idx = 0; idx < exitNames.length; idx++) {
         if (exitNames.length > 1 && idx === (exitNames.length - 1)) {
-            message += " a ";
+            message += bundle.conjunction_and;
         }
         message += exitNames[idx];
         if (exitNames.length > 2 && idx < (exitNames.length - 2)) {
@@ -1161,11 +1221,23 @@ function buildExitsMessage(game, location) {
 
 function buildItemsMessage(game, location) {
     let message = game.messages.locationItems + " ";
-    const itemNames = location.items.map(
-        i => location.decorateItemName ? location.decorateItemName(game.mapItem(i).name, game) : game.mapItem(i).name);
+    const itemNames = location.items.map(function (i) {
+        const item = game.mapItem(i);
+        let name = item.name;
+        // Locations can decorate items names
+        if (location.decorateItemName) {
+            name = location.decorateItemName(name, item, game);
+        }
+        // The bundle can define a function that decorates an item name too
+        if (bundle.item_name_decorate) {
+            name = bundle.item_name_decorate(name, item);
+        }
+
+        return name;
+    });
     for (let idx = 0; idx < itemNames.length; idx++) {
         if (itemNames.length > 1 && idx === (itemNames.length - 1)) {
-            message += " a ";
+            message += bundle.conjunction_and;
         }
         message += itemNames[idx];
         if (itemNames.length > 2 && idx < (itemNames.length - 2)) {
@@ -1199,5 +1271,5 @@ function closeSide() {
 }
 
 function isMovement(action) {
-    return action.name === "dolů" || action.name === "nahoru" || action.name === "doleva" || action.name === "doprava" || action.name === "dovnitř";
+    return action.name === bundle.exit_down || action.name === bundle.exit_up || action.name === bundle.exit_left || action.name === bundle.exit_right || action.name === bundle.exit_inside;
 }
