@@ -56,7 +56,11 @@ sed -i "s/<!-- Google Analytics placeholder -->/<script async src=\"https:\/\/ww
 
 git checkout gh-pages
 
-rm -rf ./
+# Remove previous files
+rm -rf indy
+rm -rf listopad
+rm -rf prestavba
+# Copy new files
 cp -rf $DEPLOY_DIR/. ./
 
 git add indy/*
