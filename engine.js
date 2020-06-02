@@ -161,6 +161,11 @@ function createEngine(headless) {
     }
 
     engine.processCommand = function (command) {
+        if (!command || command.length === 0) {
+            // Empty command - do nothing
+            return;
+        }
+
         const game = engine.game;
         if (game.endState) {
             console.log("Game is over!");

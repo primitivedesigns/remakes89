@@ -1,7 +1,4 @@
-/*
-* DOBRODRUŽSTVÍ INDIANA JONESE NA VÁCLAVSKÉM NÁMĚSTÍ V PRAZE DNE 16.1.1989
-*/
-
+// DOBRODRUŽSTVÍ INDIANA JONESE NA VÁCLAVSKÉM NÁMĚSTÍ V PRAZE DNE 16.1.1989
 // NOTE: the global context must define a "bundle" object that contains various localization stuff
 
 let sideOpen = false;
@@ -1164,9 +1161,9 @@ function initState() {
             if (!action.builtin) {
                 game.shiftTime(1);
             }
-            const gameInput = document.querySelector("#game-input")
-            if (gameInput) {
-                gameInput.scrollIntoView();
+            const gameInputTip = document.querySelector("#game-input-tip")
+            if (gameInputTip) {
+                gameInputTip.scrollIntoView();
             }
         },
         onLocationItemAdded: function (game) {
