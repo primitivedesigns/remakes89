@@ -9,7 +9,7 @@ function createEngine(headless) {
 
     const engine = {};
 
-    engine.run = function () {
+    engine.run = function (skipIntro = false) {
         if (headless) {
             engine.initGame();
             engine.start();
@@ -19,7 +19,7 @@ function createEngine(headless) {
             while (gameContainerDiv.firstChild) {
                 gameContainerDiv.removeChild(gameContainerDiv.firstChild);
             }
-            if (engine.initState.intro) {
+            if (engine.initState.intro && !skipIntro) {
                 intro(0, engine.initState.intro, function () {
                     engine.initGame();
                     engine.start();
@@ -58,7 +58,7 @@ function createEngine(headless) {
         name: "restart",
         builtin: true,
         perform: function () {
-            location.reload();
+            engine.run(true);
         }
     }, {
         name: "save",
@@ -362,7 +362,7 @@ function createEngine(headless) {
 
             const actions = game.getActions().filter(function (action) {
                 const match = game.getMatchingNameOrAlias(action, inputParts);
-                if(match) {
+                if (match) {
                     actionMatch = match;
                     return true;
                 }
@@ -385,11 +385,15 @@ function createEngine(headless) {
                 inputBox.value = actionMatch + " ";
                 const actionMatchLength = actionMatch.split(/\s+/).length;
                 if (((inputParts.length - actionMatchLength) <= 1) && action.autocomplete) {
-                    const results = action.autocomplete(engine.game, inputParts[actionMatchLength]);
+                    const actionParamStr = inputParts[actionMatchLength];
+                    const results = action.autocomplete(engine.game, actionParamStr);
                     if (results) {
                         if (results.length === 1) {
                             inputBox.value = inputBox.value + results[0].name + " ";
                         } else if (results.length > 1) {
+                            if (actionParamStr) {
+                                inputBox.value = inputBox.value + actionParamStr;
+                            }
                             engine.game.clearInputHelp();
                             const prefix = engine.game.messages.inputHelpPrefix ? engine.game.messages.inputHelpPrefix : "";
                             engine.game.printInputHelp(prefix + results.map(r => r.name).join(", "));
