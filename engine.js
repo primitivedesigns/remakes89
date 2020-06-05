@@ -58,7 +58,7 @@ function createEngine(headless) {
         name: "restart",
         builtin: true,
         perform: function () {
-            engine.run(true);
+            engine.run(false);
         }
     }, {
         name: "save",
@@ -287,6 +287,8 @@ function createEngine(headless) {
 
             inputBox.onkeydown = (e) => {
                 if (e.key === "Enter") {
+                    e.stopPropagation();
+                    e.preventDefault();
                     processInput();
                 } else if (e.key === "ArrowUp") {
                     historyPrev();
@@ -1271,6 +1273,7 @@ function intro(index, introFuns, startFun) {
     introFuns[index](gameContainerDiv);
     document.onkeydown = function (e) {
         if (e.key === "Enter") {
+            e.preventDefault();
             document.onkeydown = null;
 
             // Skip output queue
@@ -1319,6 +1322,7 @@ const outputQueue = [];
 let currentOutput = null;
 let skipOutputQueue = false;
 const typewriterDelay = 20;
+let outputIntervalId = null;
 
 function queueOutput(element, text, before, after, htmlContent) {
     if (!text) {
@@ -1336,7 +1340,10 @@ function queueOutput(element, text, before, after, htmlContent) {
 }
 
 function initOutputQueue() {
-    setInterval(function () {
+    if (outputIntervalId) {
+        clearInterval(outputIntervalId);
+    }
+    outputIntervalId = setInterval(function () {
         // console.log("Process queue [" + outputQueue.length + "]");
         if (currentOutput) {
             return;
