@@ -244,7 +244,7 @@ const bundle = {
 
     action_dict: "vocabulary",
     action_dict_aliases: ["verbs", "actions"],
-    action_dict_prefix: "You can use the following verbs: ",
+    action_dict_prefix: "You can use the following actions: ",
 
     action_help: "help",
     action_help_aliases: ["hint"],
