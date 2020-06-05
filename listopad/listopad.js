@@ -862,14 +862,14 @@ function initState() {
                 } else if (!game.endState) {
                     processKey(game, event.key);
                 } else {
+                    event.preventDefault();
                     if (event.key === "r") {
                         // Restart game
-                        location.reload();
+                        engine.run(true);
                     } else if (event.key === "l") {
-                        event.preventDefault();
                         if (!game.loadLastPosition()) {
-                            // No position to load...
-                            location.reload();
+                            console.log("No position to load...");
+                            engine.run(true);
                         }
                     }
                 }
@@ -1000,7 +1000,7 @@ const builtinActions = [{
     name: "Restart",
     keys: ["r"],
     perform: function(game) {
-        location.reload();
+        engine.run(true);
     }
 }, {
     name: "Save",

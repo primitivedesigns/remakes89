@@ -717,14 +717,14 @@ function initState() {
                     skipOutputEffects();
                     return;
                 } else if (game.endState) {
+                    event.preventDefault();
                     if (event.key === "r") {
                         // Restart game
-                        location.reload();
+                        engine.run(true);
                     } else if (event.key === "l") {
-                        event.preventDefault();
                         if (!game.loadLastPosition()) {
-                            // No position to load...
-                            location.reload();
+                            console.log("No position to load...");
+                            engine.run(true);
                         }
                     }
                 }

@@ -9,7 +9,7 @@ function createEngine(headless) {
 
     const engine = {};
 
-    engine.run = function () {
+    engine.run = function (skipIntro = false) {
         if (headless) {
             engine.initGame();
             engine.start();
@@ -19,7 +19,7 @@ function createEngine(headless) {
             while (gameContainerDiv.firstChild) {
                 gameContainerDiv.removeChild(gameContainerDiv.firstChild);
             }
-            if (engine.initState.intro) {
+            if (engine.initState.intro && !skipIntro) {
                 intro(0, engine.initState.intro, function () {
                     engine.initGame();
                     engine.start();
@@ -58,7 +58,7 @@ function createEngine(headless) {
         name: "restart",
         builtin: true,
         perform: function () {
-            location.reload();
+            engine.run(false);
         }
     }, {
         name: "save",
@@ -287,6 +287,8 @@ function createEngine(headless) {
 
             inputBox.onkeydown = (e) => {
                 if (e.key === "Enter") {
+                    e.stopPropagation();
+                    e.preventDefault();
                     processInput();
                 } else if (e.key === "ArrowUp") {
                     historyPrev();
@@ -362,7 +364,7 @@ function createEngine(headless) {
 
             const actions = game.getActions().filter(function (action) {
                 const match = game.getMatchingNameOrAlias(action, inputParts);
-                if(match) {
+                if (match) {
                     actionMatch = match;
                     return true;
                 }
@@ -385,11 +387,15 @@ function createEngine(headless) {
                 inputBox.value = actionMatch + " ";
                 const actionMatchLength = actionMatch.split(/\s+/).length;
                 if (((inputParts.length - actionMatchLength) <= 1) && action.autocomplete) {
-                    const results = action.autocomplete(engine.game, inputParts[actionMatchLength]);
+                    const actionParamStr = inputParts[actionMatchLength];
+                    const results = action.autocomplete(engine.game, actionParamStr);
                     if (results) {
                         if (results.length === 1) {
                             inputBox.value = inputBox.value + results[0].name + " ";
                         } else if (results.length > 1) {
+                            if (actionParamStr) {
+                                inputBox.value = inputBox.value + actionParamStr;
+                            }
                             engine.game.clearInputHelp();
                             const prefix = engine.game.messages.inputHelpPrefix ? engine.game.messages.inputHelpPrefix : "";
                             engine.game.printInputHelp(prefix + results.map(r => r.name).join(", "));
@@ -1267,6 +1273,7 @@ function intro(index, introFuns, startFun) {
     introFuns[index](gameContainerDiv);
     document.onkeydown = function (e) {
         if (e.key === "Enter") {
+            e.preventDefault();
             document.onkeydown = null;
 
             // Skip output queue
@@ -1315,6 +1322,7 @@ const outputQueue = [];
 let currentOutput = null;
 let skipOutputQueue = false;
 const typewriterDelay = 20;
+let outputIntervalId = null;
 
 function queueOutput(element, text, before, after, htmlContent) {
     if (!text) {
@@ -1332,7 +1340,10 @@ function queueOutput(element, text, before, after, htmlContent) {
 }
 
 function initOutputQueue() {
-    setInterval(function () {
+    if (outputIntervalId) {
+        clearInterval(outputIntervalId);
+    }
+    outputIntervalId = setInterval(function () {
         // console.log("Process queue [" + outputQueue.length + "]");
         if (currentOutput) {
             return;

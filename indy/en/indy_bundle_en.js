@@ -3,7 +3,7 @@ const bundle = {
     // Items
     // =====
     item_diamonds_name: "diamonds",
-    item_diamonds_desc: "Four beautiful gegit ms.",
+    item_diamonds_desc: "Four beautiful gems.",
     item_diamonds_onDrop: "As soon as you put them down, someone has snatched them from the altar.",
 
     item_cop1_name: "cop",
@@ -57,7 +57,6 @@ const bundle = {
     item_cop3_desc: "He's about to beat you up.",
 
     item_corpse3_name: "dead copper",
-    item_corpse3_desc: "Someone (guess who?) has split his skull with an iron rod. He's wearing a uniform.",
     item_corpse3_desc: "A dead cop. Someone (guess who?) has split his skull with an iron rod.",
     item_corpse3_desc_uniform: " He's wearing a uniform.",
 
