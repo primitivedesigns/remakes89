@@ -297,7 +297,7 @@ const bundle = {
     intro_text1_c: "IN PRAGUE",
     intro_text1_d: "ON JANUARY 16, 1989",
 
-    intro_text1: "You are Indiana Jones and your goal is to get to your homeland, America. You have found yourself on Wenceslas Square under the statue of St. Wenceslas. The date is January 16, 1989.",
+    intro_text1: "You are Indiana Jones and your goal is to get to your homeland, America. Somehow, you find yourself in Wenceslas Square under the statue of St. Wenceslas. The date is January 16, 1989.",
     intro_text2: "This game is designed for advanced adventure game players.",
     intro_textAdd: "Yours sincerely,",
     intro_textAdd1: "Zuzan Znovuzrozený",
