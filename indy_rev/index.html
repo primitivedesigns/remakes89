@@ -1,0 +1,132 @@
+<html>
+<head>
+    <!-- Google Analytics placeholder -->
+    <meta charset="utf-8">
+    <title>DOBRODRUŽSTVÍ INDIANA JONESE NA VÁCLAVSKÉM NÁMĚSTÍ V PRAZE DNE 16. 1. 1989</title>
+    <link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet" />
+    <link href="indy.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+    <div id="game-container"></div>
+    <div id="game-sidebar">
+        <a href="javascript:void(0)" id="game-sidebar-close" class="toggle-btn"
+            onclick="closeSide()">&times;</a>
+        <h2>Jak hrát textovku</h2>
+        <p>Textovky (někdy také nazývané "interaktivní fikce")
+            popisují herní svět pomocí psaného textu. V každé lokaci v
+            rámci herního světa si můžete přečíst její popis, seznam
+            věcí, které vaše postava vidí, a seznam možných východů.
+            Tyto hry se zpravidla ovládají pomocí psaných příkazů, které
+            jsou adresované hlavní postavě hry. Textovky se obvykle hrají s tužkou a papírem, aby si hráči
+            mohli kreslit mapu místností a zapisovat lokace jednotlivých předmětů
+            a řešení hádanek.
+            V tomto konkrétním titulu se příkazy píšou na
+            klávesnici a odesílají se klávesou Enter - podobně jako na příkazové řádce
+            ve starších i současných operačních systémech. Hra rozumí jednoduchým příkazům
+            skládajícím se ze slovesa a předmětu, jako například:</p>
+        <div class="command">PROZKOUMEJ OCAS</div>
+        <div class="command">SEBER SEKERU</div>
+        <p>Naše verze hry dovoluje psát příkazy s diakritikou i
+            bez a navíc zkracovat příkazy na první tři písmena.
+            Výše uvedené příkazy tedy můžete napsat i jako:</p>
+        <div class="command">PRO OCA</div>
+        <div class="command">SEB SEK</div>
+        <p>Mezi místnostmi se pohybujete pomocí slov nebo písmen
+            označujících směr, kterým se chcete vydat, jako například:</p>
+        <div class="command">DOLEVA (nebo L)</div>
+        <div class="command">DOPRAVA (nebo P)</div>
+        <p>Většinu hádanek ve hře vyřešíte použitím správného předmětu na správném místě. Manipulovat 
+           můžete jen s předměty, které hlavní postava vidí nebo nese. Současně můžete nést jen dvě věci, a proto budete
+            muset pokládat věci, které v danou chvíli nepotřebujete. Seznam předmětů, které
+           máte u sebe, vyvoláte příkazem "INVENTÁŘ" (nebo "I").</p>
+        <p>Seznam všech podporovaných sloves můžete vypsat příkazem
+            "SLOVNÍK". Pokud si nevíte rady, příkaz "POMOC" zobrazí
+            nápovědu k dané místnosti. V originálních verzích her však
+            tato nápověda nebyla, přidali jsme ji až do naší konverze.</p>
+        <p>Pozici ve hře lze uložit a nahrát pomocí příkazů "SAVE" a "LOAD",
+            případně také "ULOŽ" a "NAHRAJ". Za příkaz je třeba napsat název pozice, například:</p>
+            <div class="command">SAVE KUN</div>
+            <div class="command">LOAD KUN</div>
+        <p>Pokud nepoužijete název, uloží se pozice s názvem "SAVE". Seznam všech pozic vypíšete příkazem "POZICE". 
+            Pozice se ukládají na pevný disk vašeho počítače do lokálního úložiště webového prohlížeče.
+            Zůstanou vám tedy i poté, co hru vypnete, avšak smažou se ve chvíli, kdy budete
+            mazat soubory prohlížeče.</p>
+
+        <h2>O hře Indiana Jones na Václavském náměstí</h2>
+
+        <p>Díky neoficiálním textovkám Františka Fuky a dalších autorů se Indiana Jones stal
+            jedním z nejpopulárnějších hrdinů československých her. 
+            V tomto anonymně vydaném titulu z roku 1989 se americký archeolog překvapivě ocitá na Václavském náměstí v Praze
+            během Palachova týdne – série protirežimních demonstrací, jež byly brutálně potlačeny příslušníky 
+            Veřejné bezpečnosti a Lidových milicí. Indiana Jones se musí probít skrz náměstí a odjet na letiště,
+            což není vůbec snadné, protože na každém kroku čekají krvežízniví policisté a milicionáři.
+            Tato mimořádně násilná hra umožňuje hráči prožít trauma Palachova týdne z pohledu akčního hrdiny,
+            který se na rozdíl od skutečných demonstrantů mohl bránit. Autora či autorku skrývající se pod 
+            pseudonymem "Zuzan Znovuzrozený" neznáme, ale mimořádně vyhrocený tón i geograficky věrné zpracování 
+            napovídají, že se možná demonstrace zúčastnil/a.</p>
+
+        <h2>Jak jsme hru rekonstruovali</h2>
+        <p>V emulátoru ZX Spectra jsme analyzovali lokace a hádanky a z dochovaného binárního kódu hry jsme extrahovali veškeré texty.
+            Poté jsme hru přepsali pro webové technologie (JavaScript, HTML a CSS) za použití vlastního na míru naprogramovaného
+            enginu. Texty jsou původní, pouze s přidanou diakritikou a případnou opravou
+            překlepů. Hádanky a jednotlivé herní mechaniky jsme se snažili co nejvěrněji reprodukovat. Oproti původní verzi
+            jsou však v naší konverzi i následující změny:</p>
+        <ul>
+            <li>Úvodní obrázek byl nakreslen pro potřeby remaku v rozlišení a
+                paletě odpovídajícím grafickým možnostem původní platformy (ZX Spectrum).
+                Původní verze žádný obrázek neměla.</li>
+            <li>Konverze umožňuje použití některých synonym (VEZMI
+                místo SEBER apod.)</li>
+            <li>Konverze obsahuje nápovědy (přes příkaz POMOC), které nebyly v
+                původní hře přítomny.</li>
+            <li>Konverze umožňuje uložit a nahrát pozici ve hře (SAVE
+                a LOAD).</li>
+            <li>Konverze používá čitelnější písmo a má přívětivější a rychlejší uživatelské rozhraní.
+                Umožňuje například opakovat předchozí příkazy pomocí kurzorových šipek, případně klávesy TAB.</li>
+            <li>Interface remaku umožňuje opakovat příkazy pomocí
+                šipek nahoru a dolů, případně klávesy TAB.</li>
+            <li>Z konverze jsme vypustili úvodní instrukce, které vysvětlují, jak zadávat příkazy.
+                Instrukce jsou nahrazeny touto nápovědou a funkcí SLOVNÍK.</li>
+        </ul>
+        <h2>Často kladené otázky (FAQ)</h2>
+        <p><b>Zasekl/a jsem se a nevím, jak dál. Co mám dělat?</b><br>
+            Zkuste použít příkaz POMOC. V případě největší nouze najdete kompletní návod na konci této stránky.</p>
+        <p><b>Hra nerozumí mým příkazům. Co s tím?</b><br>
+           Tento titul má poměrně omezený slovník. Namísto specifických sloves jako "hoď" nebo "sekej" napište příkaz "POUŽIJ". 
+           Názvy předmětů pište od začátku. Tj. místo "MRTVOLU POLICAJTA" můžete napsat "MRTVOLU" nebo "MRT", ale nikoli "POLICAJTA".</p>
+        <p><b>Proč nedostanu čas na to zneškodnit nepřátele, i když vím jak?</b><br>
+           Zkuste je zneškodnit z jiné lokace. Použití některých předmětů může mít dopad na jiném místě.</p>
+        <p><b>Je možné dostat se do stavu, kdy už hru nejde dohrát?</b><br>
+            Ano, je to možné. V takovém případě se objeví zpráva, která vám to sdělí. Potom můžete nahrát pozici nebo 
+            hru spustit znovu pomocí příkazů LOAD a RESTART.</p>
+    
+         <h2>Titulky</h2>
+        <ul>
+            <li><b>Zuzan Znovuzrozený (pseudonym)</b> - autor původní hry</li>
+            <li><b>Jaroslav Švelch</b> - produkce a design konverze, analýza herních mechanik</li>
+            <li><b>Martin Kouba</b> - program a design konverze</li>
+            <li><b>Jana „Yuffie“ Kilianová</b> - pixel art</li>                        
+        </ul>
+
+            <h2>Návod</h2>
+        <p>Pokud nutně potřebujete vidět návod, označte kliknutím a přetažením myši následující odstavec:</p>
+        <p class="walkthrough">PROZKOUMEJ OCAS, SEBER SEKERU, L, POUZIJ SEKERU, PROZKOUMEJ MRTVOLU FIZLA, SEBER STIT, P, D, POUZIJ STIT,
+            POLOZ STIT, SEBER KAMEN, POUZIJ KAMEN, P, D, SEBER TYC, N, L, D, POUZIJ TYC, L, D, POUZIJ TYC, POLOZ TYC,
+            PROZKOUMEJ MRTVOLU CHLUPATYHO, SEBER UNIFORMU, POUZIJ UNIFORMU, P, P, POLOZ UNIFORMU, D, POLOZ DIAMANTY,
+            N, SEBER UNIFORMU, POUZIJ UNIFORMU, L, L, SEBER TYC, P, P, POLOZ UNIFORMU, D, SEBER DIAMANTY,
+            L, P, L, D, P, POLOZ DIAMANTY, SEBER SPENAT, POUZIJ SPENAT, POUZIJ TYC, SEBER DIAMANTY, L, L,
+            POLOZ DIAMANTY, POLOZ PLECHOVKU, PROZKOUMEJ MRTVOLU CIVILA, SEBER LEGITIMACI, P, N, P, N,
+            SEBER UNIFORMU, POUZIJ UNIFORMU, L, L, N, P, N, N, P, DOVNITR.</p>        
+    </div>
+    <div id="game-sidebar-open">
+        <a href="javascript:void(0)" class="toggle-btn"
+            onclick="openSide()">?</a>
+    </div>
+    <script src="indy_bundle_cs.js"></script>
+    <script src="indy.js"></script>
+    <script src="../engine.js"></script>
+    <script>
+                    const engine = runGame(initState());
+                </script>
+</body>
+</html>
