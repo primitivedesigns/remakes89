@@ -54,6 +54,7 @@ function createEngine(headless) {
         }
     };
 
+    // TODO localized messages?
     engine.actions = [{
         name: "restart",
         builtin: true,
@@ -259,6 +260,7 @@ function createEngine(headless) {
                 if (game.afterAction) {
                     game.afterAction(game, action, params);
                 }
+                return action;
             }
         }
     }
@@ -287,9 +289,12 @@ function createEngine(headless) {
 
             inputBox.onkeydown = (e) => {
                 if (e.key === "Enter") {
-                    e.stopPropagation();
                     e.preventDefault();
-                    processInput();
+                    const action = processInput();
+                    if (action && action.name === "restart") {
+                        // Stop propagation for restart command
+                        e.stopPropagation();
+                    }
                 } else if (e.key === "ArrowUp") {
                     historyPrev();
                 } else if (e.key === "ArrowDown") {
@@ -320,7 +325,8 @@ function createEngine(headless) {
             inputBox.value = "";
             this.historyPos = inputs.length;
 
-            engine.processCommand(inputValue);
+            // return the action performed
+            return engine.processCommand(inputValue);
         }
 
         function historyPrev() {
