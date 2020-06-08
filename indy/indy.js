@@ -8,14 +8,6 @@ const beep = new Audio(bundle.snd_beep_path);
 const items = [{
     name: bundle.item_diamonds_name,
     desc: bundle.item_diamonds_desc,
-    readInit: function (obj) {
-        obj.onDrop = function (game) {
-            if (game.location.id === "m12") {
-                game.print(bundle.item_diamonds_onDrop);
-                game.removeItem(bundle.item_diamonds_name);
-            }
-        }
-    }
 }, {
     name: bundle.item_cop1_name,
     aliases: bundle.item_cop1_aliases,
@@ -856,6 +848,11 @@ const actions = [{
         const item = game.dropItem(params.join(" "), false);
         if (item) {
             game.print(bundle.action_drop_success + item.name + ".");
+            if (game.location.id === "m12" && item.name == bundle.item_diamonds_name) {
+                game.print(bundle.item_diamonds_onDrop);
+                game.removeItem(bundle.item_diamonds_name);
+                game.setFailState(bundle.item_diamonds_failState);
+            }
         } else {
             game.print(bundle.action_drop_fail);
         }
@@ -1087,7 +1084,7 @@ function initState() {
                         m9.exploded = true;
                         game.print(bundle.location_m9_bomb_exploded);
                         if (game.getLocationItem(bundle.item_rod_name, m9)) {
-                            game.print(bundle.location_m9_bomb_hint, "hint");
+                            game.setFailState(bundle.location_m9_bomb_failState, "hint");
                         }
                     }
                 }

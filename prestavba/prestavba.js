@@ -768,7 +768,7 @@ function initState() {
                     game.print("Marxova kniha dohořívá!!!");
                 } else if (burningTime >= bookBurningTime) {
                     game.removeItem(book.name);
-                    game.setFailState(" Bohužel ti shořela kniha a neuvidíš na cestu. Hru můžeš spustit znovu od začátku pomocí hesla RESTART.");
+                    game.setFailState("Bohužel ti shořela kniha a neuvidíš na cestu. Hru můžeš spustit znovu od začátku pomocí hesla RESTART.");
                 }
             }
 
