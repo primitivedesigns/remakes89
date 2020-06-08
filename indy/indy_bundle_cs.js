@@ -154,7 +154,7 @@ const bundle = {
     location_m9_kill: "Neudržels' však rovnováhu a padáš dolů.",
     location_m9_bomb_kill: "Zahlédl jsi záblesk, po kterém následuje ohromný výbuch. Než tě zasáhla střepina, došlo ti,co znamenal ten tikot.",
     location_m9_bomb_exploded: "Místo, ze kterého jsi právě vyšel, vyletělo do povětří. Tys měl ale štěstí.",
-    location_m9_bomb_failState: "Výbuch zničil předmět, který jsi potřeboval k dohrání hry. Napiš RESTART a začni znovu.",
+    location_m9_bomb_failState: "Nahraj pozici příkazem LOAD nebo napiš RESTART a začni znovu.",
 
     location_m10_desc: "O.K. Nacházíš se před LUXOL CLUBEM. Vedle je kino Jalta. Dole vidíš zátarasy.",
     location_m10_hint: "Některé předměty ti pomůžou víckrát. A pak nezapomeň, že šaty dělají člověka!",
