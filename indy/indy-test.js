@@ -293,6 +293,7 @@ const testM10Corpse = function (engine) {
         "POUZIJ TYC", "L", "D",
         // m10
         "POUZIJ TYC",
+
     ]
 
     commands.forEach(command => {
@@ -312,6 +313,39 @@ const testM10Corpse = function (engine) {
 
     engine.processCommand("PROZKOUMEJ mrtvolu chlupatýho");
 
+    success("Test passed");
+}
+
+const testDiamondsStolen = function (engine) {
+    info("---- M12 Diamonds Stolen Test ----");
+
+    const commands = [
+        // m2
+        "PROZKOUMEJ OCAS", "SEBER SEKERU", "L",
+        // m1
+        "POUZIJ SEKERU", "PROZKOUMEJ MRTVOLU FIZLA", "SEBER STIT", "P", "D",
+        // m5
+        "POUZIJ STIT", "POLOZ STIT", "POUZIJ KAMEN", "P", "D",
+        // m9
+        "SEBER TYC", "N", "L", "D",
+        // m8
+        "POUZIJ TYC", "L", "D",
+        // m10
+        "POUZIJ TYC", "POLOZ TYC", "PROZKOUMEJ MRTVOLU CHLUPATYHO", "SEBER UNIFORMU", "POUZIJ UNIFORMU", "P", "P",
+        // m12
+        "POLOZ DIAMANTY", "POMOC"
+    ]
+
+    commands.forEach(command => {
+        if (engine.game.endState) {
+            return;
+        }
+        engine.processCommand(command);
+    });
+
+    if (assertTrue(engine.game.failState && !engine.game.getInventoryItem("diamanty") && engine.game.location.hint === "Cedulka nelže! Bez diamantů hru nepůjde dohrát. Nahraj pozici příkazem LOAD nebo napiš RESTART a začni znovu.", "Diamanty zpusobi fail state.")) {
+        return;
+    }
     success("Test passed");
 }
 
@@ -335,7 +369,7 @@ const testFullPath = function (engine) {
 
 
 const testSuite = [
-    testFullPath, testInventoryLimit, testUniform, testM15InstantDeath, testM14InstantDeath, testM16InstantDeath, testM16, testM10Corpse
+    testFullPath, testInventoryLimit, testUniform, testM15InstantDeath, testM14InstantDeath, testM16InstantDeath, testM16, testM10Corpse, testDiamondsStolen
 ]
 
 

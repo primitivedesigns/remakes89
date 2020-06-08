@@ -5,6 +5,7 @@ const bundle = {
     item_diamonds_name: "diamonds",
     item_diamonds_desc: "Four beautiful gems.",
     item_diamonds_onDrop: "As soon as you put them down, someone snatched them from the altar.",
+    item_diamonds_failState: "You won't be able to finish the game without the diamonds. LOAD a savegame or RESTART to try again.",
 
     item_cop1_name: "cop",
     item_cop1_desc: "He's about to beat you up.",
@@ -166,7 +167,7 @@ const bundle = {
     location_m9_kill: "But couldn't keep balance, and you're falling down.",
     location_m9_bomb_kill: "You noticed a flash followed by a massive explosion. Right before a shard hit you, you've realized what the ticking was.",
     location_m9_bomb_exploded: "The spot that you've just left has exploded. Lucky you!",
-    location_m9_bomb_hint: "The explosion destroyed an object that you needed to finish the game. Type in RESTART to try again or LOAD a savegame.",
+    location_m9_bomb_failState: "The explosion destroyed an object that you needed to finish the game. Type in RESTART to try again.",
 
     location_m10_desc: "O.K. You find yourself in front of the Luxol Club. The Jalta cinema is next door. You can see roadblocks further down.",
     location_m10_hint: "Some items will help you more than once. And don't forget that clothes make the man!",

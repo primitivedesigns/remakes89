@@ -1253,6 +1253,8 @@ function createGame(initialState, savedPosition, headless) {
         }
         if (!msg && game.messages && game.messages.failState) {
             msg = " " + game.messages.failState;
+        } else {
+            msg = " " + msg;
         }
         game.failState = true;
         // Append message to all hints
