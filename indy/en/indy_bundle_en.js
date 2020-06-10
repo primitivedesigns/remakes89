@@ -255,6 +255,8 @@ const bundle = {
     action_help: "help",
     action_help_aliases: ["hint"],
 
+    action_aliases: "aliases for",
+
     // ======
     // Global
     // ======

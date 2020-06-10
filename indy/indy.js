@@ -908,6 +908,16 @@ const actions = [{
             game.print(game.location.hint, "hint");
         }
     }
+},{
+    name: bundle.action_aliases,
+    perform: function (game, params) {
+        const actions = game.getActions().filter(action => game.getMatchingNameOrAlias(action, params));
+        const prefix = bundle.action_aliases.charAt(0).toUpperCase() + bundle.action_aliases.slice(1);
+        actions.forEach(a => game.print(prefix + " " + a.name + ": " + (a.aliases ? a.aliases.join(", ") : "")));
+    },
+    autocomplete: function (game, str) {
+        return (!str || str.length === 0) ? game.getActions() : game.getActions().filter(action => action.name.startsWith(str));
+    }
 }, {
     name: "unknownCommand",
     system: true,
