@@ -242,6 +242,8 @@ const bundle = {
     action_help: "pomoc",
     action_help_aliases: ["help"],
 
+    action_aliases: "aliasy pro",
+
     // ======
     // Global
     // ======
