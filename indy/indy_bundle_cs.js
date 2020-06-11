@@ -244,6 +244,7 @@ const bundle = {
     action_help_aliases: ["help"],
 
     action_aliases: "aliasy pro",
+    action_aliases_none: "žádné",
 
     // ======
     // Global
