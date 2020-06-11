@@ -898,7 +898,7 @@ const actions = [{
     name: bundle.action_dict,
     aliases: bundle.action_dict_aliases,
     perform: function (game) {
-        game.print(bundle.action_dict_prefix + game.getActions().map(action => action.name).join(", "));
+        game.print(bundle.action_dict_list);
     }
 }, {
     name: bundle.action_help,

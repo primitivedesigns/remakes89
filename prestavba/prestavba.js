@@ -938,7 +938,7 @@ function initState() {
             aliases: ["slovnik", "akce"],
             perform: function(game) {
                 game.clearOutput();
-                game.print("Můžeš zadat příkazy: " + game.getActions().map(action => action.name).join(", "));
+                game.print("Můžeš použít následující příkazy: PROZKOUMEJ, POLOŽ, VEZMI, POUŽIJ, OTEVŘI, PŘEČTI, ZAPAL, KOPEJ, ZADEJ, S, V, J, Z, N, D, INVENTÁŘ, SLOVNÍK, POMOC, SAVE, LOAD, RESTART.");
             }
         }, {
             name: "pomoc",
