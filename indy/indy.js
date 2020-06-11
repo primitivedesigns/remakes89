@@ -908,6 +908,26 @@ const actions = [{
             game.print(game.location.hint, "hint");
         }
     }
+},{
+    name: bundle.action_aliases,
+    perform: function (game, params) {
+        const actions = game.getActions().filter(action => game.getMatchingNameOrAlias(action, params));
+        if (actions.length === 0) {
+            game.print(bundle.action_dict_prefix + game.getActions().map(action => action.name).join(", "));
+        } else {
+            const prefix = bundle.action_aliases.charAt(0).toUpperCase() + bundle.action_aliases.slice(1);
+            actions.forEach(function(action) {
+                if (action.aliases && action.aliases.length > 0) {
+                    game.print(prefix + " " + action.name + ": " + (action.aliases ? action.aliases.join(", ") : "") + ".");
+                } else {
+                    game.print(prefix + " " + action.name + ": " + bundle.action_aliases_none + ".");
+                }
+            });
+        }
+    },
+    autocomplete: function (game, str) {
+        return (!str || str.length === 0) ? game.getActions() : game.getActions().filter(action => action.name.startsWith(str));
+    }
 }, {
     name: "unknownCommand",
     system: true,

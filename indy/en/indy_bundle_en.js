@@ -249,11 +249,14 @@ const bundle = {
     action_inventory_empty: "You don't have shit.",
 
     action_dict: "vocabulary",
-    action_dict_aliases: ["verbs", "actions"],
+    action_dict_aliases: ["verbs", "actions", "dictionary"],
     action_dict_prefix: "You can use the following actions: ",
 
     action_help: "help",
     action_help_aliases: ["hint"],
+
+    action_aliases: "aliases for",
+    action_aliases_none: "none",
 
     // ======
     // Global
