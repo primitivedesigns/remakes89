@@ -251,6 +251,7 @@ const bundle = {
     action_dict: "vocabulary",
     action_dict_aliases: ["verbs", "actions", "dictionary"],
     action_dict_prefix: "You can use the following actions: ",
+    action_dict_list: "You can use the following actions: EXAMINE, USE, DROP, TAKE, WEAR, TAKE OFF, INVENTORY, DOWN, UP, LEFT, RIGHT, INSIDE, HELP, VOCABULARY, ALIASES FOR, SAVE, LOAD, RESTART.",
 
     action_help: "help",
     action_help_aliases: ["hint"],

@@ -238,7 +238,8 @@ const bundle = {
     action_dict: "slovník",
     action_dict_aliases: ["slovnik", "akce"],
     action_dict_prefix: "Můžeš zadat příkazy: ",
-
+    action_dict_list: "Můžeš zadat následující příkazy: PROZKOUMEJ, POUŽIJ, POLOŽ, VEZMI, OBLEČ, SVLEČ, INVENTÁŘ, DOLŮ, NAHORU, DOLEVA, DOPRAVA, DOVNITŘ, POMOC, SLOVNÍK, ALIASY PRO, SAVE, LOAD, RESTART."
+    
     action_help: "pomoc",
     action_help_aliases: ["help"],
 

@@ -563,7 +563,7 @@ const locations = [{
 
 function initState() {
 
-    function titleToHtml(title, container) {
+    function appendTitleToHtml(title, container) {
         for (let value of title) {
             if (value === ".") {
                 container.appendChild(document.createTextNode("."));
@@ -573,6 +573,18 @@ function initState() {
                 container.appendChild(letter);
             }
         }
+    }
+
+    function buildTitleHtml(title) {
+        let ret = "";
+        for (let val of title) {
+            if (val === ".") {
+                ret += ".";
+            } else {
+                ret += "<span>" + val + "</span>";
+            }
+        }
+        return ret;
     }
 
     const game = {
@@ -635,7 +647,7 @@ function initState() {
                 gameContainer.appendChild(text4);
 
                 queueOutput(text1, "ÚV Software si u příležitosti 20. výročí osvobození Československa spojeneckými armádami dovoluje nabídnout vám logickou konverzační hru:");
-                titleToHtml(gameTitle, text2);
+                queueOutput(text2, buildTitleHtml(gameTitle), null, null, true);
                 queueOutput(text3, "Program Revoluční Experimentální Socialisticky Tvořivé Avantgardní Voloviny Básníků a Analfabetů");
                 queueOutput(textEnter, "Stiskni klávesu ENTER", function() {
                     textEnter.className = "intro-enter";
@@ -673,7 +685,7 @@ function initState() {
             while (titleH1.firstChild) {
                 titleH1.removeChild(titleH1.firstChild);
             }
-            titleToHtml(gameTitle, titleH1);
+            appendTitleToHtml(gameTitle, titleH1);
 
             // Input tips
             const inputTips = document.querySelector("#game-input-tip");
@@ -938,7 +950,7 @@ function initState() {
             aliases: ["slovnik", "akce"],
             perform: function(game) {
                 game.clearOutput();
-                game.print("Můžeš zadat příkazy: " + game.getActions().map(action => action.name).join(", "));
+                game.print("Můžeš použít následující příkazy: PROZKOUMEJ, POLOŽ, VEZMI, POUŽIJ, OTEVŘI, PŘEČTI, ZAPAL, KOPEJ, ZADEJ, S, V, J, Z, N, D, INVENTÁŘ, SLOVNÍK, POMOC, SAVE, LOAD, RESTART.");
             }
         }, {
             name: "pomoc",
