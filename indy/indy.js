@@ -84,6 +84,7 @@ const items = [{
     }
 }, {
     name: bundle.item_stone_name,
+    desc: bundle.item_stone_desc,
     aliases: bundle.item_stone_aliases,
     takeable: false,
     unusable: true,
