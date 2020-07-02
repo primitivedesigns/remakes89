@@ -580,8 +580,9 @@ const actions = [{
     keys: ["v"],
     perform: function(game, params) {
         game.clearOutput();
-        const takeableItems = game.location.items.map(i => game.mapItem(i)).filter(item => item.takeable === undefined || item.takeable ||
-            item.name === "bednu" || item.name === "vrata" || item.name === "poklop" || item.name === "dveře");
+        // NOTE: Some items are non-takable but have a special message if a user attempts to take them
+        const takeableItems = game.location.items ? game.location.items.map(i => game.mapItem(i)).filter(item => item.takeable === undefined || item.takeable ||
+            item.name === "bednu" || item.name === "vrata" || item.name === "poklop" || item.name === "dveře") : undefined;
         if (!takeableItems || takeableItems.length === 0) {
             game.print("Nic tu není!");
         } else {

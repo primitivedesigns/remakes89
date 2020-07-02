@@ -6,13 +6,18 @@ function restart(engine) {
     engine.start();
 }
 
-function executeCommands(commands, engine) {
+function executeCommands(commands, engine, processCommand) {
     for (let index = 0; index < commands.length; index++) {
+        console.log("==== Step " + (index + 1) + "/" + commands.length + " ====");
         const command = commands[index];
         if (engine.game.endState) {
             return;
         }
-        engine.processCommand(command);
+        if (processCommand) {
+            processCommand(command);
+        } else {
+            engine.processCommand(command);
+        }
     }
 }
 

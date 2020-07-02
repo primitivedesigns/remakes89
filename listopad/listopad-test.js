@@ -40,7 +40,7 @@ const fullPathCommands = [
     // m8
     "u", "h",
     // drop items
-    "p", "h", "p", "r", "p", //"l",
+    "p", "h", "p", //"r", "p", "l",
     // take tape
     "v", "i", "j", "z",
     // m9
@@ -58,13 +58,10 @@ const fullPathCommands = [
 const testFullPath = function(engine) {
     info("---- Full Path Test ----");
 
-    for (let i = 0; i < fullPathCommands.length; i++) {
-        console.log("Step " + (i + 1) + "/" + fullPathCommands.length + ": ");
-        if (engine.game.endState) {
-            return;
-        }
-        processKey(engine.game, fullPathCommands[i]);
-    }
+    executeCommands(fullPathCommands, engine, function(command) {
+        console.log("Inventář: " + engine.game.inventory);
+        processKey(engine.game, command);
+    });
 
     if (engine.game.endState != "win") {
         error("Test failed with end state [" + engine.game.endState + "]");

@@ -36,7 +36,7 @@ function testFullPath(engine) {
     }
 
     executeCommands(coms2, engine);
-    
+
     // zapal dynamit
     const dynamite = engine.game.findItem("dynamit").item;
 
@@ -47,7 +47,7 @@ function testFullPath(engine) {
         return;
     }
 
-    limit = 20; 
+    limit = 20;
     attempt = 1;
     while(!dynamite.ignited) {
         console.log("Dynamic - pokus " + attempt + ": ");
@@ -62,7 +62,7 @@ function testFullPath(engine) {
         return;
     }
 
-    engine.processCommand("poloz dynamit");
+    //engine.processCommand("poloz dynamit");
     engine.processCommand("zapad");
     engine.processCommand("veci");
     engine.processCommand("vychod");
