@@ -517,7 +517,7 @@ const locations = [{
     }],
 }, {
     id: "m19",
-    hint: "Z Národní třídy můžou příslušníci vidět i tebe!",
+    hint: "Z Národní třídy můžou i příslušníci vidět tebe!",
     desc: "Popošel jsi po střeše. Dostal jsi se na místo, z kterého je dobře vidět na Národní třídu.",
     items: ["hák"],
     exits: [{
@@ -949,7 +949,7 @@ function processKey(game, key) {
 
 function goToLocation(game, exit) {
     game.print("O.K.");
-    game.print("Jdeš " + (exit.skipPreposition ? "" : "na ") + exit.name.toLowerCase());
+    game.print("Jdeš " + (exit.skipPreposition ? "" : "na ") + exit.name.toLowerCase() + "...");
     if (game.headless) {
         game.goToLocation(exit.name);
     } else {
