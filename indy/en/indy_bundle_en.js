@@ -11,6 +11,7 @@ const bundle = {
     item_cop1_desc: "He's about to beat you up.",
 
     item_corpse1_name: "dead cop",
+    item_corpse1_aliases: ["cop"],
     item_corpse1_desc: "The axe is wedged deep in his skull (good job)!",
     item_corpse1_desc_shield: " He's equipped with a riot shield.",
 
