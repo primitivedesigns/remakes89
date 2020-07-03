@@ -187,7 +187,8 @@ const items = [{
                 if (uniform && game.aliasObjectNameStartsWith(uniform, params.join(" "))) {
                     let uniform = game.getInventoryItem(bundle.item_uniform_name);
                     if (!uniform) {
-                        uniform = game.takeItem(bundle.item_uniform_name, false);
+                        const ret = game.takeItem(bundle.item_uniform_name, false);
+                        uniform = ret.full ? null : ret.item;
                     }
                     if (uniform && !uniform.dressed) {
                         obj.dressed = true;
