@@ -132,7 +132,9 @@ const items = [{
                 } else {
                     game.print("Po chvíli natáčení se objevila skupinka příslušníků Červených baretů. Vyrvali ti kameru z rukou a rozšlapali ji. Ty jsi na tom nebyl o moc lépe...", "end-lose");
                     game.end("killed", false);
+                    return true;
                 }
+                return false;
             }
         }
     }
