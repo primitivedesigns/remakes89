@@ -11,7 +11,7 @@ const bundle = {
     item_cop1_desc: "He's about to beat you up.",
 
     item_corpse1_name: "dead cop",
-    //item_corpse1_aliases: ["cop"],
+    item_corpse1_aliases: ["cop"],
     item_corpse1_desc: "The axe is wedged deep in his skull (good job)!",
     item_corpse1_desc_shield: " He's equipped with a riot shield.",
 
@@ -48,7 +48,7 @@ const bundle = {
     item_cop2_desc: "He's about to beat you up.",
 
     item_corpse2_name: "dead policeman",
-    //item_corpse2_aliases: ["policeman"],
+    item_corpse2_aliases: ["policeman"],
     item_corpse2_desc: "Undoubtedly hit by a cobblestone.",
 
     item_rod_name: "rod",
@@ -61,7 +61,7 @@ const bundle = {
     item_cop3_desc: "He's about to beat you up.",
 
     item_corpse3_name: "dead copper",
-    //item_corpse3_aliases: ["copper"],
+    item_corpse3_aliases: ["copper"],
     item_corpse3_desc: "A dead cop. Someone (guess who?) has split his skull in two with an iron rod.",
     item_corpse3_desc_uniform: " He's wearing a uniform.",
 
@@ -100,7 +100,7 @@ const bundle = {
     item_idcard_desc: "It belongs to the member of the secret police who looks very much like you.",
 
     item_militiaman_corpse_name: "dead militiaman",
-    //item_militiaman_corpse_aliases: ["militiaman"],
+    item_militiaman_corpse_aliases: ["militiaman"],
     item_militiaman_corpse_desc: "Someone has thrown an iron bar at him. You've deduced that from the fact that it's sticking out of his head.",
 
     item_spinach_name: "spinach",
