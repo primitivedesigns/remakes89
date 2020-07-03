@@ -109,6 +109,8 @@ div.end-win {
 	color: white;
 	bottom: 0;
 	border-radius: 15px;
+	outline: none;
+	font-variant-ligatures: none;
 }
 
 div.intro-text2 span:nth-child(odd) {
