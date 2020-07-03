@@ -1267,9 +1267,22 @@ function createGame(initialState, savedPosition, headless) {
         // Append message to all hints
         for (const loc of game.locations) {
             if (loc.hint) {
+                loc.originalHintLength = loc.hint.length;
                 loc.hint += msg;
             } else {
                 loc.hint = msg;
+            }
+        }
+    }
+
+    game.clearFailState = function () {
+        game.failState = false;
+        for (const loc of game.locations) {
+            if (loc.originalHintLength) {
+                loc.hint = loc.hint.substring(0, loc.originalHintLength);
+                loc.originalHintLength = null;
+            } else {
+                loc.hint = "";
             }
         }
     }

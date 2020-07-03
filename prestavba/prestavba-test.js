@@ -1,10 +1,5 @@
 beepOn = false;
 
-function runTests(engine, initState) {
-    testFullPath(engine);
-}
-
-
 function testFullPath(engine) {
     info("---- Full Path Test ----");
 
@@ -72,5 +67,48 @@ function testFullPath(engine) {
         error("Test failed with end state [" + engine.game.endState + "]");
     } else {
         success("Test passed with end state [" + engine.game.endState + "]");
+    }
+}
+
+function testClearFailState(engine) {
+    info("---- Clear Fail State Test ----");
+
+    const m1 = engine.game.getLocation("m1");
+
+    if (assertTrue(m1.hint === "Bude třeba něco zapálit něco, co bude dlouho hořet. Pokud se to nepovede napoprvé, tak to nevzdávej!", "Text hintu neodpovida")) {
+        return;
+    }
+
+    engine.game.setFailState("FAIL!");
+
+    if (assertTrue(m1.hint === "Bude třeba něco zapálit něco, co bude dlouho hořet. Pokud se to nepovede napoprvé, tak to nevzdávej! FAIL!", "Text hintu neodpovida")) {
+        return;
+    }
+    if (assertTrue(engine.game.failState, "Fail state nenastaven")) {
+        return;
+    }
+
+    engine.game.clearFailState();
+
+    if (assertTrue(!engine.game.failState, "Fail state porad nastaven")) {
+        return;
+    }
+    if (assertTrue(m1.hint === "Bude třeba něco zapálit něco, co bude dlouho hořet. Pokud se to nepovede napoprvé, tak to nevzdávej!", "Text hintu neodpovida")) {
+        return;
+    }
+
+    success("Test passed with fail state [" + engine.game.failState + "]");
+}
+
+const testSuite = [
+    testFullPath, testClearFailState
+]
+
+function runTests(engine, initState) {
+    for (let index = 0; index < testSuite.length; index++) {
+        testSuite[index](engine);
+        if (index < (testSuite.length - 1)) {
+            restart(engine);
+        }
     }
 }

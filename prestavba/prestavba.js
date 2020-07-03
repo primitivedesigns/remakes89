@@ -200,7 +200,7 @@ const items = [{
             if (!this.examined) {
                 this.examined = true;
                 game.print("Něco jsi našel!");
-                game.setFailState("");
+                game.clearFailState();
                 game.location.items.push(dynamiteItemName);
                 game.printLocationInfo();
             }

@@ -86,9 +86,7 @@ const testSuite = [
     testFullPath, testBreakHook
 ]
 
-
 function runTests(engine, initState) {
-
     for (let index = 0; index < testSuite.length; index++) {
         testSuite[index](engine);
         if (index < (testSuite.length - 1)) {
