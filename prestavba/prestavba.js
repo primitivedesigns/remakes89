@@ -200,6 +200,7 @@ const items = [{
             if (!this.examined) {
                 this.examined = true;
                 game.print("Něco jsi našel!");
+                game.clearFailState();
                 game.location.items.push(dynamiteItemName);
                 game.printLocationInfo();
             }
@@ -780,7 +781,7 @@ function initState() {
                     game.print("Marxova kniha dohořívá!!!");
                 } else if (burningTime >= bookBurningTime) {
                     game.removeItem(book.name);
-                    game.setFailState("Bohužel ti shořela kniha a neuvidíš na cestu. Hru můžeš spustit znovu od začátku pomocí hesla RESTART.");
+                    game.setFailState("Shořela ti kniha, a tak už neuvidíš na cestu temnou chodbou. Pokud jsi jí dosud neprošel, můžeš hru spustit znovu od začátku pomocí hesla RESTART.");
                 }
             }
 

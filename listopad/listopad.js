@@ -132,7 +132,9 @@ const items = [{
                 } else {
                     game.print("Po chvíli natáčení se objevila skupinka příslušníků Červených baretů. Vyrvali ti kameru z rukou a rozšlapali ji. Ty jsi na tom nebyl o moc lépe...", "end-lose");
                     game.end("killed", false);
+                    return true;
                 }
+                return false;
             }
         }
     }
@@ -517,7 +519,7 @@ const locations = [{
     }],
 }, {
     id: "m19",
-    hint: "Z Národní třídy můžou příslušníci vidět i tebe!",
+    hint: "Z Národní třídy můžou i příslušníci vidět tebe!",
     desc: "Popošel jsi po střeše. Dostal jsi se na místo, z kterého je dobře vidět na Národní třídu.",
     items: ["hák"],
     exits: [{
@@ -580,8 +582,9 @@ const actions = [{
     keys: ["v"],
     perform: function(game, params) {
         game.clearOutput();
-        const takeableItems = game.location.items.map(i => game.mapItem(i)).filter(item => item.takeable === undefined || item.takeable ||
-            item.name === "bednu" || item.name === "vrata" || item.name === "poklop" || item.name === "dveře");
+        // NOTE: Some items are non-takable but have a special message if a user attempts to take them
+        const takeableItems = game.location.items ? game.location.items.map(i => game.mapItem(i)).filter(item => item.takeable === undefined || item.takeable ||
+            item.name === "bednu" || item.name === "vrata" || item.name === "poklop" || item.name === "dveře") : undefined;
         if (!takeableItems || takeableItems.length === 0) {
             game.print("Nic tu není!");
         } else {
@@ -948,7 +951,7 @@ function processKey(game, key) {
 
 function goToLocation(game, exit) {
     game.print("O.K.");
-    game.print("Jdeš " + (exit.skipPreposition ? "" : "na ") + exit.name.toLowerCase());
+    game.print("Jdeš " + (exit.skipPreposition ? "" : "na ") + exit.name.toLowerCase() + "...");
     if (game.headless) {
         game.goToLocation(exit.name);
     } else {

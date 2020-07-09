@@ -114,6 +114,7 @@ const items = [{
     }
 }, {
     name: bundle.item_corpse2_name,
+    aliases: bundle.item_corpse2_aliases,
     desc: bundle.item_corpse2_desc,
     takeable: false
 }, {
@@ -186,7 +187,8 @@ const items = [{
                 if (uniform && game.aliasObjectNameStartsWith(uniform, params.join(" "))) {
                     let uniform = game.getInventoryItem(bundle.item_uniform_name);
                     if (!uniform) {
-                        uniform = game.takeItem(bundle.item_uniform_name, false);
+                        const ret = game.takeItem(bundle.item_uniform_name, false);
+                        uniform = ret.full ? null : ret.item;
                     }
                     if (uniform && !uniform.dressed) {
                         obj.dressed = true;
@@ -231,10 +233,12 @@ const items = [{
     takeable: false
 }, {
     name: bundle.item_tag_name,
+    aliases: bundle.item_tag_aliases,
     desc: bundle.item_tag_desc,
     takeable: false
 }, {
     name: bundle.item_civilian_name,
+    aliases: bundle.item_civilian_aliases,
     desc: bundle.item_civilian_desc,
     takeable: false
 }, {
@@ -245,6 +249,7 @@ const items = [{
 }, {
     name: bundle.item_civilian_corpse_name,
     desc: bundle.item_civilian_corpse_desc,
+    aliases: bundle.item_civilian_corpse_aliases,
     takeable: false,
     readInit: function (obj) {
         obj.onExamine = function (game) {
@@ -255,6 +260,7 @@ const items = [{
     }
 }, {
     name: bundle.item_idcard_name,
+    aliases: bundle.item_idcard_aliases,
     desc: bundle.item_idcard_desc,
 }, {
     name: bundle.item_militiaman_corpse_name,
@@ -283,6 +289,7 @@ const items = [{
     }
 }, {
     name: bundle.item_can_name,
+    aliases: bundle.item_can_aliases,
     desc: bundle.item_can_desc
 }];
 
