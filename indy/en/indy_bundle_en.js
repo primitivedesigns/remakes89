@@ -298,7 +298,7 @@ const bundle = {
     messages_inventoryFull: "You can't carry anything more!",
 
     // Intro
-    intro_img_title_path: "../img/title.png",
+    intro_img_title_path: "img/title.png",
 
     intro_enter: "Press ENTER",
     intro_text1_a: "THE ADVENTURES OF INDIANA JONES",
