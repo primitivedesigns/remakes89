@@ -22,6 +22,7 @@ mkdir $DEPLOY_DIR/indy
 mkdir $DEPLOY_DIR/indy/img
 mkdir $DEPLOY_DIR/indy/snd
 mkdir $DEPLOY_DIR/indy/en
+mkdir $DEPLOY_DIR/indy/en/img
 cp indy/index.html $DEPLOY_DIR/indy/index.html
 cp indy/indy.js $DEPLOY_DIR/indy/indy.js
 cp indy/indy_bundle_cs.js $DEPLOY_DIR/indy/indy_bundle_cs.js
@@ -30,6 +31,8 @@ cp indy/img/* $DEPLOY_DIR/indy/img
 cp indy/snd/* $DEPLOY_DIR/indy/snd
 cp indy/en/index.html $DEPLOY_DIR/indy/en/index.html
 cp indy/en/indy_bundle_en.js $DEPLOY_DIR/indy/en/indy_bundle_en.js
+cp indy/en/img/* $DEPLOY_DIR/indy/en/img
+
 # Prestavba
 mkdir $DEPLOY_DIR/prestavba
 mkdir $DEPLOY_DIR/prestavba/img
